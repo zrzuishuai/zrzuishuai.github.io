@@ -105,7 +105,26 @@
                                     
                                 
                                     
-                                        <li><a href="/about/"><i class="fa fa-paper-plane"></i>关于我</a></li>
+                                        <li>
+                                            <a><i class="fa fa-paper-plane"></i>关于我</a>
+                                            <ul class="sub-menu">
+                                                
+                                                    
+                                                
+                                                    
+                                                        <li><a href="/about/">自我介绍</a></li>
+                                                    
+                                                
+                                                    
+                                                        <li><a target="_blank" rel="noopener" href="https://zr-blog.github.io/">作者博客</a></li>
+                                                    
+                                                
+                                                    
+                                                        <li><a target="_blank" rel="noopener" href="https://github.com/zr-blog">项目链接</a></li>
+                                                    
+                                                
+                                            </ul>
+                                        </li>
                                     
                                 
                             </ul>
@@ -165,17 +184,6 @@
                     
                     字
                 </li>
-                
-                    <li id="/2021/08/02/hexo%E5%91%BD%E4%BB%A4%E8%A1%8C/" class="leancloud_visitors" data-flag-title="hexo 命令行">
-                        <i class="fa fa-eye"></i>
-                        <span class="leancloud-visitors-count"> </span> 次阅读
-                    </li>
-                    
-                        <li>
-                            <i class="fa fa-commenting-o"></i>
-                            <span data-xid="/2021/08/02/hexo%E5%91%BD%E4%BB%A4%E8%A1%8C/" class="waline-comment-count"> </span> 条评论
-                        </li>
-                    
                 
             </ul>
         </header>
@@ -307,25 +315,34 @@
         </nav>
     
     
-        <div id="w-comments" class="post-comments"></div>
+        <div id="disqus_thread" class="post-comments lazy-load"></div>
+
 <script>
+    var disqus_config = function () {
+        this.page.url = 'http://example.com/2021/08/02/hexo%E5%91%BD%E4%BB%A4%E8%A1%8C/';  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = '2021/08/02/hexo命令行/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
     var load_comm = () => {
-        const init = () => {
-            new Waline(Object.assign({
-                el: '#w-comments',
-                path: '/2021/08/02/hexo%E5%91%BD%E4%BB%A4%E8%A1%8C/'
-            }, JSON.parse('{"serverURL":null,"visitor":true}')));
-        }
-        if (typeof Waline == 'undefined') {
-            const src = 'https://cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js';
-            $.getScript(src, init);
+        if (typeof DISQUS == 'undefined') {
+            var d = document, s = d.createElement('script');
+            s.src = 'https://.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
         } else {
-            init();
+            DISQUS.reset({
+                reload: true,
+                config: function () {  
+                    this.page.url = 'http://example.com/2021/08/02/hexo%E5%91%BD%E4%BB%A4%E8%A1%8C/';  // Replace PAGE_URL with your page's canonical URL variable
+                    this.page.identifier = '2021/08/02/hexo命令行/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                }
+            });
         }
     };
+    
 </script>
-<noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="https://waline.js.org/">comments powered by Waline.</a></noscript>
+<script async id="dsq-count-scr" src="//.disqus.com/count.js"></script>
 
+<noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
     
 </article>
 
