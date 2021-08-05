@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-08-05T07:53:44.661Z</updated>
+  <updated>2021-08-05T07:55:43.040Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -21,9 +21,9 @@
     <link href="http://example.com/2021/08/05/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E5%9F%BA%E6%9C%AC%E6%80%9D%E8%B7%AF/"/>
     <id>http://example.com/2021/08/05/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E5%9F%BA%E6%9C%AC%E6%80%9D%E8%B7%AF/</id>
     <published>2021-08-05T07:12:05.000Z</published>
-    <updated>2021-08-05T07:53:44.661Z</updated>
+    <updated>2021-08-05T07:55:43.040Z</updated>
     
-    <content type="html"><![CDATA[<p>​         有人问我，渗透到底做啥，web渗透到底是干什么，当你拿到一个待检测得站或网站，需要做什么。以我得经验其实web渗透是一个非常简单得事情。今天我就以个人经验来谈一谈怎么去渗透一个网站。</p><hr><p><strong>一、信息收集</strong></p><ol><li>获取域名的 whois 信息,获取注册者邮箱姓名电话等。</li><li>通过站长之家、明小子、k8 等查询服务器旁站以及子域名站点，因为主站一般比较难， 所以先看看旁站有没有通用性的 cms 或者其他漏洞。</li><li>通过 DNS 域传送漏洞、备份号查询、SSl 证书、APP、微信公众号、暴力破解、DNS 历史记录、K8 C 段查询、Jsfinder、360 或华为威胁情报、证书序列号获取企业域名与 ip。</li><li>通过 Nmap、Wappalyzer、御剑等查看服务器操作系统版本，web 中间件，看看是否存在已知的漏洞，比如 IIS，APACHE,NGINX 的解析漏洞</li><li>通过 7KB、破壳扫描网站目录结构，看看是否可以遍历目录，或者敏感文件泄漏，比如php 探针、管理员备份文件。</li><li>google hack 进一步探测网站的信息，后台，敏感文件</li><li>敏感信息收集，如 github 源码、用 7kb、破壳扫源代码泄露（.hg、.git、cvs、svn、.DS_store 源代码泄露）、google hack、接口信息泄露、社工信息泄露、邮箱地址信息收集、网盘搜索、钟馗之眼、天眼查、威胁情报、微步在线等</li><li>通过Wappalyzer、御剑工具对网站指纹识别（包括，cms，cdn，证书等），dns 记录</li></ol><p><strong>二、漏洞扫描</strong></p><ol><li><p>用 AWVS、APPSCAN、长亭科技的 Xray 等扫描器检测 Web 漏洞，如 XSS,XSRF,sql 注入，代码执行，命令执行，越权访问，目录读取，任意文件读取，下载，文件包含， 远程命令执行，弱口令，上传，编辑器漏洞，暴力破解等</p></li><li><p>用 namp、天镜、Nessus、极光等扫描系统 ip，对扫描出来的高危漏洞进行测试，如ms08-067、ms17-010、ms12-020、ms15-035、ms19-0708、永恒之蓝 2 代、cve-2017-7494（samba）、cve-2014-6271(破壳)、php cgi 等相关漏洞验证。</p><p>3.漏洞利用</p></li></ol><p>利用以上的方式拿到 webshell，或者其他权限</p><p>   4.权限提升</p><p>提权服务器，比如 windows 下 mysql 的 udf 提权，serv-u 提权，windows 低版本的漏洞， 如 iis6,pr,巴西烤肉，linux 脏牛漏洞，linux 内核版本漏洞提权，linux 下的 mysql system 提权以及 oracle 低权限提权</p><p>  5.日志清理</p><p>操作系统、中间件、数据库等日志进行清除</p><p>  6.总结报告及修复方案</p>]]></content>
+    <content type="html"><![CDATA[<p>​         有人问我，渗透到底做啥，web渗透到底是干什么，当你拿到一个待检测得站或网站，需要做什么。以我得经验其实web渗透是一个非常简单得事情。今天我就以个人经验来谈一谈怎么去渗透一个网站。</p><hr><p><strong>一、信息收集</strong></p><ol><li>获取域名的 whois 信息,获取注册者邮箱姓名电话等。</li><li>通过站长之家、明小子、k8 等查询服务器旁站以及子域名站点，因为主站一般比较难， 所以先看看旁站有没有通用性的 cms 或者其他漏洞。</li><li>通过 DNS 域传送漏洞、备份号查询、SSl 证书、APP、微信公众号、暴力破解、DNS 历史记录、K8 C 段查询、Jsfinder、360 或华为威胁情报、证书序列号获取企业域名与 ip。</li><li>通过 Nmap、Wappalyzer、御剑等查看服务器操作系统版本，web 中间件，看看是否存在已知的漏洞，比如 IIS，APACHE,NGINX 的解析漏洞</li><li>通过 7KB、破壳扫描网站目录结构，看看是否可以遍历目录，或者敏感文件泄漏，比如php 探针、管理员备份文件。</li><li>google hack 进一步探测网站的信息，后台，敏感文件</li><li>敏感信息收集，如 github 源码、用 7kb、破壳扫源代码泄露（.hg、.git、cvs、svn、.DS_store 源代码泄露）、google hack、接口信息泄露、社工信息泄露、邮箱地址信息收集、网盘搜索、钟馗之眼、天眼查、威胁情报、微步在线等</li><li>通过Wappalyzer、御剑工具对网站指纹识别（包括，cms，cdn，证书等），dns 记录</li></ol><p><strong>二、漏洞扫描</strong></p><ol><li>用 AWVS、APPSCAN、长亭科技的 Xray 等扫描器检测 Web 漏洞，如 XSS,XSRF,sql 注入，代码执行，命令执行，越权访问，目录读取，任意文件读取，下载，文件包含， 远程命令执行，弱口令，上传，编辑器漏洞，暴力破解等</li><li>用 namp、天镜、Nessus、极光等扫描系统 ip，对扫描出来的高危漏洞进行测试，如ms08-067、ms17-010、ms12-020、ms15-035、ms19-0708、永恒之蓝 2 代、cve-2017-7494（samba）、cve-2014-6271(破壳)、php cgi 等相关漏洞验证。</li><li>漏洞利用 </li></ol><p>​       利用以上的方式拿到 webshell，或者其他权限</p><p>   4.权限提升</p><p>​      提权服务器，比如 windows 下 mysql 的 udf 提权，serv-u 提权，windows 低版本的漏洞， 如 iis6,pr,巴西烤   肉，linux 脏牛漏洞，linux 内核版本漏洞提权，linux 下的 mysql system 提权以及 oracle 低权限提权</p><p>   5.日志清理</p><p>​      操作系统、中间件、数据库等日志进行清除</p><p>   6.总结报告及修复方案</p>]]></content>
     
     
       
