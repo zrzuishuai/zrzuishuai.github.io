@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  <link rel="icon" href="">
+  <title>Web中间件常见漏洞总结（一） | Love is a Moment Story</title>
+  <meta name="author" content="zhang rui" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="iis" />
+  
+  <meta name="description" content="*本文中涉及到的相关漏洞已报送厂商并得到修复，本文仅限技术研究与讨论，严禁用于非法用途，否则产生的一切后果自行承担。 一、 常见web中间件及其漏洞概述（一） IIS1、PUT漏洞 2、短文件名猜解 3、远程代码执行 4、解析漏洞 （二） Apache1、解析漏洞 2、目录遍历 （三） Nginx1、文件解析 2、目录遍历 3、CRLF注入 4、目录穿越 （四）Tomcat1、远程代码执行 2、w">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Web中间件常见漏洞总结（一）">
+<meta property="og:url" content="http://example.com/2021/08/15/Web%E4%B8%AD%E9%97%B4%E4%BB%B6%E5%B8%B8%E8%A7%81%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="Love is a Moment Story">
+<meta property="og:description" content="*本文中涉及到的相关漏洞已报送厂商并得到修复，本文仅限技术研究与讨论，严禁用于非法用途，否则产生的一切后果自行承担。 一、 常见web中间件及其漏洞概述（一） IIS1、PUT漏洞 2、短文件名猜解 3、远程代码执行 4、解析漏洞 （二） Apache1、解析漏洞 2、目录遍历 （三） Nginx1、文件解析 2、目录遍历 3、CRLF注入 4、目录穿越 （四）Tomcat1、远程代码执行 2、w">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/null">
+<meta property="article:published_time" content="2021-08-15T12:37:52.000Z">
+<meta property="article:modified_time" content="2021-08-15T12:54:00.087Z">
+<meta property="article:author" content="zhang rui">
+<meta property="article:tag" content="iis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/null">
+<meta name="twitter:site" content="@null">
+  
+  <!-- 站点验证相关 -->
+  
+    
+    
+    
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kratosr.min.css" type="text/css" media="all">
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/night-eighties.min.css" type="text/css" media="all">
+  
+  
+  <link rel="stylesheet" id="fontawe-css" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" type="text/css" media="all">
+  <link rel="stylesheet" id="nprogress-css" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" type="text/css" media="all">
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+  
+  
+    <link rel="stylesheet" id="darkmode-css" href="/css/kr-dark.min.css" type="text/css" media="all">
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
+  
+  
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/banner.webp');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+  </style>
+  
+<meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Love is a Moment Story" type="application/atom+xml">
+</head>
+
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    
+                                        <li><a href="/"><i class="fa fa-home"></i>首页</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/archives/"><i class="fa fa-file"></i>档案馆</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/coffee/"><i class="fa fa-coffee"></i>生活日常</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/friends/"><i class="fa fa-paw"></i>好伙伴</a></li>
+                                    
+                                
+                                    
+                                        <li>
+                                            <a><i class="fa fa-paper-plane"></i>关于我</a>
+                                            <ul class="sub-menu">
+                                                
+                                                    
+                                                
+                                                    
+                                                        <li><a href="/about/">自我介绍</a></li>
+                                                    
+                                                
+                                                    
+                                                        <li><a target="_blank" rel="noopener" href="https://zr-blog.github.io/">作者博客</a></li>
+                                                    
+                                                
+                                                    
+                                                        <li><a target="_blank" rel="noopener" href="https://github.com/zr-blog">项目链接</a></li>
+                                                    
+                                                
+                                            </ul>
+                                        </li>
+                                    
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">Love is a Moment Story</a></div>
+                    <div class="nav-toggle">
+                        <a class="kratos-nav-toggle js-kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>Love is a Moment Story</h2> <br />
+                        <span>im very vegatable and very poor</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+                    
+
+        
+
+            <section class="col-md-8">
+
+        
+
+            <article>
+    <div class="kratos-hentry kratos-post-inner clearfix">
+        <header class="kratos-entry-header">
+            
+                <h1 class="kratos-entry-title text-center">Web中间件常见漏洞总结（一）</h1>
+            
+            
+            <ul class="kratos-post-meta text-center">
+                <li><i class="fa fa-calendar"></i> 2021-08-15</li>
+                <li><i class="fa fa-user"></i> 作者 zhang rui</li>
+                <li>
+                    <i class="fa fa-edit"></i> 
+                    
+                    
+                        ~3.27K
+                    
+                    字
+                </li>
+                
+            </ul>
+        </header>
+        <div class="kratos-post-content">
+            <div id="expire-alert" class="alert alert-warning hidden" role="alert">
+                本文最后编辑于 <time datetime="1629032040087"></time> 前，其中的内容可能需要更新。
+            </div>
+            
+                <div class="kratos-post-inner-toc">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81-%E5%B8%B8%E8%A7%81web%E4%B8%AD%E9%97%B4%E4%BB%B6%E5%8F%8A%E5%85%B6%E6%BC%8F%E6%B4%9E%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">一、 常见web中间件及其漏洞概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%B8%80%EF%BC%89-IIS"><span class="toc-number">1.1.</span> <span class="toc-text">（一） IIS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%BA%8C%EF%BC%89-Apache"><span class="toc-number">1.2.</span> <span class="toc-text">（二） Apache</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%B8%89%EF%BC%89-Nginx"><span class="toc-number">1.3.</span> <span class="toc-text">（三） Nginx</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E5%9B%9B%EF%BC%89Tomcat"><span class="toc-number">1.4.</span> <span class="toc-text">（四）Tomcat</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%BA%94%EF%BC%89jBoss"><span class="toc-number">1.5.</span> <span class="toc-text">（五）jBoss</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E5%85%AD%EF%BC%89WebLogic"><span class="toc-number">1.6.</span> <span class="toc-text">（六）WebLogic</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%B8%83%EF%BC%89%E5%85%B6%E5%AE%83%E4%B8%AD%E9%97%B4%E4%BB%B6%E7%9B%B8%E5%85%B3%E6%BC%8F%E6%B4%9E"><span class="toc-number">1.7.</span> <span class="toc-text">（七）其它中间件相关漏洞</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81-IIS%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">二、 IIS漏洞分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%B8%80%EF%BC%89-IIS%E7%AE%80%E4%BB%8B"><span class="toc-number">2.1.</span> <span class="toc-text">（一） IIS简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%BA%8C%EF%BC%89-PUT%E6%BC%8F%E6%B4%9E"><span class="toc-number">2.2.</span> <span class="toc-text">（二） PUT漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%BA%8C%EF%BC%89%E7%9F%AD%E6%96%87%E4%BB%B6%E5%90%8D%E7%8C%9C%E8%A7%A3"><span class="toc-number">2.3.</span> <span class="toc-text">（二）短文件名猜解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%B8%89%EF%BC%89-%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C"><span class="toc-number">2.4.</span> <span class="toc-text">（三） 远程代码执行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E5%9B%9B%EF%BC%89-%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E"><span class="toc-number">2.5.</span> <span class="toc-text">（四） 解析漏洞</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81-Apache%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90"><span class="toc-number">3.</span> <span class="toc-text">三、 Apache漏洞分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%B8%80%EF%BC%89-Apache%E7%AE%80%E4%BB%8B"><span class="toc-number">3.1.</span> <span class="toc-text">（一） Apache简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%BA%8C%EF%BC%89-%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E"><span class="toc-number">3.2.</span> <span class="toc-text">（二） 解析漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%B8%89%EF%BC%89-%E7%9B%AE%E5%BD%95%E9%81%8D%E5%8E%86"><span class="toc-number">3.3.</span> <span class="toc-text">（三） 目录遍历</span></a></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <p>*<strong>本文中涉及到的相关漏洞已报送厂商并得到修复，本文仅限技术研究与讨论，严禁用于非法用途，否则产生的一切后果自行承担。</strong></p>
+<h2 id="一、-常见web中间件及其漏洞概述"><a href="#一、-常见web中间件及其漏洞概述" class="headerlink" title="一、 常见web中间件及其漏洞概述"></a>一、 常见web中间件及其漏洞概述</h2><h3 id="（一）-IIS"><a href="#（一）-IIS" class="headerlink" title="（一） IIS"></a>（一） IIS</h3><p>1、PUT漏洞</p>
+<p>2、短文件名猜解</p>
+<p>3、远程代码执行</p>
+<p>4、解析漏洞</p>
+<h3 id="（二）-Apache"><a href="#（二）-Apache" class="headerlink" title="（二） Apache"></a>（二） Apache</h3><p>1、解析漏洞</p>
+<p>2、目录遍历</p>
+<h3 id="（三）-Nginx"><a href="#（三）-Nginx" class="headerlink" title="（三） Nginx"></a>（三） Nginx</h3><p>1、文件解析</p>
+<p>2、目录遍历</p>
+<p>3、CRLF注入</p>
+<p>4、目录穿越</p>
+<h3 id="（四）Tomcat"><a href="#（四）Tomcat" class="headerlink" title="（四）Tomcat"></a>（四）Tomcat</h3><p>1、远程代码执行</p>
+<p>2、war后门文件部署</p>
+<h3 id="（五）jBoss"><a href="#（五）jBoss" class="headerlink" title="（五）jBoss"></a>（五）jBoss</h3><p>1、反序列化漏洞</p>
+<p>2、war后门文件部署</p>
+<h3 id="（六）WebLogic"><a href="#（六）WebLogic" class="headerlink" title="（六）WebLogic"></a>（六）WebLogic</h3><p>1、反序列化漏洞</p>
+<p>2、SSRF</p>
+<p>3、任意文件上传</p>
+<p>4、war后门文件部署</p>
+<h3 id="（七）其它中间件相关漏洞"><a href="#（七）其它中间件相关漏洞" class="headerlink" title="（七）其它中间件相关漏洞"></a>（七）其它中间件相关漏洞</h3><p>1、FastCGI未授权访问、任意命令执行</p>
+<p>2、PHPCGI远程代码执行</p>
+<h2 id="二、-IIS漏洞分析"><a href="#二、-IIS漏洞分析" class="headerlink" title="二、 IIS漏洞分析"></a>二、 IIS漏洞分析</h2><h3 id="（一）-IIS简介"><a href="#（一）-IIS简介" class="headerlink" title="（一） IIS简介"></a>（一） IIS简介</h3><p>IIS是Internet Information Services的缩写，意为互联网信息服务，是由微软公司提供的基于运行Microsoft Windows的互联网基本服务。最初是Windows NT版本的可选包，随后内置在Windows 2000、Windows XP Professional和Windows Server 2003一起发行，但在Windows XP Home版本上并没有IIS。IIS是一种Web（网页）服务组件，其中包括Web服务器、FTP服务器、NNTP服务器和SMTP服务器，分别用于网页浏览、文件传输、新闻服务和邮件发送等方面，它使得在网络（包括互联网和局域网）上发布信息成了一件很容易的事。</p>
+<p>IIS的安全脆弱性曾长时间被业内诟病，一旦IIS出现远程执行漏洞威胁将会非常严重。远程执行代码漏洞存在于 HTTP 协议堆栈 (HTTP.sys) 中，当 HTTP.sys 未正确分析经特殊设计的 HTTP 请求时会导致此漏洞。成功利用此漏洞的攻击者可以在系统帐户的上下文中执行任意代码，可以导致IIS服务器所在机器蓝屏或读取其内存中的机密数据</p>
+<h3 id="（二）-PUT漏洞"><a href="#（二）-PUT漏洞" class="headerlink" title="（二） PUT漏洞"></a>（二） PUT漏洞</h3><p><strong>1、漏洞介绍及成因</strong></p>
+<p>IIS Server 在 Web 服务扩展中开启了 WebDAV ，配置了可以写入的权限，造成任意文件上传。</p>
+<p>版本： IIS6.0</p>
+<p><strong>2、漏洞复现</strong></p>
+<p>1） 开启WebDAV 和写权限</p>
+<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/1544954468_5c162264b3e77.png!small" alt="img"></p>
+<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/1544954489_5c16227975735.png!small" alt="img"></p>
+<p>2） 利用burp测试</p>
+<p>抓包，将GET请求改为OPTIONS</p>
+<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/1544954500_5c162284754a0.png!small" alt="img"></p>
+<p>3）利用工具进行测试</p>
+<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/1544954508_5c16228cd082b.png!small" alt="img"></p>
+<p>成功上传，再上传一句话木马，然后用菜刀连接，getshell</p>
+<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/1544954522_5c16229a1787c.png!small" alt="img"></p>
+<p><strong>3、漏洞修复</strong></p>
+<p>关闭WebDAV 和写权限</p>
+<h3 id="（二）短文件名猜解"><a href="#（二）短文件名猜解" class="headerlink" title="（二）短文件名猜解"></a>（二）短文件名猜解</h3><p><strong>1、漏洞介绍及成因</strong></p>
+<p>IIS的短文件名机制，可以暴力猜解短文件名，访问构造的某个存在的短文件名，会返回404，访问构造的某个不存在的短文件名，返回400。</p>
+<p><strong>2、漏洞复现</strong></p>
+<p>1）、在网站根目录下添加aaaaaaaaaa.html文件</p>
+<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/1544954542_5c1622ae9bc64.png!small" alt="img"></p>
+<p>2） 进行猜解</p>
+<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/1544954552_5c1622b8d255e.png!small" alt="img"></p>
+<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/1544954584_5c1622d80a9c8.png!small" alt="img"></p>
+<p><strong>3、漏洞修复</strong></p>
+<p>修复方法：</p>
+<p>1）升级.net framework</p>
+<p>2）修改注册表禁用短文件名功能</p>
+<p>快捷键Win+R打开命令窗口，输入regedit打开注册表窗口，找到路径：</p>
+<p>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem，将其中的 NtfsDisable8dot3NameCreation这一项的值设为 1，1代表不创建短文件名格式，修改完成后，需要重启系统生效</p>
+<p>3）CMD关闭NTFS 8.3文件格式的支持</p>
+<p>4）将web文件夹的内容拷贝到另一个位置，如c:\www到d:\w,然后删除原文件夹，再重命名d:\w到c:\www。</p>
+<p>修复后：</p>
+<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/1544954597_5c1622e59d557.png!small" alt="img"></p>
+<p><strong>4、局限性</strong></p>
+<p>\1) 此漏洞只能确定前6个字符，如果后面的字符太长、包含特殊字符，很难猜解；</p>
+<p>\2) 如果文件名本身太短（无短文件名）也是无法猜解的；</p>
+<p>\3) 如果文件名前6位带空格，8.3格式的短文件名会补进，和真实文件名不匹配；</p>
+<h3 id="（三）-远程代码执行"><a href="#（三）-远程代码执行" class="headerlink" title="（三） 远程代码执行"></a>（三） 远程代码执行</h3><p><strong>1、 漏洞介绍及成因</strong></p>
+<p>在IIS6.0处理PROPFIND指令的时候，由于对url的长度没有进行有效的长度控制和检查，导致执行memcpy对虚拟路径进行构造的时候，引发栈溢出，从而导致远程代码执行。</p>
+<p><strong>2、 漏洞复现</strong></p>
+<p>1）漏洞环境搭建</p>
+<p>在windows server 2003 r2 32位上安装iis6.0</p>
+<p>2） 触发漏洞</p>
+<p>在本地执行exp，exp如下</p>
+<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/1544954632_5c1623084ecaa.png!small" alt="img"></p>
+<p>执行成功后，服务器端弹出计算器：</p>
+<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/1544954644_5c162314621a4.png!small" alt="img"></p>
+<p><strong>3、 漏洞修复</strong></p>
+<p>1）关闭 WebDAV 服务</p>
+<p>2） 使用相关防护设备</p>
+<h3 id="（四）-解析漏洞"><a href="#（四）-解析漏洞" class="headerlink" title="（四） 解析漏洞"></a>（四） 解析漏洞</h3><p><strong>1、 漏洞介绍及成因</strong></p>
+<p>IIS 6.0 在处理含有特殊符号的文件路径时会出现逻辑错误，从而造成文件解析漏洞。这一漏洞有两种完全不同的利用方式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/test.asp/test.jpg</span><br><span class="line"></span><br><span class="line">test.asp;.jpg</span><br></pre></td></tr></table></figure>
+
+<p><strong>2、漏洞复现</strong></p>
+<p>利用方式 1</p>
+<p>第一种是新建一个名为 “test.asp” 的目录，该目录中的任何文件都被 IIS 当作 asp 程序执行（特殊符号是 “/” ）</p>
+<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/1544954672_5c162330306e1.png!small" alt="img"></p>
+<p>利用方式 2</p>
+<p>第二种是上传名为 “test.asp;.jpg” 的文件，虽然该文件真正的后缀名是 “.jpg”, 但由于含有特殊符号 “;” ，仍会被 IIS 当做 asp 程序执行</p>
+<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/1544954681_5c162339092fb.png!small" alt="img"></p>
+<p>IIS7.5 文件解析漏洞</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">test.jpg/.php</span><br></pre></td></tr></table></figure>
+
+<p>URL 中文件后缀是 .php ，便无论该文件是否存在，都直接交给 php 处理，而 php 又默认开启 “cgi.fix_pathinfo”, 会对文件进行 “ 修理 ” ，可谓 “ 修理 ” ？举个例子，当 php 遇到路径 “/aaa.xxx/bbb.yyy” 时，若 “/aaa.xxx/bbb.yyy” 不存在，则会去掉最后的 “bbb.yyy” ，然后判断 “/aaa.xxx” 是否存在，若存在，则把 “/aaa.xxx” 当作文件。</p>
+<p>若有文件 test.jpg ，访问时在其后加 /.php ，便可以把 “test.jpg/.php” 交给 php ， php 修理文件路径 “test.jpg/.php” 得到 ”test.jpg” ，该文件存在，便把该文件作为 php 程序执行了。</p>
+<p><strong>3、 漏洞修复</strong></p>
+<p>1）对新建目录文件名进行过滤，不允许新建包含‘.’的文件</p>
+<p>2）曲线网站后台新建目录的功能，不允许新建目录</p>
+<p>3）限制上传的脚本执行权限，不允许执行脚本</p>
+<p>4）过滤.asp/xm.jpg，通过ISApi组件过滤</p>
+<h2 id="三、-Apache漏洞分析"><a href="#三、-Apache漏洞分析" class="headerlink" title="三、 Apache漏洞分析"></a>三、 Apache漏洞分析</h2><h3 id="（一）-Apache简介"><a href="#（一）-Apache简介" class="headerlink" title="（一） Apache简介"></a>（一） Apache简介</h3><p>Apache 是世界使用排名第一的Web 服务器软件。它可以运行在几乎所有广泛使用的 计算机平台上，由于其 跨平台 和安全性被广泛使用，是最流行的Web服务器端软件之一。它快速、可靠并且可通过简单的API扩充，将 Perl/ Python等 解释器编译到服务器中。</p>
+<h3 id="（二）-解析漏洞"><a href="#（二）-解析漏洞" class="headerlink" title="（二） 解析漏洞"></a>（二） 解析漏洞</h3><p><strong>1、 漏洞介绍及成因</strong></p>
+<p>Apache文件解析漏洞与用户的配置有密切关系，严格来说属于用户配置问题。</p>
+<p>Apache文件解析漏洞涉及到一个解析文件的特性：</p>
+<p>Apache默认一个文件可以有多个以点分隔的后缀，当右边的后缀无法识别（不在mime.tyoes内），则继续向左识别，当我们请求这样一个文件：shell.xxx.yyy</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yyy-&gt;无法识别，向左</span><br><span class="line"></span><br><span class="line">xxx-&gt;无法识别，向左</span><br></pre></td></tr></table></figure>
+
+<p>php-&gt;发现后缀是php，交给php处理这个文件</p>
+<p><strong>2、 漏洞复现</strong></p>
+<p>上传一个后缀名为360的php文件</p>
+<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/1544954824_5c1623c8ad26c.png!small" alt="img"></p>
+<p><strong>3、 漏洞修复</strong></p>
+<p>将AddHandler application/x-httpd-php .php的配置文件删除。</p>
+<h3 id="（三）-目录遍历"><a href="#（三）-目录遍历" class="headerlink" title="（三） 目录遍历"></a>（三） 目录遍历</h3><p><strong>1、 漏洞介绍及成因</strong></p>
+<p>由于配置错误导致的目录遍历</p>
+<p><strong>2、 漏洞复现</strong></p>
+<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/1544954845_5c1623dd062fa.png!small" alt="img"></p>
+<p><strong>3、 漏洞修复</strong></p>
+<p>修改apache配置文件httpd.conf</p>
+<p>找到Options+Indexes+FollowSymLinks +ExecCGI并修改成 Options-Indexes+FollowSymLinks +ExecCGI 并保存；</p>
+<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/1544954862_5c1623eee9f99.png!small" alt="img"></p>
+<p><img src="https://image.3001.net/images/20181216/1544954862_5c1623eee9f99.png!small" alt="img"></p>
+
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <h5>本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</h5>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+                <div class="post-like-donate text-center clearfix" id="post-like-donate">
+                
+                
+                    <a class="share" href="javascript:;"><i class="fa fa-share-alt"></i> 分享</a>
+                    <div class="share-wrap" style="display: none;">
+    <div class="share-group">
+        <a href="javascript:;" class="share-plain qq" onclick="share('qq');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-qq"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain qzone" onclick="share('qzone');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-star"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weixin pop style-plain" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weixin"></i>
+            </div>
+            <div class="share-int">
+                <div class="qrcode" id="wechat-qr"></div>
+                <p>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</p>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weibo" onclick="share('weibo');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weibo"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain facebook style-plain" onclick="share('facebook');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-facebook"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain twitter style-plain" onclick="share('twitter');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-twitter"></i>
+            </div>
+        </a>
+    </div>
+    <script type="text/javascript">
+        $(()=>{
+            new QRCode("wechat-qr", {
+                text: "http://example.com/2021/08/15/Web%E4%B8%AD%E9%97%B4%E4%BB%B6%E5%B8%B8%E8%A7%81%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93/",
+                width: 150,
+                height: 150,
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+        function share(dest) {
+            const qqBase        = "https://connect.qq.com/widget/shareqq/index.html?";
+            const weiboBase     = "https://service.weibo.com/share/share.php?";
+            const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
+            const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
+            const twitterBase   = "https://twitter.com/intent/tweet?";
+            const hostUrl       = "http://example.com/2021/08/15/Web%E4%B8%AD%E9%97%B4%E4%BB%B6%E5%B8%B8%E8%A7%81%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93/";
+            const title         = "「Web中间件常见漏洞总结（一）」";
+            const excerpt       = `*本文中涉及到的相关漏洞已报送厂商并得到修复，本文仅限技术研究与讨论，严禁用于非法用途，否则产生的一切后果自行承担。
+一、 常见web中间件及其漏洞概述（一） IIS1、PUT漏洞
+2、短文件名猜解
+3、远程代码执行
+4、解析漏洞
+（...`;
+            let _URL;
+            switch (dest) {
+                case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
+                case "weibo"    : _URL = weiboBase+"url="+hostUrl+"&title="+title+excerpt;                                 break;
+                case "qzone"    : _URL = qzoneBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";  break;
+                case "facebook" : _URL = facebookBase+"u="+hostUrl;                                                        break;
+                case "twitter"  : _URL = twitterBase+"text="+title+excerpt+"&url="+hostUrl;                                break;
+            }
+            window.open(_URL);
+        };
+    </script>
+</div>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/iis/" rel="tag">iis</a>
+                </div>
+                <div class="pull-date">
+                <span>最后编辑：2021-08-15</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" web渗透详细过程之信息收集篇" href="/2021/08/06/web渗透详细过程之信息收集篇/">&lt; 上一篇</a>
+            </div>
+            
+            
+        </nav>
+    
+    
+        <div id="disqus_thread" class="post-comments lazy-load"></div>
+
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://example.com/2021/08/15/Web%E4%B8%AD%E9%97%B4%E4%BB%B6%E5%B8%B8%E8%A7%81%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93/';  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = '2021/08/15/Web中间件常见漏洞总结/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    var load_comm = () => {
+        if (typeof DISQUS == 'undefined') {
+            var d = document, s = d.createElement('script');
+            s.src = 'https://.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        } else {
+            DISQUS.reset({
+                reload: true,
+                config: function () {  
+                    this.page.url = 'http://example.com/2021/08/15/Web%E4%B8%AD%E9%97%B4%E4%BB%B6%E5%B8%B8%E8%A7%81%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93/';  // Replace PAGE_URL with your page's canonical URL variable
+                    this.page.identifier = '2021/08/15/Web中间件常见漏洞总结/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                }
+            });
+        }
+    };
+    
+</script>
+<script async id="dsq-count-scr" src="//.disqus.com/count.js"></script>
+
+<noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    
+</article>
+
+        
+
+            </section>
+
+        
+
+                
+            
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/touxiang.webp" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center"></p>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix">
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar"></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81-%E5%B8%B8%E8%A7%81web%E4%B8%AD%E9%97%B4%E4%BB%B6%E5%8F%8A%E5%85%B6%E6%BC%8F%E6%B4%9E%E6%A6%82%E8%BF%B0"><span class="toc-text">一、 常见web中间件及其漏洞概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%B8%80%EF%BC%89-IIS"><span class="toc-text">（一） IIS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%BA%8C%EF%BC%89-Apache"><span class="toc-text">（二） Apache</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%B8%89%EF%BC%89-Nginx"><span class="toc-text">（三） Nginx</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E5%9B%9B%EF%BC%89Tomcat"><span class="toc-text">（四）Tomcat</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%BA%94%EF%BC%89jBoss"><span class="toc-text">（五）jBoss</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E5%85%AD%EF%BC%89WebLogic"><span class="toc-text">（六）WebLogic</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%B8%83%EF%BC%89%E5%85%B6%E5%AE%83%E4%B8%AD%E9%97%B4%E4%BB%B6%E7%9B%B8%E5%85%B3%E6%BC%8F%E6%B4%9E"><span class="toc-text">（七）其它中间件相关漏洞</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81-IIS%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90"><span class="toc-text">二、 IIS漏洞分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%B8%80%EF%BC%89-IIS%E7%AE%80%E4%BB%8B"><span class="toc-text">（一） IIS简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%BA%8C%EF%BC%89-PUT%E6%BC%8F%E6%B4%9E"><span class="toc-text">（二） PUT漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%BA%8C%EF%BC%89%E7%9F%AD%E6%96%87%E4%BB%B6%E5%90%8D%E7%8C%9C%E8%A7%A3"><span class="toc-text">（二）短文件名猜解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%B8%89%EF%BC%89-%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C"><span class="toc-text">（三） 远程代码执行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E5%9B%9B%EF%BC%89-%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E"><span class="toc-text">（四） 解析漏洞</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81-Apache%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90"><span class="toc-text">三、 Apache漏洞分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%B8%80%EF%BC%89-Apache%E7%AE%80%E4%BB%8B"><span class="toc-text">（一） Apache简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%BA%8C%EF%BC%89-%E8%A7%A3%E6%9E%90%E6%BC%8F%E6%B4%9E"><span class="toc-text">（二） 解析漏洞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%B8%89%EF%BC%89-%E7%9B%AE%E5%BD%95%E9%81%8D%E5%8E%86"><span class="toc-text">（三） 目录遍历</span></a></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类目录</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8/">日常</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B8%97%E9%80%8F/">渗透</a><span class="category-list-count">4</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/iis/" style="font-size: 0.6em;">iis</a> <a href="/tags/sql-%E6%B3%A8%E5%85%A5/" style="font-size: 0.6em;">sql 注入</a> <a href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" style="font-size: 0.6em;">信息收集</a> <a href="/tags/%E6%BC%8F%E6%B4%9E%E6%89%AB%E6%8F%8F/" style="font-size: 0.6em;">漏洞扫描</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2021/08/15/Web%E4%B8%AD%E9%97%B4%E4%BB%B6%E5%B8%B8%E8%A7%81%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93/"><i class="fa  fa-book"></i> Web中间件常见漏洞总结（一）</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2021/08/06/web%E6%B8%97%E9%80%8F%E8%AF%A6%E7%BB%86%E8%BF%87%E7%A8%8B%E4%B9%8B%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E7%AF%87/"><i class="fa  fa-book"></i> web渗透详细过程之信息收集篇</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2021/08/05/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E5%9F%BA%E6%9C%AC%E6%80%9D%E8%B7%AF/"><i class="fa  fa-book"></i> 渗透测试基本思路</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2021/08/03/%E6%B8%97%E9%80%8F%E7%AC%AC%E4%B8%80%E8%AF%BE/"><i class="fa  fa-book"></i> SQL手工注入入门教程</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2021/05/02/my-first-blog/"><i class="fa  fa-book"></i> hello-world</a>
+            
+          
+        
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+        
+        </div>
+    </div>
+</div>
+<footer>
+    <div id="footer"  class="ap-lrc"  >
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search/">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="darkmode-switch">
+                        <span class="fa fa-adjust"></span>
+                    </div>
+                
+                
+            </div>
+            <div class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://t.me/CandyUnion"><i class="fa fa-telegram"></i></a></li>
+                        
+                        
+                        
+                        <li><a target="_blank" rel="me" href="https://nya.one/@zr"><i class="fa fa fa-share-alt-square"></i></a></li>
+                        <li><a target="_blank" rel="nofollow" href="https://github.com/zr-blog"><i class="fa fa-github"></i></a></li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2021 Love is a Moment Story 版权所有.</li>
+                            <li>本站已运行<span id="span_dt">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by zhang rui.</li>
+                        </div>
+                        <div>
+                            <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
+                            <li>Hosted on <a href="https://zr-blog.github.io/" target="_blank">Github Pages</a></li>
+                        </div>
+                        <div>
+                            
+                            
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.4/dist/js/bootstrap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js"></script>
+<script>const notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));</script>
+
+
+    <script async src="/js/candy.min.js"></script>
+
+
+
+    <script defer src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+    
+    <script defer src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+    <meting-js
+        server="netease"
+        type="playlist"
+        id="3204190542"
+        order="random"
+        fixed="true"
+    >
+    </meting-js>
+
+
+
+    <script defer src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script>
+<script defer src="/js/kratosr.min.js"></script>
+<script defer src="/js/pjax.min.js"></script>
+
+
+    <script defer src="/js/kr-dark.min.js"></script>
+
+
+
+<!-- Extra support for third-party plguins  -->
+
+
+    </body>
+</html>
