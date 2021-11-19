@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-10-15T02:16:26.348Z</updated>
+  <updated>2021-11-19T02:54:02.436Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Awvs与burpsutie最新版</title>
+    <link href="http://example.com/2021/11/11/Awvs%E4%B8%8Eburpsutie%E6%9C%80%E6%96%B0%E7%89%88/"/>
+    <id>http://example.com/2021/11/11/Awvs%E4%B8%8Eburpsutie%E6%9C%80%E6%96%B0%E7%89%88/</id>
+    <published>2021-11-11T02:46:52.000Z</published>
+    <updated>2021-11-19T02:54:02.436Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="AWVS破解版本14-5-211109105"><a href="#AWVS破解版本14-5-211109105" class="headerlink" title="AWVS破解版本14.5.211109105"></a>AWVS破解版本14.5.211109105</h1><p><em><strong>*0x01 AWVS更新介绍*</strong></em></p><p>AWVS14.5.211109105更新于2021年11月9日，此次更新增加了CVE-2020-10770&amp;CVE-2021-41773的漏洞检查，并且修复了点击劫持等等安全问题。</p><p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20211119104810669.png" alt="image-20211119104810669"></p><p><strong>注：****安装前卸载干净旧版本的AWVS再进行安装否则安装失败，若点击激活工具[Acunetix Premium Activation Tool.exe],则重装系统才能重新安装AWVS!</strong></p><p><strong><em>*0x02*</em> AWVS更新详情</strong></p><p><strong>新的漏洞检查</strong></p><ul><li>Keycloak request_uri SSRF的新检查(CVE-2020-10770)</li><li>Apache HTTP Server不安全路径规范化的新检查(CVE-2021-41773和CVE-2021-42013)</li><li>Apache mod_proxy SSRF的新检查(CVE-2021-40438)</li></ul><p><strong>安全修复</strong></p><ul><li>修复了用于在IIS中列出网站的 .NET AcuSensor CLI参数中的问题</li><li>修复了点击劫持的问题：CSP框架祖先缺少漏洞检查</li><li>修复了Сockpit CMS重置密码NoSQLi中的误报</li></ul><p><strong>0x03 AWVS获取方式</strong></p><p>链接：<a href="https://pan.baidu.com/s/1qzwNRQcVmjjW02Cac_EBHA">https://pan.baidu.com/s/1qzwNRQcVmjjW02Cac_EBHA</a><br>提取码：cjte</p><p><em><strong>*0x04 BurpSuite插件介绍*</strong></em></p><p>BurpSuite2021.10.1版本发布于2021年11月11日，并发行了<em>*<em>*</em>*社区版****<strong>和</strong></em>*<em>*专业版**</em>***，属于测试版本，此版本修复了在使用大字体的消息编辑器中启用换行时偶尔遇到的视觉问题。</p><p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20211119105135590.png" alt="image-20211119105135590"></p><p><em><strong>*0x05 BurpSuite官方校验码*</strong></em></p><p><strong>BurpSuite 专业版Pro</strong></p><p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20211119105156491.png" alt="image-20211119105156491"></p><p><strong>BurpSuite 社区版Community</strong></p><p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20211119105213618.png" alt="image-20211119105213618"></p><p><strong>0x06 BurpSuite获取</strong></p><p>链接：<a href="https://pan.baidu.com/s/12fjtLS1CJYLHr9u82TnUvA">https://pan.baidu.com/s/12fjtLS1CJYLHr9u82TnUvA</a><br>提取码：gmws</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;AWVS破解版本14-5-211109105&quot;&gt;&lt;a href=&quot;#AWVS破解版本14-5-211109105&quot; class=&quot;headerlink&quot; title=&quot;AWVS破解版本14.5.211109105&quot;&gt;&lt;/a&gt;AWVS破解版本14.5.2111091</summary>
+      
+    
+    
+    
+    <category term="渗透" scheme="http://example.com/categories/%E6%B8%97%E9%80%8F/"/>
+    
+    
+    <category term="awvs" scheme="http://example.com/tags/awvs/"/>
+    
+    <category term="burpsutie" scheme="http://example.com/tags/burpsutie/"/>
+    
+  </entry>
   
   <entry>
     <title>Apache 2.4.49</title>
