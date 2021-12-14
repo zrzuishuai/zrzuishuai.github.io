@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-11-19T02:54:02.436Z</updated>
+  <updated>2021-12-14T07:41:05.677Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>工控安全CTF入门小记</title>
+    <link href="http://example.com/2021/12/14/%E5%B7%A5%E6%8E%A7%E5%AE%89%E5%85%A8CTF%E5%85%A5%E9%97%A8%E5%B0%8F%E8%AE%B0/"/>
+    <id>http://example.com/2021/12/14/%E5%B7%A5%E6%8E%A7%E5%AE%89%E5%85%A8CTF%E5%85%A5%E9%97%A8%E5%B0%8F%E8%AE%B0/</id>
+    <published>2021-12-14T07:40:28.000Z</published>
+    <updated>2021-12-14T07:41:05.677Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="知识库"><a href="#知识库" class="headerlink" title="知识库"></a>知识库</h3><p>工控安全入门分析</p><p><a href="https://www.anquanke.com/post/id/82383">https://www.anquanke.com/post/id/82383</a></p><p>工控安全基础概念初探</p><p><a href="http://blog.b3ale.cn/2020/06/24/%E5%B7%A5%E6%8E%A7%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E5%88%9D%E6%8E%A2/">http://blog.b3ale.cn/2020/06/24/%E5%B7%A5%E6%8E%A7%E5%AE%89%E5%85%A8%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E5%88%9D%E6%8E%A2/</a></p><p>ICS_CTF Contest</p><p><a href="https://ctf-wiki.github.io/ctf-wiki/ics/ctfs-zh/">https://ctf-wiki.github.io/ctf-wiki/ics/ctfs-zh/</a></p><p>工控安全-Freebuf</p><p><a href="https://search.freebuf.com/search/?search=%E5%B7%A5%E6%8E%A7%E5%AE%89%E5%85%A8#article">https://search.freebuf.com/search/?search=%E5%B7%A5%E6%8E%A7%E5%AE%89%E5%85%A8#article</a></p><p>工控安全系列文章</p><p><a href="https://www.anquanke.com/member/141205">https://www.anquanke.com/member/141205</a></p><p>深度解析工控网络流量特点</p><p><a href="https://www.freebuf.com/articles/ics-articles/167079.html">https://www.freebuf.com/articles/ics-articles/167079.html</a></p><p>工控CTF技能点学习总结</p><p><a href="https://zhuanlan.zhihu.com/p/93070821">https://zhuanlan.zhihu.com/p/93070821</a></p><p>Siemens PLC指纹提取方法汇总</p><p><a href="https://www.jianshu.com/p/75edadd2abbf">https://www.jianshu.com/p/75edadd2abbf</a></p><p>ZoomEye工控专题</p><p><a href="http://ics.zoomeye.org/">http://ics.zoomeye.org/</a></p><p>Fofa工控专题</p><p><a href="https://fofa.so/subject">https://fofa.so/subject</a></p><h3 id="在线靶场"><a href="#在线靶场" class="headerlink" title="在线靶场"></a>在线靶场</h3><p>纵横网络靶场社区</p><p><a href="https://game.fengtaisec.com/">https://game.fengtaisec.com</a></p><h3 id="历届比赛真题"><a href="#历届比赛真题" class="headerlink" title="历届比赛真题"></a>历届比赛真题</h3><p>包括2018工业信息安全大赛、2019工业信息安全大赛、2018护网杯等题目</p><p><a href="https://github.com/ddyy0308/CTF">https://github.com/ddyy0308/CTF</a></p><h3 id="相关分析与WriteUp"><a href="#相关分析与WriteUp" class="headerlink" title="相关分析与WriteUp"></a>相关分析与WriteUp</h3><p>CTF工业信息安全大赛实践与分析</p><p><a href="https://www.freebuf.com/articles/ics-articles/210687.html">https://www.freebuf.com/articles/ics-articles/210687.html</a></p><p>一道MMS工控协议CTF题的WriteUp</p><p><a href="https://blog.csdn.net/cn_lyxc/article/details/94832631">https://blog.csdn.net/cn_lyxc/article/details/94832631</a></p><p>2018工业信息安全技能大赛华东赛区初赛</p><p><a href="https://www.cnblogs.com/bianmu-dadan/p/9414165.html">https://www.cnblogs.com/bianmu-dadan/p/9414165.html</a></p><p>老题新招 | 再解工控CTF流量分析题</p><p><a href="https://www.freebuf.com/articles/ics-articles/176868.html">https://www.freebuf.com/articles/ics-articles/176868.html</a></p><p>2019工业信息安全竞赛部分</p><p><a href="https://www.dazhuanlan.com/2019/12/30/5e09dcd470284/">https://www.dazhuanlan.com/2019/12/30/5e09dcd470284/</a></p><p>2019 工业信息安全竞赛总结</p><p><a href="https://www.cnpanda.net/ctf/415.html">https://www.cnpanda.net/ctf/415.html</a></p><p>由一道工控路由器固件逆向题目看命令执行漏洞</p><p><a href="https://www.anquanke.com/post/id/183202#h3-10">https://www.anquanke.com/post/id/183202#h3-10</a></p><h3 id="一些工具脚本"><a href="#一些工具脚本" class="headerlink" title="一些工具脚本"></a>一些工具脚本</h3><p>工控CTF比赛工具，各种网络数据包处理脚本</p><p><a href="https://github.com/NewBee119/ctf_ics_traffic">https://github.com/NewBee119/ctf_ics_traffic</a></p><p>分析工控网络流量的工具</p><p><a href="https://github.com/NewBee119/ICS-packets-Analyzer">https://github.com/NewBee119/ICS-packets-Analyzer</a></p><h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>一些好用的过滤条件</p><p>ip contains flag.txt</p><p>modbus&amp;&amp;modbus.func_code==16</p><p>s7comm&amp;&amp;s7comm.param.func==0x05</p><p>mms.confirmedServiceRequest==73</p><h3 id="规律"><a href="#规律" class="headerlink" title="规律"></a>规律</h3><p>mms协议有关的流量分析题目，可以先搜索flag，png等关键字符串，如果检索不到可以尝试搜索对应的十六进制，比如666c（’fl’）</p><p>找到fileopen（72）对应的No.</p><p>接着使用这一条mms.confirmedServiceRequest==73过滤fileread（73）操作的条目</p><p>观察那一条大于fileopen的No.</p><p>找到invokeID</p><p>接着找对应的mms.invokeID==No.</p><p>会发现mms.confirmed_ResponsePDU，这个的十六进制值就存在flag内容</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h3 id=&quot;知识库&quot;&gt;&lt;a href=&quot;#知识库&quot; class=&quot;headerlink&quot; title=&quot;知识库&quot;&gt;&lt;/a&gt;知识库&lt;/h3&gt;&lt;p&gt;工控安全入门分析&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.anquanke.com/post/id/82383&quot;&gt;h</summary>
+      
+    
+    
+    
+    <category term="CTF" scheme="http://example.com/categories/CTF/"/>
+    
+    
+    <category term="Tag0" scheme="http://example.com/tags/Tag0/"/>
+    
+    <category term="Tag1" scheme="http://example.com/tags/Tag1/"/>
+    
+    <category term="Tag2" scheme="http://example.com/tags/Tag2/"/>
+    
+  </entry>
   
   <entry>
     <title>Awvs与burpsutie最新版</title>
