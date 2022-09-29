@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  <link rel="icon" href="">
+  <title>HW蓝队溯源流程详细整理分享 | Love is a Moment Story</title>
+  <meta name="author" content="zhang rui" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="溯源" />
+  
+  <meta name="description" content="背景：授权授权攻防演练过程中，攻击者千方百计使用各种方法渗透目标。一般情况下攻击链包括：侦察、武器化、交付、利用、安装、命令和控制、窃取目标数据。在溯源中，安全人员对攻击者某个阶段的攻击特点进行分析，再结合已掌握的威胁情报数据将攻击特点和数据聚类，能够有效掌握攻击者的攻击手法和 IP 、域名资产等。 目标：掌握攻击者的攻击手法（例如：特定木马、武器投递方法）；掌握攻击者的 IP域名资产（例如：木马">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HW蓝队溯源流程详细整理分享">
+<meta property="og:url" content="http://example.com/2022/09/29/HW%E8%93%9D%E9%98%9F%E6%BA%AF%E6%BA%90%E6%B5%81%E7%A8%8B%E8%AF%A6%E7%BB%86%E6%95%B4%E7%90%86%E5%88%86%E4%BA%AB/index.html">
+<meta property="og:site_name" content="Love is a Moment Story">
+<meta property="og:description" content="背景：授权授权攻防演练过程中，攻击者千方百计使用各种方法渗透目标。一般情况下攻击链包括：侦察、武器化、交付、利用、安装、命令和控制、窃取目标数据。在溯源中，安全人员对攻击者某个阶段的攻击特点进行分析，再结合已掌握的威胁情报数据将攻击特点和数据聚类，能够有效掌握攻击者的攻击手法和 IP 、域名资产等。 目标：掌握攻击者的攻击手法（例如：特定木马、武器投递方法）；掌握攻击者的 IP域名资产（例如：木马">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/null">
+<meta property="article:published_time" content="2022-09-29T05:24:10.000Z">
+<meta property="article:modified_time" content="2022-09-29T05:27:30.720Z">
+<meta property="article:author" content="zhang rui">
+<meta property="article:tag" content="溯源">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/null">
+<meta name="twitter:site" content="@null">
+  
+  <!-- 站点验证相关 -->
+  
+    
+    
+    
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kratosr.min.css" type="text/css" media="all">
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/night-eighties.min.css" type="text/css" media="all">
+  
+  
+  <link rel="stylesheet" id="fontawe-css" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" type="text/css" media="all">
+  <link rel="stylesheet" id="nprogress-css" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" type="text/css" media="all">
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+  
+  
+    <link rel="stylesheet" id="darkmode-css" href="/css/kr-dark.min.css" type="text/css" media="all">
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
+  
+  
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/banner.webp');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+  </style>
+  
+<meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Love is a Moment Story" type="application/atom+xml">
+</head>
+
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    
+                                        <li><a href="/"><i class="fa fa-home"></i>首页</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/archives/"><i class="fa fa-file"></i>档案馆</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/coffee/"><i class="fa fa-coffee"></i>生活日常</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/friends/"><i class="fa fa-paw"></i>好伙伴</a></li>
+                                    
+                                
+                                    
+                                        <li>
+                                            <a><i class="fa fa-paper-plane"></i>关于我</a>
+                                            <ul class="sub-menu">
+                                                
+                                                    
+                                                
+                                                    
+                                                        <li><a href="/about/">自我介绍</a></li>
+                                                    
+                                                
+                                                    
+                                                        <li><a target="_blank" rel="noopener" href="https://zr-blog.github.io/">作者博客</a></li>
+                                                    
+                                                
+                                                    
+                                                        <li><a target="_blank" rel="noopener" href="https://github.com/zr-blog">项目链接</a></li>
+                                                    
+                                                
+                                            </ul>
+                                        </li>
+                                    
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">Love is a Moment Story</a></div>
+                    <div class="nav-toggle">
+                        <a class="kratos-nav-toggle js-kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>Love is a Moment Story</h2> <br />
+                        <span>im very vegatable and very poor</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+                    
+
+        
+
+            <section class="col-md-8">
+
+        
+
+            <article>
+    <div class="kratos-hentry kratos-post-inner clearfix">
+        <header class="kratos-entry-header">
+            
+                <h1 class="kratos-entry-title text-center">HW蓝队溯源流程详细整理分享</h1>
+            
+            
+            <ul class="kratos-post-meta text-center">
+                <li><i class="fa fa-calendar"></i> 2022-09-29</li>
+                <li><i class="fa fa-user"></i> 作者 zhang rui</li>
+                <li>
+                    <i class="fa fa-edit"></i> 
+                    
+                    
+                        ~3.65K
+                    
+                    字
+                </li>
+                
+            </ul>
+        </header>
+        <div class="kratos-post-content">
+            <div id="expire-alert" class="alert alert-warning hidden" role="alert">
+                本文最后编辑于 <time datetime="1664429250720"></time> 前，其中的内容可能需要更新。
+            </div>
+            
+                <div class="kratos-post-inner-toc">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E6%99%AF%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">背景：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E6%A0%87%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">目标：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E8%AE%BA%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">方法论：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%94%BB%E5%87%BB%E9%93%BE%E9%83%A8%E5%88%86%E5%8F%AF%E6%BA%AF%E6%BA%90%E7%9A%84%E5%85%B3%E9%94%AE%E7%82%B9%EF%BC%9A"><span class="toc-number">3.1.</span> <span class="toc-text">1. 攻击链部分可溯源的关键点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%94%BB%E5%87%BB%E9%93%BE%E5%88%A9%E7%94%A8%E9%98%B6%E6%AE%B5%E5%8F%AF%E6%BA%AF%E6%BA%90%E7%9A%84%E6%96%B9%E6%B3%95%E5%8F%8A%E5%88%A9%E7%94%A8%E7%82%B9%EF%BC%9A"><span class="toc-number">3.2.</span> <span class="toc-text">2. 攻击链利用阶段可溯源的方法及利用点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E9%92%93%E9%B1%BC%E9%82%AE%E4%BB%B6%E5%8F%AF%E6%BA%AF%E6%BA%90%E6%96%B9%E6%B3%95%E5%8F%8A%E5%85%B3%E9%94%AE%E7%82%B9%EF%BC%9A"><span class="toc-number">3.3.</span> <span class="toc-text">3. 钓鱼邮件可溯源方法及关键点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%90%8E%E9%97%A8%E6%9C%A8%E9%A9%AC%E5%8F%AF%E6%BA%AF%E6%BA%90%E6%96%B9%E6%B3%95%E5%8F%8A%E5%85%B3%E9%94%AE%E7%82%B9%EF%BC%9A"><span class="toc-number">3.4.</span> <span class="toc-text">4. 后门木马可溯源方法及关键点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%94%BB%E5%87%BB%E8%80%85%E8%B5%84%E4%BA%A7%E7%BB%B4%E5%BA%A6%E5%8F%AF%E6%BA%AF%E6%BA%90%E6%96%B9%E6%B3%95%E5%8F%8A%E5%85%B3%E9%94%AE%E7%82%B9"><span class="toc-number">3.5.</span> <span class="toc-text">5. 攻击者资产维度可溯源方法及关键点:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E5%91%BD%E4%BB%A4%E5%92%8C%E6%8E%A7%E5%88%B6%E9%98%B6%E6%AE%B5%E5%8F%AF%E4%BA%A7%E7%94%9F%E7%9A%84%E6%95%B0%E6%8D%AE"><span class="toc-number">3.6.</span> <span class="toc-text">6.命令和控制阶段可产生的数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E8%BA%AB%E4%BB%BD%E4%BF%A1%E6%81%AF%E6%BA%AF%E6%BA%90%E6%96%B9%E5%90%91%EF%BC%9A"><span class="toc-number">3.7.</span> <span class="toc-text">7.身份信息溯源方向：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B%EF%BC%9A"><span class="toc-number">4.</span> <span class="toc-text">流程：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E9%92%88%E5%AF%B9ip%E9%80%9A%E8%BF%87%E5%BC%80%E6%BA%90%E6%83%85%E6%8A%A5-%E5%BC%80%E6%94%BE%E7%AB%AF%E5%8F%A3%E5%88%86%E6%9E%90%E6%9F%A5%E8%AF%A2"><span class="toc-number">4.1.</span> <span class="toc-text">1.针对ip通过开源情报+开放端口分析查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-ip%E6%9F%A5%E8%AF%A2%E5%AE%9A%E4%BD%8D"><span class="toc-number">4.2.</span> <span class="toc-text">2.ip查询定位</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-ID%E8%B7%9F%E8%B8%AA%E3%80%81%E5%BE%97%E5%88%B0%E5%B8%B8%E7%94%A8id%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">4.3.</span> <span class="toc-text">3. ID跟踪、得到常用id信息收集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E9%A2%84%E8%AD%A6%E8%AE%BE%E5%A4%87%E4%BF%A1%E6%81%AF%E5%8F%96%E8%AF%81"><span class="toc-number">4.4.</span> <span class="toc-text">4.预警设备信息取证</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E8%B7%B3%E6%9D%BF%E6%9C%BA%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-%E8%A7%A6%E5%8F%91"><span class="toc-number">4.5.</span> <span class="toc-text">5.跳板机信息收集(触发)</span></a></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <h2 id="背景："><a href="#背景：" class="headerlink" title="背景："></a><strong>背景：</strong></h2><p>授权授权攻防演练过程中，攻击者千方百计使用各种方法渗透目标。一般情况下攻击链包括：侦察、武器化、交付、利用、安装、命令和控制、窃取目标数据。在溯源中，安全人员对攻击者某个阶段的攻击特点进行分析，再结合已掌握的威胁情报数据将攻击特点和数据聚类，能够有效掌握攻击者的攻击手法和 IP 、域名资产等。</p>
+<h2 id="目标："><a href="#目标：" class="headerlink" title="目标："></a><strong>目标：</strong></h2><p>掌握攻击者的攻击手法（例如：特定木马、武器投递方法）；<br>掌握攻击者的 IP域名资产（例如：木马 C2、木马存放站点、资产特点）；<br>掌握攻击者的虚拟身份、身份；<br>掌握攻击者武器的检测或发现方法，将捕获的数据形成新的线索。</p>
+<h2 id="方法论："><a href="#方法论：" class="headerlink" title="方法论："></a><strong>方法论：</strong></h2><p>针对交付、利用、安装、命令和控制四个阶段捕获到的数据做深度分析，聚类提取数据特点形成规则。将规则应用于一些安全设备产出高可信度的告警用于防御，或者结合情报数据（如样本信息、域名信息、IP 信息等），将深度溯源的情报（如身份信息、攻击队伍等）产出。</p>
+<h3 id="1-攻击链部分可溯源的关键点："><a href="#1-攻击链部分可溯源的关键点：" class="headerlink" title="1. 攻击链部分可溯源的关键点："></a>1. 攻击链部分可溯源的关键点：</h3><p><img src="https://mmbiz.qpic.cn/mmbiz_png/CBJYPapLzSHIrUQRCVwwCVjlrqGwVjlBaKKDJaw46Rhv1FUnSNmtOXhVaVjbhXdicxHhw4UWWLe91AleLWfn1oA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<h3 id="2-攻击链利用阶段可溯源的方法及利用点："><a href="#2-攻击链利用阶段可溯源的方法及利用点：" class="headerlink" title="2. 攻击链利用阶段可溯源的方法及利用点："></a>2. 攻击链利用阶段可溯源的方法及利用点：</h3><p><img src="https://mmbiz.qpic.cn/mmbiz_png/CBJYPapLzSHIrUQRCVwwCVjlrqGwVjlBY0zOB8rAMMXBr0F7MXFMBiatcSwx52BLEcbaLDIuflFg2tQdvMxbR9g/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<p>攻击回溯的关键点主要分为两类:</p>
+<p>攻击分类：根据攻击者的漏洞利用数据包特点（如：字符串格式、特殊字符串）。<br>攻击者信息：攻击者使用其公司（个人）特有的漏洞利用工具时，可能会在请求包中存在公司（个人）信息。</p>
+<h3 id="3-钓鱼邮件可溯源方法及关键点："><a href="#3-钓鱼邮件可溯源方法及关键点：" class="headerlink" title="3. 钓鱼邮件可溯源方法及关键点："></a>3. 钓鱼邮件可溯源方法及关键点：</h3><p><img src="https://mmbiz.qpic.cn/mmbiz_png/CBJYPapLzSHIrUQRCVwwCVjlrqGwVjlB8umhfbqWuaCmGNUm6zzTdsjFr24Ijibvfz61f3DialmGrkGDqcribHOBA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<p>发件 IP、发件账号、邮件内容（格式特点等）可用于将攻击者投递的邮件分类；</p>
+<p>发件账号中可能存在个人信息，如：“账号@qq.com”、“昵称@gmail.com” 等此类字符串，检索该字符串可用于挖掘身份信息；</p>
+<p>邮件内容大致可分以下三类：</p>
+<p>投递物（后门木马、其他攻击组件）</p>
+<p>钓鱼网站，包含域名、IP 等信息</p>
+<p>其他，需要研究邮件中的字符串，邮件可能存在攻击者的其他账号（在真实场景中出现过）发件 IP、发件服务器，属攻击者资产。</p>
+<h3 id="4-后门木马可溯源方法及关键点："><a href="#4-后门木马可溯源方法及关键点：" class="headerlink" title="4. 后门木马可溯源方法及关键点："></a>4. 后门木马可溯源方法及关键点：</h3><p><img src="https://mmbiz.qpic.cn/mmbiz_png/CBJYPapLzSHIrUQRCVwwCVjlrqGwVjlBZmdMwAjej7icuSAP6rytLeWC1oyoicpibUycNMicUJibFkGbZlhqb1UM9Cw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<p>代码逻辑，由于人的惰性，红队开发者可能会复用以前的一些代码。如代码特点比较明显，可用于分类和拓线。</p>
+<p>字符串特点，用于将红队投递的样本分类和拓线更多的样本，将检索到的样本再进行分析，分析历史样本（如测试阶段的样本）看是否会暴露出更多信息。</p>
+<p>元数据（投递的诱饵不同，得到的元数据不同。诱饵类型包括：LNK、EXE、DOCX等）。</p>
+<p>EXE 文件：存在 PDB 信息，部分开发人员将项目存放在桌面，这会导致编译信息带入开发人员的终端名称（极大可能为个人昵称）。</p>
+<p>LNK 文件：由于 LNK 文件在新建的时候会带入计算机名称，这可以用于样本的拓线和分类，极少情况下可找到个人昵称。</p>
+<p>DOCX 文件：可能存在“最后编辑者名称”。</p>
+<p>回连 C2，属攻击者资产。</p>
+<h3 id="5-攻击者资产维度可溯源方法及关键点"><a href="#5-攻击者资产维度可溯源方法及关键点" class="headerlink" title="5. 攻击者资产维度可溯源方法及关键点:"></a>5. 攻击者资产维度可溯源方法及关键点:</h3><p><img src="https://mmbiz.qpic.cn/mmbiz_png/CBJYPapLzSHIrUQRCVwwCVjlrqGwVjlBDG5eNnYvQa7lR1Q22YWvg4sS1DVJtbj6OMKgwAsAUMrKIhcGyNbeBg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<p>域名自身特点，如：昵称字符串</p>
+<p>搭建网站（通过图中四种方法探测资产的现有数据和历史数据）</p>
+<ol>
+<li>网站可能存在红队的其他攻击组件</li>
+<li>网站存在个人昵称、简介等</li>
+<li>网站备案信息</li>
+</ol>
+<p>Whois 信息，可能包含：注册者邮箱、电话号码等</p>
+<p>IP 信息需要考虑如下两点：</p>
+<ol>
+<li>是否定位到某个安全公司的地理位置</li>
+<li>是否标记为某个安全公司的网关</li>
+</ol>
+<h3 id="6-命令和控制阶段可产生的数据"><a href="#6-命令和控制阶段可产生的数据" class="headerlink" title="6.命令和控制阶段可产生的数据"></a>6.命令和控制阶段可产生的数据</h3><p><img src="https://mmbiz.qpic.cn/mmbiz_png/CBJYPapLzSHIrUQRCVwwCVjlrqGwVjlBGHycyVUfWLYLziaz8LibLvmQWR4APnsIBleMClpDGxm8wwVKicP513liaQ/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<p>用于防御，将掌握的流量规则部署在安全设备中积累数据，掌握更多的木马、资产，支撑上述中的各种溯源方法</p>
+<h3 id="7-身份信息溯源方向："><a href="#7-身份信息溯源方向：" class="headerlink" title="7.身份信息溯源方向："></a>7.身份信息溯源方向：</h3><p><img src="https://mmbiz.qpic.cn/mmbiz_png/CBJYPapLzSHIrUQRCVwwCVjlrqGwVjlBp3cXeoBgRyl1b7ODWLlqrs17IVNMsvQ3YUBYMxJYJlNOPfPF1GnqEg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<p><strong>虚拟身份</strong></p>
+<p>攻击者资产暴露的信息，如：Whois 信息、个人网站简介、GitHub 个人简介</p>
+<p>样本暴露的信息，如：PDB 信息、个人昵称、存放特马的 Github 账号</p>
+<p>蜜罐捕获，如：百度 ID、新浪 ID 等</p>
+<p>利用密码找回功能，如：阿里云IP找回、腾讯密码找回、邮箱密码找回</p>
+<p><strong>身份</strong></p>
+<p>社交平台（如百度贴吧、QQ 空间、新浪微博等）暴露真实姓名、手机号码</p>
+<p>支付宝转账功能，搜索邮箱、手机号</p>
+<p>已知的线索（邮箱、QQ、昵称等）在招聘网站搜索</p>
+<p>利用搜索引擎，如：手机号和真实姓名存放一起的 XXX 学校表格</p>
+<p><strong>公司信息</strong></p>
+<p>IP资产定位、域名 Whois 信息</p>
+<p>特有漏洞利用工具暴露的信息，如：User Agent、Cookie、Payload</p>
+<p>社交平台，如：钉钉、企业微信等</p>
+<p>攻击者个人简历中的工作经历</p>
+<h2 id="流程："><a href="#流程：" class="headerlink" title="流程："></a><strong>流程：</strong></h2><h3 id="1-针对ip通过开源情报-开放端口分析查询"><a href="#1-针对ip通过开源情报-开放端口分析查询" class="headerlink" title="1.针对ip通过开源情报+开放端口分析查询"></a>1.针对ip通过开源情报+开放端口分析查询</h3><p>可利用网站：</p>
+<p><a target="_blank" rel="noopener" href="https://x.threatbook.cn/%EF%BC%88%E4%B8%BB%E8%A6%81%EF%BC%89">https://x.threatbook.cn/（主要）</a></p>
+<p><a target="_blank" rel="noopener" href="https://ti.qianxin.com/">https://ti.qianxin.com/</a></p>
+<p><a target="_blank" rel="noopener" href="https://ti.360.cn/%EF%BC%88%E4%B8%BB%E8%A6%81%EF%BC%89">https://ti.360.cn/（主要）</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.venuseye.com.cn/">https://www.venuseye.com.cn/</a></p>
+<p><a target="_blank" rel="noopener" href="https://community.riskiq.com/">https://community.riskiq.com/</a></p>
+<p>当发现某些IP的攻击后，可以尝试通过此IP去溯源攻击者</p>
+<p>首先通过<a target="_blank" rel="noopener" href="http://www.ipip.net网站或者其他接口,查询此ip为idc的ip、cdn的ip还是普通运营商的出口ip./">http://www.ipip.net网站或者其他接口，查询此IP为IDC的IP、CDN的IP还是普通运营商的出口IP。</a></p>
+<p>如果IP反查到域名就可以去站长之家对其进行whois反查或者去<a target="_blank" rel="noopener" href="https://whois.domaintools.com/%E7%AD%89%E7%BD%91%E7%AB%99%E5%8E%BB%E6%9F%A5%E8%AF%A2%E5%9F%9F%E5%90%8D%E7%9A%84%E6%B3%A8%E5%86%8C%E4%BF%A1%E6%81%AF%E3%80%81http://whoissoft.com/%E6%9F%A5%E8%AF%A2%E5%A4%87%E6%A1%88%E4%BF%A1%E6%81%AF%E7%AD%89%E3%80%82">https://whois.domaintools.com/等网站去查询域名的注册信息、http://whoissoft.com/查询备案信息等。</a></p>
+<p>端口：可查看开放服务进行进一步利用</p>
+<p>可考虑使用masscan快速查看开放端口：</p>
+<p>masscan -p 1-65535 ip –rate=500</p>
+<p>再通过nmap 对开放端口进行识别</p>
+<p>nmap -p 3389,3306,6378 -Pn IP</p>
+<p>发现相关有用端口，进行端口相关漏洞的挖掘及利用。</p>
+<h3 id="2-ip查询定位"><a href="#2-ip查询定位" class="headerlink" title="2.ip查询定位"></a>2.ip查询定位</h3><p>ip定位工具：</p>
+<p>高精度IP定位：<a target="_blank" rel="noopener" href="https://www.opengps.cn/Data/IP/LocHighAcc.aspx">https://www.opengps.cn/Data/IP/LocHighAcc.aspx</a></p>
+<p>rtbasia（IP查询）：<a target="_blank" rel="noopener" href="https://ip.rtbasia.com/">https://ip.rtbasia.com/</a></p>
+<p>ipplus360（IP查询）：<a target="_blank" rel="noopener" href="https://www.ipplus360.com/">https://www.ipplus360.com/</a></p>
+<p>IP地址查询在线工具：<a target="_blank" rel="noopener" href="https://tool.lu/ip/">https://tool.lu/ip/</a></p>
+<p>在通过IP定位技术溯源过程，应注意以下情况：</p>
+<p>假如IP反查到的域名过多，考虑就是CDN了，就没必要继续去查了。</p>
+<p>假如是普通运营商的出口IP只能使用一些高精度IP定位工具粗略估计攻击者的地址，如果需要具体定位到人，则需要更多的信息。</p>
+<h3 id="3-ID跟踪、得到常用id信息收集"><a href="#3-ID跟踪、得到常用id信息收集" class="headerlink" title="3. ID跟踪、得到常用id信息收集"></a>3. ID跟踪、得到常用id信息收集</h3><p>在通过IP定位后技术追踪攻击者，可通过指纹库、社工库等或其他技术手段抓取到攻击者的微博账号、百度ID等信息，一般通过以下技术手段实现：</p>
+<p>进行QQ等同名方式去搜索、进行论坛等同名方式搜索、社工库匹配等。</p>
+<p>如ID是邮箱，则通过社工库匹配密码、以往注册信息等。</p>
+<p>如ID是手机号，则通过手机号搜索相关注册信息，以及手机号使用者姓名等。</p>
+<p>其他方法：</p>
+<p>(1) 百度信息收集：“id” （双引号为英文）</p>
+<p>(2) 谷歌信息收集</p>
+<p>(3) src信息收集（各大src排行榜）</p>
+<p>(4) 微博搜索（如果发现有微博记录，可使用tg查询weibo泄露数据）</p>
+<p>(5) 微信ID收集：微信进行ID搜索（直接发钉钉群一起查）</p>
+<p><strong>(6) 如果获得手机号（可直接搜索支付宝、社交账户等）</strong></p>
+<p><strong>注意：获取手机号如果自己查到的信息不多，直接上报钉钉群（利用共享渠道对其进行二次社工）</strong></p>
+<ul>
+<li>豆瓣/贴吧/知乎/脉脉 你能知道的所有社交平台，进行信息收集</li>
+</ul>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/CBJYPapLzSHIrUQRCVwwCVjlrqGwVjlB3bRwAg0sxFu39zPxPpTbdQPOGSia1rRrV1IXQaHibbianG8MpSvRjrrKg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<p>例如，当通过ID追踪技术手段定位到某攻击者的QQ号、QQ网名等信息，通过专业社工库可以进一步追踪攻击者使用的QQ号注册过的其它网络ID，从而获取更多攻击者信息，从而确定攻击者的身份。</p>
+<p>注意：手机号、昵称ID均为重点数据，如查不到太多信息，直接上报指挥部。</p>
+<h3 id="4-预警设备信息取证"><a href="#4-预警设备信息取证" class="headerlink" title="4.预警设备信息取证"></a>4.预警设备信息取证</h3><p>上方数据一无所获，可考虑对其发起攻击的行为进行筛查，尝试判断其是否有指纹特征。</p>
+<p>攻击者如果在攻击过程中对攻击目标上传攻击程序（如钓鱼软件），可通过对攻击者上传的恶意程序进行分析，并结合IP定位、ID追踪等技术手段对攻击进行分析溯源，常用的恶意程序分析网站有：</p>
+<p>Ø 微步在线云沙箱：<a target="_blank" rel="noopener" href="https://s.threatbook.cn/">https://s.threatbook.cn/</a></p>
+<p>Ø Virustotal：<a target="_blank" rel="noopener" href="https://www.virustotal.com/gui/home/upload">https://www.virustotal.com/gui/home/upload</a></p>
+<p>Ø 火眼（<a target="_blank" rel="noopener" href="https://fireeye.ijinshan.com)/">https://fireeye.ijinshan.com）</a></p>
+<p>Ø Anubis（<a target="_blank" rel="noopener" href="http://anubis.iseclab.org)/">http://anubis.iseclab.org）</a></p>
+<p>Ø joe（<a target="_blank" rel="noopener" href="http://www.joesecurity.org)/">http://www.joesecurity.org）</a></p>
+<h3 id="5-跳板机信息收集-触发"><a href="#5-跳板机信息收集-触发" class="headerlink" title="5.跳板机信息收集(触发)"></a>5.跳板机信息收集(触发)</h3><p>进入红队跳板机查询相关信息，如果主机桌面没有敏感信息，可针对下列文件进行收集信息。</p>
+<p>Last: 查看登录成功日志</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/CBJYPapLzSHIrUQRCVwwCVjlrqGwVjlBY7RjSmBUwvwytOJjJ5pfYiauaiaDROgW54ZMsmKoRGQf46sgfuCHcctg/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<p>Cat ~/.bash_history   查看操作指令</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/CBJYPapLzSHIrUQRCVwwCVjlrqGwVjlBLdOh02de20t57u2CcsEiaH5VFiaHh7t7fc6N7SkfKNDTTeelLf3vUXAw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<p>Ps -aux  查看进程</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/CBJYPapLzSHIrUQRCVwwCVjlrqGwVjlBWr6CB4Gkmuibl1fMKj17ZD2nXgqHjs8A30uuibjKc7HyESL1JL9YWuuw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<p>Cat /etc/passwd</p>
+<p>查看是否有类似ID的用户</p>
+<p>重点关注uid为500以上的登录用户</p>
+<p>nologin为不可登录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">作者：Kali9517</span><br><span class="line">原文地址：https://www.freebuf.com/fevents/334657.html</span><br></pre></td></tr></table></figure>
+
+<p><strong>注：如有侵权请联系删除</strong></p>
+
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <h5>本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</h5>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+                <div class="post-like-donate text-center clearfix" id="post-like-donate">
+                
+                
+                    <a class="share" href="javascript:;"><i class="fa fa-share-alt"></i> 分享</a>
+                    <div class="share-wrap" style="display: none;">
+    <div class="share-group">
+        <a href="javascript:;" class="share-plain qq" onclick="share('qq');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-qq"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain qzone" onclick="share('qzone');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-star"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weixin pop style-plain" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weixin"></i>
+            </div>
+            <div class="share-int">
+                <div class="qrcode" id="wechat-qr"></div>
+                <p>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</p>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weibo" onclick="share('weibo');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weibo"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain facebook style-plain" onclick="share('facebook');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-facebook"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain twitter style-plain" onclick="share('twitter');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-twitter"></i>
+            </div>
+        </a>
+    </div>
+    <script type="text/javascript">
+        $(()=>{
+            new QRCode("wechat-qr", {
+                text: "http://example.com/2022/09/29/HW%E8%93%9D%E9%98%9F%E6%BA%AF%E6%BA%90%E6%B5%81%E7%A8%8B%E8%AF%A6%E7%BB%86%E6%95%B4%E7%90%86%E5%88%86%E4%BA%AB/",
+                width: 150,
+                height: 150,
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+        function share(dest) {
+            const qqBase        = "https://connect.qq.com/widget/shareqq/index.html?";
+            const weiboBase     = "https://service.weibo.com/share/share.php?";
+            const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
+            const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
+            const twitterBase   = "https://twitter.com/intent/tweet?";
+            const hostUrl       = "http://example.com/2022/09/29/HW%E8%93%9D%E9%98%9F%E6%BA%AF%E6%BA%90%E6%B5%81%E7%A8%8B%E8%AF%A6%E7%BB%86%E6%95%B4%E7%90%86%E5%88%86%E4%BA%AB/";
+            const title         = "「HW蓝队溯源流程详细整理分享」";
+            const excerpt       = `背景：授权授权攻防演练过程中，攻击者千方百计使用各种方法渗透目标。一般情况下攻击链包括：侦察、武器化、交付、利用、安装、命令和控制、窃取目标数据。在溯源中，安全人员对攻击者某个阶段的攻击特点进行分析，再结合已掌握的威胁情报数据将攻击特...`;
+            let _URL;
+            switch (dest) {
+                case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
+                case "weibo"    : _URL = weiboBase+"url="+hostUrl+"&title="+title+excerpt;                                 break;
+                case "qzone"    : _URL = qzoneBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";  break;
+                case "facebook" : _URL = facebookBase+"u="+hostUrl;                                                        break;
+                case "twitter"  : _URL = twitterBase+"text="+title+excerpt+"&url="+hostUrl;                                break;
+            }
+            window.open(_URL);
+        };
+    </script>
+</div>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/%E6%BA%AF%E6%BA%90/" rel="tag">溯源</a>
+                </div>
+                <div class="pull-date">
+                <span>最后编辑：2022-09-29</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" log4j原理分析" href="/2022/07/20/log4j原理分析/">&lt; 上一篇</a>
+            </div>
+            
+            
+        </nav>
+    
+    
+        <div id="disqus_thread" class="post-comments lazy-load"></div>
+
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://example.com/2022/09/29/HW%E8%93%9D%E9%98%9F%E6%BA%AF%E6%BA%90%E6%B5%81%E7%A8%8B%E8%AF%A6%E7%BB%86%E6%95%B4%E7%90%86%E5%88%86%E4%BA%AB/';  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = '2022/09/29/HW蓝队溯源流程详细整理分享/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    var load_comm = () => {
+        if (typeof DISQUS == 'undefined') {
+            var d = document, s = d.createElement('script');
+            s.src = 'https://.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        } else {
+            DISQUS.reset({
+                reload: true,
+                config: function () {  
+                    this.page.url = 'http://example.com/2022/09/29/HW%E8%93%9D%E9%98%9F%E6%BA%AF%E6%BA%90%E6%B5%81%E7%A8%8B%E8%AF%A6%E7%BB%86%E6%95%B4%E7%90%86%E5%88%86%E4%BA%AB/';  // Replace PAGE_URL with your page's canonical URL variable
+                    this.page.identifier = '2022/09/29/HW蓝队溯源流程详细整理分享/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                }
+            });
+        }
+    };
+    
+</script>
+<script async id="dsq-count-scr" src="//.disqus.com/count.js"></script>
+
+<noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    
+</article>
+
+        
+
+            </section>
+
+        
+
+                
+            
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/touxiang.webp" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center"></p>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix">
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar"></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E6%99%AF%EF%BC%9A"><span class="toc-text">背景：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E6%A0%87%EF%BC%9A"><span class="toc-text">目标：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E8%AE%BA%EF%BC%9A"><span class="toc-text">方法论：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%94%BB%E5%87%BB%E9%93%BE%E9%83%A8%E5%88%86%E5%8F%AF%E6%BA%AF%E6%BA%90%E7%9A%84%E5%85%B3%E9%94%AE%E7%82%B9%EF%BC%9A"><span class="toc-text">1. 攻击链部分可溯源的关键点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%94%BB%E5%87%BB%E9%93%BE%E5%88%A9%E7%94%A8%E9%98%B6%E6%AE%B5%E5%8F%AF%E6%BA%AF%E6%BA%90%E7%9A%84%E6%96%B9%E6%B3%95%E5%8F%8A%E5%88%A9%E7%94%A8%E7%82%B9%EF%BC%9A"><span class="toc-text">2. 攻击链利用阶段可溯源的方法及利用点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E9%92%93%E9%B1%BC%E9%82%AE%E4%BB%B6%E5%8F%AF%E6%BA%AF%E6%BA%90%E6%96%B9%E6%B3%95%E5%8F%8A%E5%85%B3%E9%94%AE%E7%82%B9%EF%BC%9A"><span class="toc-text">3. 钓鱼邮件可溯源方法及关键点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%90%8E%E9%97%A8%E6%9C%A8%E9%A9%AC%E5%8F%AF%E6%BA%AF%E6%BA%90%E6%96%B9%E6%B3%95%E5%8F%8A%E5%85%B3%E9%94%AE%E7%82%B9%EF%BC%9A"><span class="toc-text">4. 后门木马可溯源方法及关键点：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%94%BB%E5%87%BB%E8%80%85%E8%B5%84%E4%BA%A7%E7%BB%B4%E5%BA%A6%E5%8F%AF%E6%BA%AF%E6%BA%90%E6%96%B9%E6%B3%95%E5%8F%8A%E5%85%B3%E9%94%AE%E7%82%B9"><span class="toc-text">5. 攻击者资产维度可溯源方法及关键点:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E5%91%BD%E4%BB%A4%E5%92%8C%E6%8E%A7%E5%88%B6%E9%98%B6%E6%AE%B5%E5%8F%AF%E4%BA%A7%E7%94%9F%E7%9A%84%E6%95%B0%E6%8D%AE"><span class="toc-text">6.命令和控制阶段可产生的数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E8%BA%AB%E4%BB%BD%E4%BF%A1%E6%81%AF%E6%BA%AF%E6%BA%90%E6%96%B9%E5%90%91%EF%BC%9A"><span class="toc-text">7.身份信息溯源方向：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B%EF%BC%9A"><span class="toc-text">流程：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E9%92%88%E5%AF%B9ip%E9%80%9A%E8%BF%87%E5%BC%80%E6%BA%90%E6%83%85%E6%8A%A5-%E5%BC%80%E6%94%BE%E7%AB%AF%E5%8F%A3%E5%88%86%E6%9E%90%E6%9F%A5%E8%AF%A2"><span class="toc-text">1.针对ip通过开源情报+开放端口分析查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-ip%E6%9F%A5%E8%AF%A2%E5%AE%9A%E4%BD%8D"><span class="toc-text">2.ip查询定位</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-ID%E8%B7%9F%E8%B8%AA%E3%80%81%E5%BE%97%E5%88%B0%E5%B8%B8%E7%94%A8id%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-text">3. ID跟踪、得到常用id信息收集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E9%A2%84%E8%AD%A6%E8%AE%BE%E5%A4%87%E4%BF%A1%E6%81%AF%E5%8F%96%E8%AF%81"><span class="toc-text">4.预警设备信息取证</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E8%B7%B3%E6%9D%BF%E6%9C%BA%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-%E8%A7%A6%E5%8F%91"><span class="toc-text">5.跳板机信息收集(触发)</span></a></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类目录</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8/">日常</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B8%97%E9%80%8F/">渗透</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%BC%8F%E6%B4%9E/">漏洞</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%93%9D%E9%98%9F/">蓝队</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/Apache-2-4-49/" style="font-size: 0.6em;">Apache 2.4.49</a> <a href="/tags/Spring-Boot/" style="font-size: 0.6em;">Spring Boot</a> <a href="/tags/Struts2%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/" style="font-size: 0.6em;">Struts2漏洞复现总结</a> <a href="/tags/awvs/" style="font-size: 0.6em;">awvs</a> <a href="/tags/burpsutie/" style="font-size: 0.6em;">burpsutie</a> <a href="/tags/iis/" style="font-size: 0.6em;">iis</a> <a href="/tags/log4j/" style="font-size: 0.6em;">log4j</a> <a href="/tags/sql-%E6%B3%A8%E5%85%A5/" style="font-size: 0.6em;">sql 注入</a> <a href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" style="font-size: 0.6em;">信息收集</a> <a href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" style="font-size: 0.6em;">文件上传</a> <a href="/tags/%E6%BA%AF%E6%BA%90/" style="font-size: 0.6em;">溯源</a> <a href="/tags/%E6%BC%8F%E6%B4%9E%E6%89%AB%E6%8F%8F/" style="font-size: 0.6em;">漏洞扫描</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2022/09/29/HW%E8%93%9D%E9%98%9F%E6%BA%AF%E6%BA%90%E6%B5%81%E7%A8%8B%E8%AF%A6%E7%BB%86%E6%95%B4%E7%90%86%E5%88%86%E4%BA%AB/"><i class="fa  fa-book"></i> HW蓝队溯源流程详细整理分享</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2022/07/20/log4j%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/"><i class="fa  fa-book"></i> log4j原理分析</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2022/05/04/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E%E6%89%AB%E6%8F%8F%E5%99%A8%E5%92%8C%E5%88%A9%E7%94%A8%E5%B7%A5%E5%85%B7/"><i class="fa  fa-book"></i> 文件上传漏洞扫描器和利用工具</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2022/04/20/windows-kali%E9%9B%86%E6%88%90%E7%89%88/"><i class="fa  fa-book"></i> windows&kali集成版</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2022/01/07/github%E4%B8%8A%E5%BC%80%E6%BA%90%E6%89%AB%E6%8F%8F%E5%99%A8%E9%9B%86%E5%90%88/"><i class="fa  fa-book"></i> github上开源扫描器集合</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+        
+        </div>
+    </div>
+</div>
+<footer>
+    <div id="footer"  class="ap-lrc"  >
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search/">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="darkmode-switch">
+                        <span class="fa fa-adjust"></span>
+                    </div>
+                
+                
+            </div>
+            <div class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://t.me/CandyUnion"><i class="fa fa-telegram"></i></a></li>
+                        
+                        
+                        
+                        <li><a target="_blank" rel="me" href="https://nya.one/@zr"><i class="fa fa fa-share-alt-square"></i></a></li>
+                        <li><a target="_blank" rel="nofollow" href="https://github.com/zr-blog"><i class="fa fa-github"></i></a></li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2022 Love is a Moment Story 版权所有.</li>
+                            <li>本站已运行<span id="span_dt">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by zhang rui.</li>
+                        </div>
+                        <div>
+                            <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
+                            <li>Hosted on <a href="https://zr-blog.github.io/" target="_blank">Github Pages</a></li>
+                        </div>
+                        <div>
+                            
+                            
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.4/dist/js/bootstrap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js"></script>
+<script>const notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));</script>
+
+
+    <script async src="/js/candy.min.js"></script>
+
+
+
+    <script defer src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+    
+    <script defer src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+    <meting-js
+        server="netease"
+        type="playlist"
+        id="7026505671"
+        order="random"
+        fixed="true"
+    >
+    </meting-js>
+
+
+
+    <script defer src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script>
+<script defer src="/js/kratosr.min.js"></script>
+<script defer src="/js/pjax.min.js"></script>
+
+
+    <script defer src="/js/kr-dark.min.js"></script>
+
+
+
+<!-- Extra support for third-party plguins  -->
+
+
+    </body>
+</html>
