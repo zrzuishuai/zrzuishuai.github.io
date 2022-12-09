@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  <link rel="icon" href="">
+  <title>~Windows10 Penetration Suite Toolkit within Kali Linux v4.0~ | Love is a Moment Story</title>
+  <meta name="author" content="zhang rui" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="" />
+  
+  <meta name="description" content="2022.12.06 更新说明: 由于Kali的图形化模式占用资源造成卡顿，且使用率不高，特此去除图形化模式。   参考链接   VMware Workstation 不可恢复错误（vcpu-0）解决方法:   升级VMware至17.0最新版 虚拟机设置-处理器-虚拟化引擎，关闭“虚拟化Intel VT-x&#x2F;EPT 或 AMD-V&#x2F;RVI(V)” 虚拟机设置-显示器-3D图形，关闭“加速3D图形">
+<meta property="og:type" content="article">
+<meta property="og:title" content="~Windows10 Penetration Suite Toolkit within Kali Linux v4.0~">
+<meta property="og:url" content="http://example.com/2022/12/09/Windows10-Penetration-Suite-Toolkit-within-Kali-Linux-v4-0/index.html">
+<meta property="og:site_name" content="Love is a Moment Story">
+<meta property="og:description" content="2022.12.06 更新说明: 由于Kali的图形化模式占用资源造成卡顿，且使用率不高，特此去除图形化模式。   参考链接   VMware Workstation 不可恢复错误（vcpu-0）解决方法:   升级VMware至17.0最新版 虚拟机设置-处理器-虚拟化引擎，关闭“虚拟化Intel VT-x&#x2F;EPT 或 AMD-V&#x2F;RVI(V)” 虚拟机设置-显示器-3D图形，关闭“加速3D图形">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/null">
+<meta property="article:published_time" content="2022-12-09T07:48:43.000Z">
+<meta property="article:modified_time" content="2022-12-09T08:04:23.388Z">
+<meta property="article:author" content="zhang rui">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/null">
+<meta name="twitter:site" content="@null">
+  
+  <!-- 站点验证相关 -->
+  
+    
+    
+    
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kratosr.min.css" type="text/css" media="all">
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/night-eighties.min.css" type="text/css" media="all">
+  
+  
+  <link rel="stylesheet" id="fontawe-css" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" type="text/css" media="all">
+  <link rel="stylesheet" id="nprogress-css" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" type="text/css" media="all">
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+  
+  
+    <link rel="stylesheet" id="darkmode-css" href="/css/kr-dark.min.css" type="text/css" media="all">
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
+  
+  
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/banner.webp');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+  </style>
+  
+<meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Love is a Moment Story" type="application/atom+xml">
+</head>
+
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    
+                                        <li><a href="/"><i class="fa fa-home"></i>首页</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/archives/"><i class="fa fa-file"></i>档案馆</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/coffee/"><i class="fa fa-coffee"></i>生活日常</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/friends/"><i class="fa fa-paw"></i>好伙伴</a></li>
+                                    
+                                
+                                    
+                                        <li>
+                                            <a><i class="fa fa-paper-plane"></i>关于我</a>
+                                            <ul class="sub-menu">
+                                                
+                                                    
+                                                
+                                                    
+                                                        <li><a href="/about/">自我介绍</a></li>
+                                                    
+                                                
+                                                    
+                                                        <li><a target="_blank" rel="noopener" href="https://zr-blog.github.io/">作者博客</a></li>
+                                                    
+                                                
+                                                    
+                                                        <li><a target="_blank" rel="noopener" href="https://github.com/zr-blog">项目链接</a></li>
+                                                    
+                                                
+                                            </ul>
+                                        </li>
+                                    
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">Love is a Moment Story</a></div>
+                    <div class="nav-toggle">
+                        <a class="kratos-nav-toggle js-kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>Love is a Moment Story</h2> <br />
+                        <span>im very vegatable and very poor</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+                    
+
+        
+
+            <section class="col-md-8">
+
+        
+
+            <article>
+    <div class="kratos-hentry kratos-post-inner clearfix">
+        <header class="kratos-entry-header">
+            
+                <h1 class="kratos-entry-title text-center">~Windows10 Penetration Suite Toolkit within Kali Linux v4.0~</h1>
+            
+            
+            <ul class="kratos-post-meta text-center">
+                <li><i class="fa fa-calendar"></i> 2022-12-09</li>
+                <li><i class="fa fa-user"></i> 作者 zhang rui</li>
+                <li>
+                    <i class="fa fa-edit"></i> 
+                    
+                    
+                        ~12.15K
+                    
+                    字
+                </li>
+                
+            </ul>
+        </header>
+        <div class="kratos-post-content">
+            <div id="expire-alert" class="alert alert-warning hidden" role="alert">
+                本文最后编辑于 <time datetime="1670573063388"></time> 前，其中的内容可能需要更新。
+            </div>
+            
+                <div class="kratos-post-inner-toc">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#2022-12-06-%E6%9B%B4%E6%96%B0%E8%AF%B4%E6%98%8E"><span class="toc-number">1.</span> <span class="toc-text">2022.12.06 更新说明:</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E7%AE%80%E4%BB%8B"><span class="toc-number">2.</span> <span class="toc-text">系统简介:</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%B6%E4%BD%9C%E5%A3%B0%E6%98%8E"><span class="toc-number">3.</span> <span class="toc-text">制作声明:</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%8D%E8%B4%A3%E5%A3%B0%E6%98%8E"><span class="toc-number">4.</span> <span class="toc-text">免责声明:</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E5%8F%8A%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D"><span class="toc-number">5.</span> <span class="toc-text">软件及工具介绍:</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E7%8E%AF%E5%A2%83%E7%B1%BB"><span class="toc-number">5.1.</span> <span class="toc-text">系统环境类:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#WindowsApp%E7%B1%BB"><span class="toc-number">5.2.</span> <span class="toc-text">WindowsApp类:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E5%B7%A5%E5%85%B7%E7%B1%BB-%EF%BC%88C-Softwares%EF%BC%89"><span class="toc-number">5.3.</span> <span class="toc-text">其他工具类 （C:\Softwares）:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E7%B1%BB%EF%BC%88C-Penetration%EF%BC%89"><span class="toc-number">5.4.</span> <span class="toc-text">渗透测试类（C:\Penetration）:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E5%8D%93%E5%B7%A5%E5%85%B7"><span class="toc-number">5.4.1.</span> <span class="toc-text">[+] 安卓工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%8D%E6%9D%80%E5%B7%A5%E5%85%B7"><span class="toc-number">5.4.2.</span> <span class="toc-text">[+] 免杀工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9E%E6%8E%A5%E5%B7%A5%E5%85%B7"><span class="toc-number">5.4.3.</span> <span class="toc-text">[+] 连接工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A0%B4%E8%A7%A3%E5%B7%A5%E5%85%B7"><span class="toc-number">5.4.4.</span> <span class="toc-text">[+] 破解工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%B7%A5%E5%85%B7"><span class="toc-number">5.4.5.</span> <span class="toc-text">[+] 数据工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%BA%E6%97%97%E5%B7%A5%E5%85%B7%EF%BC%88CTF%EF%BC%89"><span class="toc-number">5.4.6.</span> <span class="toc-text">[+] 夺旗工具（CTF）:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E5%85%B8%E5%B7%A5%E5%85%B7"><span class="toc-number">5.4.7.</span> <span class="toc-text">[+] 字典工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A3%81%E7%9B%98%E5%B7%A5%E5%85%B7"><span class="toc-number">5.4.8.</span> <span class="toc-text">[+] 磁盘工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%BE%91%E5%B7%A5%E5%85%B7"><span class="toc-number">5.4.9.</span> <span class="toc-text">[+] 编辑工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%B7%A5%E5%85%B7"><span class="toc-number">5.4.10.</span> <span class="toc-text">[+] 漏洞工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E7%BD%91%E5%B7%A5%E5%85%B7"><span class="toc-number">5.4.11.</span> <span class="toc-text">[+] 内网工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%9E%E5%85%AC%E5%B7%A5%E5%85%B7"><span class="toc-number">5.4.12.</span> <span class="toc-text">[+] 办公工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7"><span class="toc-number">5.4.13.</span> <span class="toc-text">[+] 编程工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%86%E5%90%91%E5%B7%A5%E5%85%B7"><span class="toc-number">5.4.14.</span> <span class="toc-text">[+] 逆向工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%AB%E6%8F%8F%E5%B7%A5%E5%85%B7"><span class="toc-number">5.4.15.</span> <span class="toc-text">[+] 扫描工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E5%B7%A5%E5%85%B7"><span class="toc-number">5.4.16.</span> <span class="toc-text">[+] 权限工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E9%87%8F%E5%B7%A5%E5%85%B7"><span class="toc-number">5.4.17.</span> <span class="toc-text">[+] 流量工具:</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%A8%E5%A5%97%E8%99%9A%E6%8B%9F%E6%9C%BA%E9%95%9C%E5%83%8F%EF%BC%9A"><span class="toc-number">6.</span> <span class="toc-text">全套虚拟机镜像：</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E9%93%BE%E6%8E%A5%EF%BC%9A"><span class="toc-number">7.</span> <span class="toc-text">下载链接：</span></a></li></ol>
+                </div>
+            
+            <hr />
+            <h1 id="2022-12-06-更新说明"><a href="#2022-12-06-更新说明" class="headerlink" title="2022.12.06 更新说明:"></a><strong>2022.12.06 更新说明:</strong></h1><ol>
+<li><strong>由于Kali的图形化模式占用资源造成卡顿，且使用率不高，<del>特此去除图形化模式</del>。</strong></li>
+</ol>
+<blockquote>
+<p><strong><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44285782/article/details/107442217">参考链接</a></strong></p>
+</blockquote>
+<ol>
+<li><strong>VMware Workstation 不可恢复错误（vcpu-0）解决方法:</strong></li>
+</ol>
+<ul>
+<li><strong>升级VMware至17.0<a target="_blank" rel="noopener" href="https://www.ghxi.com/vmware17.html">最新版</a></strong></li>
+<li><strong>虚拟机设置-处理器-虚拟化引擎，关闭“虚拟化Intel VT-x/EPT 或 AMD-V/RVI(V)”</strong></li>
+<li><strong>虚拟机设置-显示器-3D图形，关闭“加速3D图形”</strong></li>
+<li><strong>开启物理机bios设置的CPU虚拟化</strong></li>
+</ul>
+<blockquote>
+<p><strong><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43978472/article/details/123347650">参考链接</a></strong></p>
+</blockquote>
+<ol>
+<li><strong>补充了大量实用工具，升级部分软件为最新版；</strong></li>
+<li><strong>重构了“漏洞工具” 的目录分类，查找更方便快捷；</strong></li>
+<li><strong>重构了开始菜单及快捷启动索引；</strong></li>
+<li><strong>特别鸣谢:</strong></li>
+</ol>
+<blockquote>
+<p><strong>@棉花糖网络安全圈 @利刃信安 @果核剥壳 @雨苁 @狐狸说安全 @暗魂攻防实验室</strong></p>
+</blockquote>
+<ol>
+<li><strong>今后的更新方式:</strong></li>
+</ol>
+<ul>
+<li><strong>添加或升级软件等小幅更新会同步在网盘发布软件安装包；</strong></li>
+<li><strong>重大升级更新或迭代会重新制作虚拟机镜像。</strong></li>
+</ul>
+<h1 id="系统简介"><a href="#系统简介" class="headerlink" title="系统简介:"></a><strong>系统简介:</strong></h1><ol>
+<li><strong>基于Win10 Workstation 21H2 x64 原版镜像制作（不适用于ARM设备）；</strong></li>
+<li><strong>完整安装WSL Kali Linux 2022.3；</strong></li>
+<li><strong>精简系统自带软件，美化字体及部分图标，适度优化；</strong></li>
+<li><strong>使用单磁盘文件存储，提升性能；</strong></li>
+</ol>
+<ul>
+<li><strong>推荐运行环境:</strong></li>
+<li><strong>vmware:16.x（vmware图形内存1G）</strong></li>
+<li><strong>运行内存:8G</strong></li>
+<li><strong>固态硬盘:200G</strong></li>
+</ul>
+<h1 id="制作声明"><a href="#制作声明" class="headerlink" title="制作声明:"></a><strong>制作声明:</strong></h1><ol>
+<li><strong>所有的安装类软件均下载自软件对应的官方网站；</strong></li>
+<li><strong>所有的绿色类软件均下载自<a target="_blank" rel="noopener" href="https://www.ghxi.com/">果核剥壳</a> ；</strong></li>
+<li><strong>所有的脚本类工具均下载自github；</strong></li>
+<li><strong>部分授权类工具（破解版）及优秀的渗透工具来自微信公号分享；</strong></li>
+</ol>
+<ul>
+<li><strong>排名不分先后，同时也推荐大家关注，一起变得更强。</strong></li>
+</ul>
+<blockquote>
+<p><strong>雾晓安全、果核剥壳、归零安全、潇湘信安、学蚁致用、谢公子学安全、利刃信安、棉花糖网络安全圈、狐狸说安全、HACK技术沉淀营、无尾熊安全、T00ls、渗透攻击红队、洛米唯熊、雷石安全实验室、酒仙桥六号部队、InBug实验室、鸿鹄实验室、黑白之道、HACK之道、GobySec、Gcow安全团队、Gamma实验室、CobaltStrike实战、网络安全与黑客技术、QZ的安全悟道、菜鸟学信安、乌雲安全、白帽子飙车路、信安之路、chaosec、鸟哥谈安全、安全小飞侠、moonsec、系统安全运维、天驿安全、零组攻防实验室、Lemonsec、橘猫学安全、Hacking黑白红、渗透安全团队、渗透xiao白帽、白帽子社区、HACK学习呀、猪猪谈安全、开普勒安全团队、吾爱破解论坛、WhITECat安全团队、寻云安全团队、Khan安全攻防实验室、Bypass、天億网络安全、关注安全技术、玄魂工作室、边界骇客、零度安全攻防实验室、WgpSec狼组安全团队、黑白天实验室、靶机狂魔、渗透云笔记、TeamsSix、hijackY、重生信息安全、TimeLine Sec、GobySec、Gcow安全团队、冰蚕实验室。</strong></p>
+</blockquote>
+<ol>
+<li><strong>本集成环境是根据本人渗透工作和学习中的侧重点进行制作，不可能做到满足所有人的需求；</strong></li>
+<li><strong>本项目制作的初衷是帮助渗透新手快速搭建工作环境，工欲善其事，必先利其器；</strong></li>
+<li><strong>本项目由于后期调试原因可能会遗留部分本人的信息，请直接忽视；</strong></li>
+<li><strong>本项目坚决不接受也从未曾接受任何形式的赞助；</strong></li>
+<li><strong>如果您有好的意见或者建议，请联系邮箱 <a href="mailto:burpsuite@qq.com">burpsuite@qq.com</a>。</strong></li>
+</ol>
+<h1 id="免责声明"><a href="#免责声明" class="headerlink" title="免责声明:"></a><strong>免责声明:</strong></h1><ol>
+<li><strong>本镜像仅面向合法授权的企业安全建设行为，如您需要测试本镜像的可用性，请自行搭建靶机环境；</strong></li>
+<li><strong>在使用本镜像进行检测时，您应确保该行为符合当地的法律法规，并且已经取得了足够的授权；</strong></li>
+<li><strong>如您在使用本镜像的过程中存在任何非法行为，您需自行承担相应后果，作者将不承担任何法律及连带责任；</strong></li>
+<li><strong>本镜像所使用的工具资源均来自于网友投稿及互联网整理，作者仅提供分享交流平台，不为其版权负责。如果您发现本镜像中有侵犯您（或贵司）知识产权的资源，请及时反馈，作者会第一时间进行修改或删除。</strong></li>
+</ol>
+<h1 id="软件及工具介绍"><a href="#软件及工具介绍" class="headerlink" title="软件及工具介绍:"></a><strong>软件及工具介绍:</strong></h1><h2 id="系统环境类"><a href="#系统环境类" class="headerlink" title="系统环境类:"></a><strong>系统环境类:</strong></h2><ol>
+<li><strong>Directx</strong></li>
+<li><strong>Net Framework 3.5</strong></li>
+<li><strong>Net Framework 4.8</strong></li>
+<li><strong>Microsoft C runtime library</strong></li>
+<li><strong>Microsoft visual C++ 2005-2022</strong></li>
+<li><strong>集成常用字库</strong></li>
+</ol>
+<h2 id="WindowsApp类"><a href="#WindowsApp类" class="headerlink" title="WindowsApp类:"></a><strong>WindowsApp类:</strong></h2><ol>
+<li><strong>WSL Kali Linux</strong></li>
+<li><strong>Windows Terminal（已替换默认cmd）</strong></li>
+</ol>
+<h2 id="其他工具类-（C-Softwares）"><a href="#其他工具类-（C-Softwares）" class="headerlink" title="其他工具类 （C:\Softwares）:"></a><strong>其他工具类 （C:\Softwares）:</strong></h2><ol>
+<li><strong>AAct:激活工具（激活windows &amp; office）</strong></li>
+<li><strong>Bandicam:视频录制工具（注册版）</strong></li>
+<li><strong>Bandizip:压缩工具（注册版）</strong></li>
+<li><strong>Chrome:108.0.5359 绿色修改版</strong></li>
+</ol>
+<ul>
+<li><strong>主要集成插件:</strong></li>
+<li><strong>Adblock:广告拦截工具</strong></li>
+<li><strong>Charset:修改网页编码工具</strong></li>
+<li><strong>Chrome清理大师:chrome清理工具</strong></li>
+<li><strong>Editthiscookie:cookie编辑工具</strong></li>
+<li><strong>FindSomething:敏感文件搜集工具</strong></li>
+<li><strong>Fofa view:fofa工具</strong></li>
+<li><strong>Funnel search:google搜索工具</strong></li>
+<li><strong>Hackbar</strong></li>
+<li><strong>Hack-Tools:红队综合小工具</strong></li>
+<li><strong>Heimdallr:指纹识别、蜜罐特征告警工具</strong></li>
+<li><strong>IE Tab:ie兼容模式工具</strong></li>
+<li><strong>Infinity:标签页工具</strong></li>
+<li><strong>IP address and domain inf:ip&amp;domain探测工具</strong></li>
+<li><strong>IP whois:whois 探测工具</strong></li>
+<li><strong>Neater bookmarks:书签管理工具</strong></li>
+<li><strong>Octotree:github资源树查看工具</strong></li>
+<li><strong>Onetab:标签管理工具</strong></li>
+<li><strong>Penetration Testing Kit:红队综合小工具</strong></li>
+<li><strong>Postwoman:接口调试工具</strong></li>
+<li><strong>Proxy switchyomega:代理切换工具</strong></li>
+<li><strong>Seoquake:网页统计工具</strong></li>
+<li><strong>Supercopy:超级复制</strong></li>
+<li><strong>Tampermonkey:脚本工具</strong></li>
+<li><strong>User-Agent Switcher:浏览头切换工具</strong></li>
+<li><strong>Toolbox 常用工具:集成常用小工具</strong></li>
+<li><strong>Vulners Web Scanner:微型漏洞扫描工具</strong></li>
+<li><strong>Wappalyzer:网页技术分析工具</strong></li>
+<li><strong>WebSocket Test Client:websocket工具</strong></li>
+<li><strong>Whatruns:网页技术分析工具</strong></li>
+<li><strong>XSS辅助工具</strong></li>
+<li><strong>X情报查询助手:微步社区</strong></li>
+<li><strong>YetAnotherDragAndGo:超链接拖拽新窗口打开</strong></li>
+<li><strong>ZoomEye Tools</strong></li>
+<li><strong>类似的网站</strong></li>
+</ul>
+<ol>
+<li><strong>Contextmenumanager:右键菜单管理工具</strong></li>
+<li><strong>Dism++:系统调节工具</strong></li>
+<li><strong>Everything:搜索工具（已禁用windows自带搜索）</strong></li>
+<li><strong>Goldwave:音频编辑工具</strong></li>
+<li><strong>GoogleEarth:谷歌地球</strong></li>
+<li><strong>Honeyview:看图工具</strong></li>
+<li><strong>Huorong:杀毒工具（C:\Penetration 为白名单）</strong></li>
+<li><strong>ICON:第三方图标包</strong></li>
+<li><strong>Internet Download Manager:6.41.6（注册版）</strong></li>
+<li><strong>IOBit:</strong></li>
+</ol>
+<ul>
+<li><strong>AdvancedSystemcare:优化清理工具（注册版）</strong></li>
+<li><strong>DriverBooster:驱动工具（注册版）</strong></li>
+<li><strong>SmartDefrag:磁盘整理工具（注册版）</strong></li>
+<li><strong>Uninstaller:卸载工具（注册版）</strong></li>
+</ul>
+<ol>
+<li><strong>Mactype:字体管理工具（已修改系统默认字体为Mac苹方体）</strong></li>
+<li><strong>Maye:快捷启动工具</strong></li>
+<li><strong>Meitu:美图秀秀</strong></li>
+<li><strong>OldNewExplorer:资源管理器调节工具</strong></li>
+<li><strong>PCMaster:系统调整工具</strong></li>
+</ol>
+<ul>
+<li><strong>已创建右键快捷菜单:</strong></li>
+<li><strong>在此处打开Terminal终端</strong></li>
+<li><strong>在此处打开KaliLinux终端</strong></li>
+<li><strong>在此处打开Notepad</strong></li>
+<li><strong>控制面板</strong></li>
+<li><strong>计算器</strong></li>
+<li><strong>注册表</strong></li>
+</ul>
+<ol>
+<li><strong>Potplayer:视频播放工具</strong></li>
+<li><strong>Refresh:刷新图标缓存</strong></li>
+<li><strong>Snipaste:截图工具</strong></li>
+<li><strong>Telegram:电报客户端</strong></li>
+<li><strong>UltraISO:iso编辑工具</strong></li>
+<li><strong>WPS:WPS（注册版）</strong></li>
+</ol>
+<h2 id="渗透测试类（C-Penetration）"><a href="#渗透测试类（C-Penetration）" class="headerlink" title="渗透测试类（C:\Penetration）:"></a><strong>渗透测试类（C:\Penetration）:</strong></h2><ol>
+<li><strong>常用的python、C#及java类工具均配有start.bat或start.vbs。</strong></li>
+<li><strong>注明工具版本及更新时间；</strong></li>
+<li><strong>注明依赖环境；</strong></li>
+<li><strong>注明主要参数；</strong></li>
+<li><strong>注明简要用法（给工具不给用法的都是耍流氓）</strong></li>
+</ol>
+<h3 id="安卓工具"><a href="#安卓工具" class="headerlink" title="[+] 安卓工具:"></a><strong>[+] 安卓工具:</strong></h3><ol>
+<li><strong>AndroidHelper:apk逆向工具</strong></li>
+<li><strong>AndroidKiller:apk综合工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/bihe0832/Android-GetAPKInfo">Apkinfo</a>:apk分析工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/iBotPeaches/Apktool">Apktool</a>:apk反编译工具</strong></li>
+<li><strong>ApkToolbox:apk综合工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/linchaolong/ApkToolPlus">ApkToolPlus</a>:apk反编译分析工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/sulab999/AppMessenger">AppMessenger</a>:apk分析工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/pxb1988/dex2jar">Dex2jar</a>:dex打包工具</strong></li>
+<li><strong>Nox:夜神安卓模拟器（安卓9.0）</strong></li>
+</ol>
+<ul>
+<li><strong>已安装:</strong></li>
+<li><strong>Debug Proxy</strong></li>
+<li><strong>HttpCanary</strong></li>
+<li><strong>JuiceSSH</strong></li>
+<li><strong>MT</strong></li>
+<li><strong>Net Capture</strong></li>
+<li><strong>NP</strong></li>
+<li><strong>Packet Capture</strong></li>
+<li><strong>ProxyDroid</strong></li>
+<li><strong>Terminal Emulator</strong></li>
+<li><strong>开发者助手</strong></li>
+</ul>
+<ol>
+<li><strong><a target="_blank" rel="noopener" href="https://www.vegabird.com/yaazhini/">Yaazhini</a>:apk漏洞扫描工具</strong></li>
+</ol>
+<h3 id="免杀工具"><a href="#免杀工具" class="headerlink" title="[+] 免杀工具:"></a><strong>[+] 免杀工具:</strong></h3><ol>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/piiperxyz/AniYa">Aniya</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/1y0n/av_evasion_tool">AVevasion</a></strong></li>
+<li><strong>Bypass-antivirus:免杀教程</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/9emin1/charlotte">Charlotte</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/ed1s0nz/cool">Cool</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/bats3c/darkarmour">DarkArmour</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/INotGreen/Gllloader">GLLloader</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/danielbohannon/Invoke-Obfuscation">Invoke-Obfuscation</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/Avienma/shellcode_loader">Loader</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/H4de5-7/powershell-obfuscation">Powershell-Obfuscation</a></strong></li>
+<li><strong>Sandboxie:沙盒工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/knownsec/shellcodeloader">ShellcodeLoader</a></strong></li>
+<li><strong>VMProtect:加壳工具</strong></li>
+<li><strong>VProtect:加壳工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/yqcs/ZheTian">ZheTian</a>:遮天shellcode加载工具</strong></li>
+</ol>
+<h3 id="连接工具"><a href="#连接工具" class="headerlink" title="[+] 连接工具:"></a><strong>[+] 连接工具:</strong></h3><ol>
+<li><strong>Anydesk</strong></li>
+<li><strong>Filezilla</strong></li>
+<li><strong>Finalshell</strong></li>
+<li><strong>MobaXterm</strong></li>
+<li><strong>Putty</strong></li>
+<li><strong>Teamviewer</strong></li>
+<li><strong>WinSCP</strong></li>
+<li><strong>Xmanager</strong></li>
+</ol>
+<h3 id="破解工具"><a href="#破解工具" class="headerlink" title="[+] 破解工具:"></a><strong>[+] 破解工具:</strong></h3><ol>
+<li><strong>AccessCrack:access密码破解工具</strong></li>
+<li><strong>Advanced Archive Password Recovery:压缩包密码破解工具</strong></li>
+<li><strong>Advanced Office Password Recovery:office密码破解工具</strong></li>
+<li><strong>Advanced PDF Password Recovery:pdf密码破解工具</strong></li>
+<li><strong>DecryptPassword</strong></li>
+</ol>
+<ul>
+<li><strong>文件夹下集成下列密码破解工具:</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/passer-W/FinalShell-Decoder">finalshell-decoder</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/qurikuduo/finalshellPasswordDecoder">finalshellPasswordDecoder</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/unode/firefox_decrypt">firefox_decrypt</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/LimerBoy/FireFox-Thief">FireFox-Thief</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/moonD4rk/HackBrowserData">hack-browser-data-windows</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/HyperSine/how-does-navicat-encrypt-password">how-does-navicat-encrypt-password</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/HyperSine/how-does-SecureCRT-encrypt-password">how-does-SecureCRT-encrypt-password</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/HyperSine/how-does-Xmanager-encrypt-password">how-does-Xmanager-encrypt-password</a></strong></li>
+<li><strong>Safe360Browsergetpass</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/uknowsec/SharpDecryptPwd">SharpDecryptPwd</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/attackercan/teamviewer-dumper">teamviewer-dumper</a></strong></li>
+<li><strong>vcenterExsi_PwdDecrypt</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/anoopengineer/winscppasswd">winscppasswd</a></strong></li>
+</ul>
+<ol>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/vanhauser-thc/thc-hydra">Hydra</a>:口令爆破工具</strong></li>
+<li><strong>MD5Crack:md5碰撞工具</strong></li>
+<li><strong>SNETCracker:超级弱口令破解工具</strong></li>
+<li><strong>WebshellCrack:一句话密码破解工具</strong></li>
+</ol>
+<ul>
+<li><strong>K8_FuckOneShell</strong></li>
+<li><strong>K8_OneShellCrack</strong></li>
+<li><strong>T00ls综合一句话爆破工具</strong></li>
+</ul>
+<h3 id="数据工具"><a href="#数据工具" class="headerlink" title="[+] 数据工具:"></a><strong>[+] 数据工具:</strong></h3><ol>
+<li><strong>AnotherRedisDesktopManager:redis管理工具</strong></li>
+<li><strong>DatabaseBrowser:mdb &amp; xls数据库查看工具</strong></li>
+<li><strong>DatabaseUtilizationTools:数据库利用工具</strong></li>
+<li><strong>HeidiSQL:数据库连接管理工具</strong></li>
+<li><strong>Microsoft SQL Server:2019专业版</strong></li>
+</ol>
+<ul>
+<li><strong>username:sa</strong></li>
+<li><strong>password:sqladmin</strong></li>
+</ul>
+<ol>
+<li><strong>Microsoft SQL Server Management:mssql连接工具</strong></li>
+<li><strong>Navicat:数据库连接管理工具</strong></li>
+<li><strong>Neo4j:neo4j数据库管理工具</strong></li>
+<li><strong>OracleShell:oracle利用工具</strong></li>
+<li><strong>RedisDesktopManager:redis管理工具</strong></li>
+<li><strong>SharpSqlTools:mssql数据库利用工具</strong></li>
+<li><strong>Sqlite:sqlite数据库管理工具</strong></li>
+<li><strong>Sqlknife:mssql数据库利用工具</strong></li>
+<li><strong>Sqlmap:注入工具</strong></li>
+<li><strong>SQLTools:mssql利用工具</strong></li>
+<li><strong>Sylas:mssql &amp; orcle &amp; postgresql数据库利用工具</strong></li>
+<li><strong>ToadOracle:oracle数据库管理工具</strong></li>
+</ol>
+<h3 id="夺旗工具（CTF）"><a href="#夺旗工具（CTF）" class="headerlink" title="[+] 夺旗工具（CTF）:"></a><strong>[+] 夺旗工具（CTF）:</strong></h3><ol>
+<li><strong>ASCII</strong></li>
+<li><strong>BehinderDecode</strong></li>
+<li><strong>BerylEnigma</strong></li>
+<li><strong>Binwalk</strong></li>
+<li><strong>BlindWatermark</strong></li>
+<li><strong>CaptfEncoder</strong></li>
+<li><strong>Converter</strong></li>
+<li><strong>CRCCalculator</strong></li>
+<li><strong>CTFEditor</strong></li>
+<li><strong>CTFTools</strong></li>
+<li><strong>CTFcrack</strong></li>
+<li><strong>CyberChef</strong></li>
+<li><strong>DesTool</strong></li>
+<li><strong>F5Steganography</strong></li>
+<li><strong>FindFlag</strong></li>
+<li><strong>Foremost</strong></li>
+<li><strong>GifTools</strong></li>
+<li><strong>GNUplot</strong></li>
+<li><strong>JPHS</strong></li>
+<li><strong>MossTool</strong></li>
+<li><strong>LSBSteganography</strong></li>
+<li><strong>MP3Steno</strong></li>
+<li><strong>NamoGif Animator</strong></li>
+<li><strong>Outguess</strong></li>
+<li><strong>PcapTool</strong></li>
+<li><strong>PixRecovery</strong></li>
+<li><strong>PNGCalculator</strong></li>
+<li><strong>PNGCheck</strong></li>
+<li><strong>PNGDebugger</strong></li>
+<li><strong>QRResearch</strong></li>
+<li><strong>QRCode</strong></li>
+<li><strong>Regular</strong></li>
+<li><strong>RSATool</strong></li>
+<li><strong>RSA_N</strong></li>
+<li><strong>SM4</strong></li>
+<li><strong>Steganography</strong></li>
+<li><strong>Stegdetect</strong></li>
+<li><strong>Steghide</strong></li>
+<li><strong>Stegsolve</strong></li>
+<li><strong>Taowa Tool</strong></li>
+<li><strong>Tweak PNG</strong></li>
+<li><strong>Volatility</strong></li>
+<li><strong>Volatility Workbench</strong></li>
+<li><strong>wbStego</strong></li>
+<li><strong>WinHex</strong></li>
+<li><strong>Xiaokui</strong></li>
+<li><strong>ZZYQR</strong></li>
+<li><strong>ctf 密码学知识点总结</strong></li>
+<li><strong>ctf 逆向知识点总结</strong></li>
+<li><strong>ctf 隐写术知识点总结</strong></li>
+</ol>
+<h3 id="字典工具"><a href="#字典工具" class="headerlink" title="[+] 字典工具:"></a><strong>[+] 字典工具:</strong></h3><ol>
+<li><strong>DictMaker:字典生成工具</strong></li>
+</ol>
+<ul>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/ort4u/PwdBUD">PwdBUD</a></strong></li>
+<li><strong>黑刀字典生成工具</strong></li>
+<li><strong>火花字典生成工具</strong></li>
+<li><strong>木头字典生成工具</strong></li>
+<li><strong>品轩字典生成工具</strong></li>
+<li><strong>易优字典生成工具</strong></li>
+</ul>
+<ol>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/TheKingOfDuck/fuzzDicts">fuzzDicts</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/ppbibo/pentesterspecialdict">pentestdicts</a></strong></li>
+</ol>
+<h3 id="磁盘工具"><a href="#磁盘工具" class="headerlink" title="[+] 磁盘工具:"></a><strong>[+] 磁盘工具:</strong></h3><ol>
+<li><strong>Diskgenius:注册版（可恢复硬盘数据）</strong></li>
+<li><strong>SSDfresh:ssd优化工具</strong></li>
+</ol>
+<h3 id="编辑工具"><a href="#编辑工具" class="headerlink" title="[+] 编辑工具:"></a><strong>[+] 编辑工具:</strong></h3><ol>
+<li><strong>010Editor:十六进制编辑工具（注册版）</strong></li>
+<li><strong>BeyondCompare:文件对比工具</strong></li>
+<li><strong>eSearch:截屏、录屏、OCR、搜索、翻译、贴图、以图搜图（已集成离线OCR库）</strong></li>
+<li><strong>FFRename:菲菲更名宝贝（专业版）</strong></li>
+<li><strong>FindStr:文本检索工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/MountCloud/FireKylin">FireKylin</a>:系统痕迹采集</strong></li>
+<li><strong>Fortify:代码审计工具22.1.0（已集成rules）（注册版）</strong></li>
+<li><strong>JavaDecompiler:java查看编辑工具</strong></li>
+<li><strong>Jsonview:json查看编辑工具</strong></li>
+<li><strong>LogParse:windows日志分析工具</strong></li>
+<li><strong>LogParseLizard:windows日志分析工具（图形化）</strong></li>
+<li><strong>myBase:个人数据库编辑工具（注册版）</strong></li>
+<li><strong>Notepad++:编辑工具</strong></li>
+<li><strong>PSTConverter:pst邮件转换工具</strong></li>
+<li><strong>Seay:php代码审计工具</strong></li>
+<li><strong>SeayDzend:php zend解密工具</strong></li>
+<li><strong>SharpSword:csharp版本word查看工具</strong></li>
+<li><strong>Sublime:编辑工具（注册版）</strong></li>
+<li><strong>Typora:MarkDown编辑工具（注册版）</strong></li>
+<li><strong>VSCode:VisualCode编辑工具</strong></li>
+<li><strong>WindowsLogsAnalysis:windows日志分析工具（图形化）</strong></li>
+<li><strong>XMind:思维导图工具</strong></li>
+<li><strong>YoudaoDict:有道词典（注册版）（已集成离线翻译库）</strong></li>
+</ol>
+<h3 id="漏洞工具"><a href="#漏洞工具" class="headerlink" title="[+] 漏洞工具:"></a><strong>[+] 漏洞工具:</strong></h3><ol>
+<li><strong>AlibabaNacos</strong></li>
+<li><strong>Apache</strong></li>
+<li><strong>Cacti</strong></li>
+<li><strong>Cas</strong></li>
+<li><strong>Chrome</strong></li>
+<li><strong>Citrix</strong></li>
+<li><strong>CMSHunter</strong></li>
+<li><strong>Confluence</strong></li>
+<li><strong>D-Link</strong></li>
+<li><strong>Database</strong></li>
+</ol>
+<ul>
+<li><strong>mongo</strong></li>
+<li><strong>mssql</strong></li>
+<li><strong>mysql</strong></li>
+<li><strong>redis</strong></li>
+</ul>
+<ol>
+<li><strong>Elasticsearch</strong></li>
+<li><strong>F5-BIG-IP</strong></li>
+<li><strong>FastAdmin</strong></li>
+<li><strong>Fastjson</strong></li>
+<li><strong>FCKEditor</strong></li>
+<li><strong>FusionAuth</strong></li>
+<li><strong>Gitlab</strong></li>
+<li><strong>Harbor</strong></li>
+<li><strong>HTTPBasic</strong></li>
+<li><strong>HTTPFileServer</strong></li>
+<li><strong>IIS</strong></li>
+<li><strong>ILO4</strong></li>
+<li><strong>Intellian-Aptus-Web</strong></li>
+<li><strong>Jboss</strong></li>
+<li><strong>Jellyfin</strong></li>
+<li><strong>Jenkins</strong></li>
+<li><strong>Jira</strong></li>
+<li><strong>JumpServer</strong></li>
+<li><strong>Kibana</strong></li>
+<li><strong>Liferay</strong></li>
+<li><strong>Linux</strong></li>
+</ol>
+<ul>
+<li><strong>CVE-2015-1328</strong></li>
+<li><strong>CVE-2019-14287</strong></li>
+<li><strong>CVE-2021-22555</strong></li>
+<li><strong>CVE-2021-3156</strong></li>
+<li><strong>CVE-2021-33909</strong></li>
+<li><strong>CVE-2021-3493</strong></li>
+<li><strong>CVE-2021-4034</strong></li>
+<li><strong>CVE-2022-0847-1</strong></li>
+<li><strong>CVE-2022-0847-2</strong></li>
+<li><strong>CVE-2022-23222</strong></li>
+<li><strong>…</strong></li>
+</ul>
+<ol>
+<li><strong>Mail</strong></li>
+</ol>
+<ul>
+<li><strong>coremail</strong></li>
+<li><strong>exchange</strong></li>
+<li><strong>zimbra</strong></li>
+</ul>
+<ol>
+<li><strong>MetaCRM</strong></li>
+<li><strong>ModSecurity</strong></li>
+<li><strong>Nexus</strong></li>
+<li><strong>Node.js</strong></li>
+<li><strong>OA</strong></li>
+</ol>
+<ul>
+<li><strong>seeyon</strong></li>
+<li><strong>tongda</strong></li>
+<li><strong>weaver</strong></li>
+</ul>
+<ol>
+<li><strong>Office</strong></li>
+<li><strong>Open-AudIT</strong></li>
+<li><strong>Others</strong></li>
+<li><strong>PHP-FPM</strong></li>
+<li><strong>PHP</strong></li>
+<li><strong>phpMyadmin</strong></li>
+<li><strong>PHPStudy</strong></li>
+<li><strong>Rconfig</strong></li>
+<li><strong>SaltStack</strong></li>
+<li><strong>Sangfor</strong></li>
+<li><strong>SAP</strong></li>
+<li><strong>Shiro</strong></li>
+<li><strong>ShowDoc</strong></li>
+<li><strong>Solarwinds</strong></li>
+<li><strong>Spring</strong></li>
+<li><strong>Struts2</strong></li>
+<li><strong>Sunlogin</strong></li>
+<li><strong>TeamViewer</strong></li>
+<li><strong>Tomcat</strong></li>
+<li><strong>Tools</strong></li>
+</ol>
+<ul>
+<li><strong>AliyunAKTools:阿里云利用工具</strong></li>
+<li><strong>AptTools:综合漏洞利用工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/teamssix/cf">CF</a>:云环境利用框架</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/codeyso/CodeTest">CodeTest</a>:综合漏洞利用工具</strong></li>
+<li><strong>docs-0sec:零组文档库</strong></li>
+<li><strong>docs-base:漏洞文档库</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/almandin/fuxploider">Fuxploider</a>:漏洞扫描工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/lijiaxing1997/Gr33k">Gr33k</a>:综合漏洞利用工具</strong></li>
+<li><strong><del>HVVExploitApply:寻云安全团队1.5 综合漏洞利用工具（未取得授权，特此删除）</del></strong></li>
+<li><strong>LiqunKit:综合漏洞利用工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/achuna33/MYExploit">MYExploit</a>:综合漏洞利用工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/Thdub/NSudo_Installer">NSudoLG</a>:windows提权工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/projectdiscovery/nuclei">Nuclei</a>:内网扫描工具</strong></li>
+<li><strong>OATools:OA漏洞利用工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/tr0uble-mAker/POC-bomber">POCbomber</a>:综合漏洞利用工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/f0ng/poc2jar">poc2jar</a>:综合漏洞利用工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/thelostworldFree/Ruoyi-All">Ruoyi-All</a>:综合漏洞利用工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/yhy0/ExpDemo-JavaFX">Shenji</a>:综合漏洞利用工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/4ra1n/super-xray">SuperXray</a>:综合漏洞利用工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/zhzyker/vulmap">Vulmap</a>:综合漏洞利用工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/bitsadmin/wesng">WinExpSuggester-NG</a>:windows提权工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/0xToast/Windows-Exploit-Suggester-Py-3">WinExpSuggester</a>:windows提权工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/chaitin/xray">Xray</a>:漏洞扫描工具</strong></li>
+<li><strong>Ysoserial</strong></li>
+</ul>
+<ol>
+<li><strong>TPLink</strong></li>
+<li><strong>VMware</strong></li>
+<li><strong>Weblogic</strong></li>
+<li><strong>Webmin</strong></li>
+<li><strong>Windows</strong></li>
+</ol>
+<ul>
+<li><strong>CVE-2003-0352</strong></li>
+<li><strong>CVE-2005-1983</strong></li>
+<li><strong>CVE-2006-3439</strong></li>
+<li><strong>CVE-2008-1084</strong></li>
+<li><strong>…</strong></li>
+<li><strong>CVE-2021-42287</strong></li>
+<li><strong>CVE-2022-21907</strong></li>
+<li><strong>CVE-2022-26923</strong></li>
+<li><strong>…</strong></li>
+<li><strong>MS03-026</strong></li>
+<li><strong>MS05-039</strong></li>
+<li><strong>MS06-040</strong></li>
+<li><strong>…</strong></li>
+<li><strong>MS17-017</strong></li>
+</ul>
+<ol>
+<li><strong>XenMobile</strong></li>
+<li><strong>XStream</strong></li>
+<li><strong>XXL-job</strong></li>
+<li><strong>Ysuserial</strong></li>
+<li><strong>Zoho</strong></li>
+<li><strong>Zyxel</strong></li>
+</ol>
+<blockquote>
+<p><strong>漏洞库综合了下列项目:</strong></p>
+</blockquote>
+<ul>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/SecWiki/CMS-Hunter">CMSHunter</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/zhzyker/exphub">expHub</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/mai-lang-chai/middleware-vulnerability-detection">Middleware-Vulnerability-Detection</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/mai-lang-chai/system-vulnerability">System-Vulnerability</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/edgesecurityteam/vulnerability">Vulnerability</a></strong></li>
+</ul>
+<blockquote>
+<p><strong>更多漏洞exp见 C:\Penetration\ExpolitTools（漏洞exp较多，请善用everything搜索）</strong></p>
+</blockquote>
+<h3 id="内网工具"><a href="#内网工具" class="headerlink" title="[+] 内网工具:"></a><strong>[+] 内网工具:</strong></h3><ol>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/3gstudent">3Gstudent</a>:三好学生powershell &amp; python脚本</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/nccgroup/ABPTTS">ABPTTS</a>:内网穿透工具</strong></li>
+<li><strong>AddUser:添加用户工具</strong></li>
+<li><strong>ADExplore:ldap工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/lzzbb/Adinfo">ADinfo</a>:内网信息搜集工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/PinoyWH1Z/AoratosWin">Aoratos</a>:软件运行痕迹清理工具</strong></li>
+<li><strong>BloodHound:域渗透分析工具</strong></li>
+<li><strong>BloudyAD:域渗透利用工具</strong></li>
+<li><strong>BruteLogon:windows口令爆破工具</strong></li>
+<li><strong>ClearLogs:windows日志清除工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/Porchetta-Industries/CrackMapExec">CrackMapExec</a>:内网综合利用工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/Back-X/Defeat-Defender">DefeatDefender</a>:关闭defender工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/SkewwG/domainTools">DomainTools</a>:域渗透综合利用工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/wangfly-me/DomainInfo_Find">DomainInfoFind</a>:获取域内机器的桌面文件</strong></li>
+<li><strong>EarthWorm:内网穿透工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/fatedier/frp">Frp</a>:内网穿透工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/shadow1ng/fscan">FScan</a>:内网扫描工具</strong></li>
+<li><strong>GetWinInfo:windows信息搜集工具</strong></li>
+<li><strong>Gorailgun:内网渗透综合利用工具</strong></li>
+</ol>
+<ul>
+<li><strong>password:三个空格</strong></li>
+</ul>
+<ol>
+<li><strong><a target="_blank" rel="noopener" href="https://gotohttp.com/">GoToHTTP</a>:远控工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/t3l3machus/hoaxshell">Hoaxshell</a>:远控工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/SecureAuthCorp/impacket">impacket</a>:内网协议工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/EddieIvan01/iox">iox</a>:流量代理工具</strong></li>
+<li><strong>Ladon:内网扫描工具（小密圈9.3版本）</strong></li>
+<li><strong>LCX:端口转发工具</strong></li>
+<li><strong>LdapAdmin:ldap工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/dirkjanm/ldapdomaindump">LDAPDomainDump</a>:ldap工具</strong></li>
+<li><strong>Mimikatz:密码抓取工具</strong></li>
+</ol>
+<blockquote>
+<p><strong>文件夹下集成下列密码抓取工具</strong></p>
+</blockquote>
+<ul>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/C-Sto/gosecretsdump">gosecretsdump</a></strong></li>
+<li><strong>hklm</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/gentilkiwi/kekeo">kekeo</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/AlessandroZ/LaZagne">lazagne</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/huntergregal/mimipenguin">mimipenguin</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/zcgonvh/NTDSDumpEx">ntdsdumpex</a></strong></li>
+<li><strong>procdump</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://www.openwall.com/passwords/windows-pwdump">pwdump</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://blog.quarkslab.com/quarks-pwdump.html">quarkspwdump</a></strong></li>
+</ul>
+<ol>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/makdosx/mip22">Mip22</a>:网页钓鱼工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/mufeedvh/moonwalk">Moonwalk</a>:linux取证工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/u21h2/nacs">Nacs</a>:内网扫描工具</strong></li>
+<li><strong>NC:监听工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/L-codes/Neo-reGeorg">Neo-reGeorg</a>:regeorg重构版</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/shmilylty/netspy">NetSpy</a>:内网网段探测工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/ehang-io/nps">NPS</a>:内网代理工具</strong></li>
+<li><strong>OpenRDP:开启远程桌面工具</strong></li>
+<li><strong>OpenSSH:ssh工具</strong></li>
+<li><strong>Pack:打包工具</strong></li>
+</ol>
+<ul>
+<li><strong>7z（单文件版）</strong></li>
+</ul>
+<ol>
+<li><strong><a target="_blank" rel="noopener" href="https://www.wepe.com.cn/">PE</a>:WeiPE镜像</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/carlospolop/PEASS-ng">PEASS-ng</a>:linux取证工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/get-get-get-get/PowerProxy">PowerProxy</a>:powershell代理工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/p3nt4/PowerShdll">PowershDLL</a>:powershell工具</strong></li>
+<li><strong>PS2EXE:powershell转exe工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/sysinternals/downloads/pstools">PSTools</a>:微软psexec工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/FunnyWolf/pystinger">PyStinger</a>:流量代理工具</strong></li>
+<li><strong>ReverseShell:反弹shell工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/emptymonkey/revsh">revsh</a>:内网穿透工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/hktalent/scan4all">Scan4all</a>:内网扫描工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/netero1010/ScheduleRunner">ScheduleRunner</a>:计划任务利用工具</strong></li>
+<li><strong>SharpTools:</strong></li>
+</ol>
+<ul>
+<li><strong>CatchBrowser:浏览器密码抓取工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/b4rtik/SharpAdidnsdump">SharpAdiDnsDump</a>:域dns枚举工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/RowTeam/SharpDecryptPwd">SharpDecryptPwd</a>:浏览器密码解密工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/uknowsec/SharpEventLog">SharpEventLog</a>:日志分析工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/BloodHoundAD/SharpHound">SharpHound</a>:域渗透分析工具</strong></li>
+<li><strong>SharpListRDPConnections:rdp连接记录枚举工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/uknowsec/SharpNetCheck">SharpNetCheck</a>:出网探测工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/Adminisme/SharpRDPLog">SharpRDPLog</a>:rdp连接记录枚举工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/iomoath/SharpStrike">SharpStrike</a>:cobaltstrike工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/AdminTest0/SharpWxDump">SharpWxDump</a>:微信解密工具</strong></li>
+</ul>
+<ol>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/lab52io/StopDefender">StopDefender</a>:关闭defender工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/ph4ntonn/Stowaway">Stowaway</a>:内网穿透工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/inbug-team/SweetBabyScan">SweetBabyScan</a>:内网扫描工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/liamg/traitor">Traitor</a>:linux提权工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/returnvar/wce">WCE</a>:windows凭证编辑工具</strong></li>
+<li><strong>Wget:下载工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/rootclay/WMIHACKER">wmiHacker</a>:wmi渗透工具</strong></li>
+</ol>
+<blockquote>
+<p><strong>更多内网工具见 C:\Penetration\IntranetTools</strong></p>
+</blockquote>
+<h3 id="办公工具"><a href="#办公工具" class="headerlink" title="[+] 办公工具:"></a><strong>[+] 办公工具:</strong></h3><ol>
+<li><strong>Adobe Acrobat DC 2022:PDF编辑工具</strong></li>
+<li><strong>Office:Word + Excel + Powerpoint + Access + Onenote + Outlook</strong></li>
+<li><strong>WPS:Word + Excel + Powerpoint + PDF</strong></li>
+</ol>
+<h3 id="编程工具"><a href="#编程工具" class="headerlink" title="[+] 编程工具:"></a><strong>[+] 编程工具:</strong></h3><ol>
+<li><strong>GCC</strong></li>
+<li><strong>Golang</strong></li>
+<li><strong>Java:</strong></li>
+</ol>
+<ul>
+<li><strong>jre1.8.0:已配置环境变量，系统默认调用java8</strong></li>
+<li><strong>jre15.0.2:绿色版，如有特殊软件需要java15环境运行可直接调用/bin/java.exe即可</strong></li>
+</ul>
+<ol>
+<li><strong>Nodejs</strong></li>
+<li><strong>Python:</strong></li>
+</ol>
+<ul>
+<li><strong>python2:python2命令启动（python2 test.py）</strong></li>
+<li><strong>python3:python3命令启动（python3 test.py）</strong></li>
+<li><strong>已集成本镜像所有python3工具的pip依赖库（如有遗漏未安装的库请自行安装）</strong></li>
+<li><strong>使用pip命令调用python3 pip</strong></li>
+</ul>
+<ol>
+<li><strong>VisualStudio 2022:社区版</strong></li>
+</ol>
+<h3 id="逆向工具"><a href="#逆向工具" class="headerlink" title="[+] 逆向工具:"></a><strong>[+] 逆向工具:</strong></h3><ol>
+<li><strong>bat2exe:bat转exe工具</strong></li>
+<li><strong>DetectItEasy:查壳工具</strong></li>
+<li><strong>dnSpy:.Net逆向工具</strong></li>
+<li><strong>exeScope:exe编辑工具</strong></li>
+<li><strong>GreenHelper:exe绿化工具</strong></li>
+<li><strong>HashMaker:hash工具</strong></li>
+<li><strong>IDAPro:吾爱破解版</strong></li>
+<li><strong>ILSpy:.Net逆向工具</strong></li>
+<li><strong>jadx:java反编译工具</strong></li>
+<li><strong>OllyDebug:exe调试工具</strong></li>
+<li><strong>peidTool:查壳工具</strong></li>
+<li><strong>SignTool:签名伪造工具</strong></li>
+<li><strong>upxShell:upx加壳工具</strong></li>
+<li><strong>vbs2exe:vbs转exe工具</strong></li>
+<li><strong>x64dbg:exe调试工具</strong></li>
+</ol>
+<h3 id="扫描工具"><a href="#扫描工具" class="headerlink" title="[+] 扫描工具:"></a><strong>[+] 扫描工具:</strong></h3><ol>
+<li><strong>Acunetix:15.1.221109177（注册版）</strong></li>
+</ol>
+<ul>
+<li><strong>username:<a href="mailto:admin@awvs.com">admin@awvs.com</a></strong></li>
+<li><strong>password:<a href="mailto:Admin@awvs.com">Admin@awvs.com</a></strong></li>
+</ul>
+<ol>
+<li><strong>AppScan:10.0.7（注册版）</strong></li>
+<li><strong>Goby:2.0.5红队专版（含1288 poc）</strong></li>
+<li><strong>Nessus:10.3.1（注册版）</strong></li>
+</ol>
+<ul>
+<li><strong>username:admin</strong></li>
+<li><strong>password:password</strong></li>
+</ul>
+<ol>
+<li><strong>Nmap:端口扫描工具</strong></li>
+<li><strong>RouterScan:C段扫描工具</strong></li>
+<li><strong>ScanBox</strong></li>
+</ol>
+<blockquote>
+<p><strong>AVScan 杀毒软件检测工具:</strong></p>
+</blockquote>
+<ul>
+<li><strong>CheckAV（自己写的辣鸡代码，如有需要可以随便使用）</strong></li>
+</ul>
+<blockquote>
+<p><strong>LeakScan 敏感文件扫描工具:</strong></p>
+</blockquote>
+<ul>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/H4ckForJob/dirmap">dirMap</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/maurosoria/dirsearch">dirSearch</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/rtcatc/Packer-Fuzzer">PackerFuzzer</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://gitee.com/windyjxx/ScanTools">ScanTools</a></strong></li>
+<li><strong>Yujian</strong></li>
+<li><strong>GitHack</strong></li>
+<li><strong>7KB WebPath Brute</strong></li>
+<li><strong>7KB Ucenter Sniper</strong></li>
+<li><strong>7KB WordPress Sniper</strong></li>
+<li><strong>…</strong></li>
+</ul>
+<blockquote>
+<p><strong>SubDomain 子域名探测工具:</strong></p>
+</blockquote>
+<ul>
+<li><strong>FofaView:fofa查询工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/ExpLangcn/InfoSearchAll">InfoSearchAll</a></strong></li>
+<li><strong>Layer:子域名挖掘机</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/shmilylty/OneForAll">OneforAll</a></strong></li>
+<li><strong>Securitytrails:Securitytrails官方api脚本</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/jinsezlb/SnowShadow">SnowShadow</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/aboul3la/Sublist3r">Sublist3r</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/projectdiscovery/subfinder">Subfinder</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/xzajyjs/ThunderSearch">ThunderSearch</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/ScriptKid-Beta/WebBatchRequest">WebBatchRequest</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/Liqunkit/webfinder-next">WebFinder</a></strong></li>
+<li><strong>…</strong></li>
+</ul>
+<blockquote>
+<p><strong>更多扫描工具见 C:\Penetration\ScanTools\ScanBox</strong></p>
+</blockquote>
+<h3 id="权限工具"><a href="#权限工具" class="headerlink" title="[+] 权限工具:"></a><strong>[+] 权限工具:</strong></h3><ol>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/AntSwordProject/AntSword-Loader">Antsword</a>:蚁剑（已集成插件）</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/rebeyond/Behinder">Behinder</a>:冰蝎（shell密码统一为rebeyond）</strong></li>
+</ol>
+<ul>
+<li><strong>behinder 3.0 beta11</strong></li>
+<li><strong>behinder 4.0.6</strong></li>
+</ul>
+<ol>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/TryGOTry/DogCs4.4">Cobaltstrike</a>:Dog 4.4 汉化版</strong></li>
+</ol>
+<ul>
+<li><strong>使用<a target="_blank" rel="noopener" href="https://github.com/Twi1ight/CSAgent">CSAgent</a>汉化</strong></li>
+<li><strong>vps启动teamserver:sudo ./teamserver your_ip your_password random.profile</strong></li>
+<li><strong>集成插件（C:\Penetration\ShellTools\CobaltStrike\Scripts）</strong></li>
+<li><strong>adcollection</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/hack2fun/BypassAV">bypassav</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/DeEpinGh0st/Erebus">erebus</a></strong></li>
+<li><strong>eval</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/QAX-A-Team/EventLogMaster">eventlogmaster</a></strong></li>
+<li><strong>ladon</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/Mikasazero">mikasa</a></strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/pandasec888/taowu-cobalt-strike">taowu</a></strong></li>
+</ul>
+<ol>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/czz1233/GBByPass">ByPassBehinder</a>:jsp免杀工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/BeichenDream/Godzilla">Godzilla</a>:哥斯拉</strong></li>
+<li><strong>Hema:河马webshell查杀工具</strong></li>
+<li><strong>Kali:WSL Kali Linux 2022.3</strong></li>
+</ol>
+<blockquote>
+<p><strong>用户:</strong></p>
+</blockquote>
+<ul>
+<li><strong>username:kali password:kali</strong></li>
+<li><strong>username:root password:root</strong></li>
+<li><strong>修改软件源为阿里云</strong></li>
+<li><strong>完整安装Kali Linux所有软件包</strong></li>
+</ul>
+<ol>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/shack2/skyscorpion">Skyscorpion</a>:天蝎</strong></li>
+<li><strong>Shell:免杀一句话木马（密码统一为cmd）</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/tennc/webshell">Webshell</a>:webshell收集项目</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/Macr0phag3/webshell-bypassed-human">WebshellBypassedHuman</a>:webshell免杀</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/cseroad/Webshell_Generate">WebshellGenerate</a>:webshell生成工具</strong></li>
+</ol>
+<h3 id="流量工具"><a href="#流量工具" class="headerlink" title="[+] 流量工具:"></a><strong>[+] 流量工具:</strong></h3><ol>
+<li><strong>BlueTeamTools:流量解密工具</strong></li>
+<li><strong>BurpSuite:2022.1.1</strong></li>
+</ol>
+<ul>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/funkyoummp/burpsuitecn">汉化插件</a></strong></li>
+<li><strong>集成插件:</strong></li>
+<li><strong>VulnersScanner</strong></li>
+<li><strong>ChangeU</strong></li>
+<li><strong>ChunkedCodingConverter</strong></li>
+<li><strong>DomainHunter</strong></li>
+<li><strong>FakeIP</strong></li>
+<li><strong>Hackbar</strong></li>
+<li><strong>Sqlmap4burp</strong></li>
+<li><strong>TurboIntruder</strong></li>
+</ul>
+<ol>
+<li><strong>Fiddler:流量抓包工具（汉化版）</strong></li>
+<li><strong>ftpServers:ftp开启工具</strong></li>
+<li><strong>HackFirefox:firefox 49.0 集成插件版</strong></li>
+<li><strong>ipChanger:ip代理工具</strong></li>
+<li><strong>LiqunShield:webshell流量分析工具</strong></li>
+<li><strong>NetSetMan:网络参数设置工具</strong></li>
+<li><strong>OpenVPN:vpn工具</strong></li>
+<li><strong>phpStudy:8.1集成环境</strong></li>
+<li><strong>Proxifier:流量代理工具（汉化版）</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/shadowsocks/shadowsocks-windows">ShadowSocks</a>:科学上网工具</strong></li>
+<li><strong>TorBowser:洋葱浏览器</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/2dust/v2rayN">v2ray</a>:科学上网工具</strong></li>
+<li><strong>WireShark:流量抓包分析工具</strong></li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.com/yaklang/yakit">Yakit</a></strong></li>
+</ol>
+<h1 id="全套虚拟机镜像："><a href="#全套虚拟机镜像：" class="headerlink" title="全套虚拟机镜像："></a>全套虚拟机镜像：</h1><ol>
+<li><strong>Windows 7 x64</strong></li>
+<li><strong>Windows 8 x64</strong></li>
+<li><strong>Windows 10 x64</strong></li>
+<li><strong>Windows Server 2008 x64</strong></li>
+<li><strong>Windows Server 2012 x64</strong></li>
+<li><strong>Windows Server 2016 x64</strong></li>
+<li><strong>Windows Server 2019 x64</strong></li>
+<li><strong>Ubuntu 20 x64</strong></li>
+</ol>
+<p><strong>所有虚拟机镜像均安装：</strong></p>
+<ul>
+<li><strong>VMTools</strong></li>
+<li><strong>7z</strong></li>
+<li><strong>Microsoft Visual C++ 2008-2022 运行库</strong></li>
+<li><strong>密钥或激活工具激活</strong></li>
+</ul>
+<p><strong>可供测试软件，环境搭建等用途。</strong> <strong>虚拟机账号密码已备注在VMware描述栏处，请注意查看。</strong></p>
+<h1 id="下载链接："><a href="#下载链接：" class="headerlink" title="下载链接："></a>下载链接：</h1><blockquote>
+<p><strong><a target="_blank" rel="noopener" href="https://github.com/makoto56/penetration-suite-toolkit/releases/tag/v4.0">https://github.com/makoto56/penetration-suite-toolkit/releases/tag/v4.0</a></strong></p>
+</blockquote>
+
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <h5>本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</h5>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+                <div class="post-like-donate text-center clearfix" id="post-like-donate">
+                
+                
+                    <a class="share" href="javascript:;"><i class="fa fa-share-alt"></i> 分享</a>
+                    <div class="share-wrap" style="display: none;">
+    <div class="share-group">
+        <a href="javascript:;" class="share-plain qq" onclick="share('qq');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-qq"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain qzone" onclick="share('qzone');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-star"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weixin pop style-plain" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weixin"></i>
+            </div>
+            <div class="share-int">
+                <div class="qrcode" id="wechat-qr"></div>
+                <p>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</p>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weibo" onclick="share('weibo');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weibo"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain facebook style-plain" onclick="share('facebook');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-facebook"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain twitter style-plain" onclick="share('twitter');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-twitter"></i>
+            </div>
+        </a>
+    </div>
+    <script type="text/javascript">
+        $(()=>{
+            new QRCode("wechat-qr", {
+                text: "http://example.com/2022/12/09/Windows10-Penetration-Suite-Toolkit-within-Kali-Linux-v4-0/",
+                width: 150,
+                height: 150,
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+        function share(dest) {
+            const qqBase        = "https://connect.qq.com/widget/shareqq/index.html?";
+            const weiboBase     = "https://service.weibo.com/share/share.php?";
+            const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
+            const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
+            const twitterBase   = "https://twitter.com/intent/tweet?";
+            const hostUrl       = "http://example.com/2022/12/09/Windows10-Penetration-Suite-Toolkit-within-Kali-Linux-v4-0/";
+            const title         = "「~Windows10 Penetration Suite Toolkit within Kali Linux v4.0~」";
+            const excerpt       = `2022.12.06 更新说明:
+由于Kali的图形化模式占用资源造成卡顿，且使用率不高，特此去除图形化模式。
+
+
+参考链接
+
+
+VMware Workstation 不可恢复错误（vcpu-0）解决方法:
+
+
+升级VMware至17...`;
+            let _URL;
+            switch (dest) {
+                case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
+                case "weibo"    : _URL = weiboBase+"url="+hostUrl+"&title="+title+excerpt;                                 break;
+                case "qzone"    : _URL = qzoneBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";  break;
+                case "facebook" : _URL = facebookBase+"u="+hostUrl;                                                        break;
+                case "twitter"  : _URL = twitterBase+"text="+title+excerpt+"&url="+hostUrl;                                break;
+            }
+            window.open(_URL);
+        };
+    </script>
+</div>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    
+                </div>
+                <div class="pull-date">
+                <span>最后编辑：2022-12-09</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 渗透学习靶机打靶思路与方法" href="/2022/11/30/渗透学习靶机打靶思路与方法/">&lt; 上一篇</a>
+            </div>
+            
+            
+        </nav>
+    
+    
+        <div id="disqus_thread" class="post-comments lazy-load"></div>
+
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://example.com/2022/12/09/Windows10-Penetration-Suite-Toolkit-within-Kali-Linux-v4-0/';  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = '2022/12/09/Windows10-Penetration-Suite-Toolkit-within-Kali-Linux-v4-0/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    var load_comm = () => {
+        if (typeof DISQUS == 'undefined') {
+            var d = document, s = d.createElement('script');
+            s.src = 'https://.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        } else {
+            DISQUS.reset({
+                reload: true,
+                config: function () {  
+                    this.page.url = 'http://example.com/2022/12/09/Windows10-Penetration-Suite-Toolkit-within-Kali-Linux-v4-0/';  // Replace PAGE_URL with your page's canonical URL variable
+                    this.page.identifier = '2022/12/09/Windows10-Penetration-Suite-Toolkit-within-Kali-Linux-v4-0/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                }
+            });
+        }
+    };
+    
+</script>
+<script async id="dsq-count-scr" src="//.disqus.com/count.js"></script>
+
+<noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    
+</article>
+
+        
+
+            </section>
+
+        
+
+                
+            
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/touxiang.webp" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center"></p>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix">
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar"></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#2022-12-06-%E6%9B%B4%E6%96%B0%E8%AF%B4%E6%98%8E"><span class="toc-text">2022.12.06 更新说明:</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E7%AE%80%E4%BB%8B"><span class="toc-text">系统简介:</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%B6%E4%BD%9C%E5%A3%B0%E6%98%8E"><span class="toc-text">制作声明:</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%8D%E8%B4%A3%E5%A3%B0%E6%98%8E"><span class="toc-text">免责声明:</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E5%8F%8A%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D"><span class="toc-text">软件及工具介绍:</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E7%8E%AF%E5%A2%83%E7%B1%BB"><span class="toc-text">系统环境类:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#WindowsApp%E7%B1%BB"><span class="toc-text">WindowsApp类:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E5%B7%A5%E5%85%B7%E7%B1%BB-%EF%BC%88C-Softwares%EF%BC%89"><span class="toc-text">其他工具类 （C:\Softwares）:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E7%B1%BB%EF%BC%88C-Penetration%EF%BC%89"><span class="toc-text">渗透测试类（C:\Penetration）:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E5%8D%93%E5%B7%A5%E5%85%B7"><span class="toc-text">[+] 安卓工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%8D%E6%9D%80%E5%B7%A5%E5%85%B7"><span class="toc-text">[+] 免杀工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9E%E6%8E%A5%E5%B7%A5%E5%85%B7"><span class="toc-text">[+] 连接工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A0%B4%E8%A7%A3%E5%B7%A5%E5%85%B7"><span class="toc-text">[+] 破解工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%B7%A5%E5%85%B7"><span class="toc-text">[+] 数据工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%BA%E6%97%97%E5%B7%A5%E5%85%B7%EF%BC%88CTF%EF%BC%89"><span class="toc-text">[+] 夺旗工具（CTF）:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E5%85%B8%E5%B7%A5%E5%85%B7"><span class="toc-text">[+] 字典工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A3%81%E7%9B%98%E5%B7%A5%E5%85%B7"><span class="toc-text">[+] 磁盘工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%BE%91%E5%B7%A5%E5%85%B7"><span class="toc-text">[+] 编辑工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%B7%A5%E5%85%B7"><span class="toc-text">[+] 漏洞工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E7%BD%91%E5%B7%A5%E5%85%B7"><span class="toc-text">[+] 内网工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%9E%E5%85%AC%E5%B7%A5%E5%85%B7"><span class="toc-text">[+] 办公工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E7%A8%8B%E5%B7%A5%E5%85%B7"><span class="toc-text">[+] 编程工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%86%E5%90%91%E5%B7%A5%E5%85%B7"><span class="toc-text">[+] 逆向工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%AB%E6%8F%8F%E5%B7%A5%E5%85%B7"><span class="toc-text">[+] 扫描工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E5%B7%A5%E5%85%B7"><span class="toc-text">[+] 权限工具:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E9%87%8F%E5%B7%A5%E5%85%B7"><span class="toc-text">[+] 流量工具:</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%A8%E5%A5%97%E8%99%9A%E6%8B%9F%E6%9C%BA%E9%95%9C%E5%83%8F%EF%BC%9A"><span class="toc-text">全套虚拟机镜像：</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E9%93%BE%E6%8E%A5%EF%BC%9A"><span class="toc-text">下载链接：</span></a></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类目录</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8/">日常</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B8%97%E9%80%8F/">渗透</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%BC%8F%E6%B4%9E/">漏洞</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%93%9D%E9%98%9F/">蓝队</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/Apache-2-4-49/" style="font-size: 0.6em;">Apache 2.4.49</a> <a href="/tags/Spring-Boot/" style="font-size: 0.6em;">Spring Boot</a> <a href="/tags/Struts2%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/" style="font-size: 0.6em;">Struts2漏洞复现总结</a> <a href="/tags/iis/" style="font-size: 0.6em;">iis</a> <a href="/tags/log4j/" style="font-size: 0.6em;">log4j</a> <a href="/tags/sql-%E6%B3%A8%E5%85%A5/" style="font-size: 0.6em;">sql 注入</a> <a href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" style="font-size: 0.6em;">信息收集</a> <a href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" style="font-size: 0.6em;">文件上传</a> <a href="/tags/%E6%BA%AF%E6%BA%90/" style="font-size: 0.6em;">溯源</a> <a href="/tags/%E6%BC%8F%E6%B4%9E%E6%89%AB%E6%8F%8F/" style="font-size: 0.6em;">漏洞扫描</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2022/12/09/Windows10-Penetration-Suite-Toolkit-within-Kali-Linux-v4-0/"><i class="fa  fa-book"></i> ~Windows10 Penetration Suite Toolkit within Kali Linux v4.0~</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2022/11/30/%E6%B8%97%E9%80%8F%E5%AD%A6%E4%B9%A0%E9%9D%B6%E6%9C%BA%E6%89%93%E9%9D%B6%E6%80%9D%E8%B7%AF%E4%B8%8E%E6%96%B9%E6%B3%95/"><i class="fa  fa-book"></i> 渗透学习靶机打靶思路与方法</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2022/11/02/%E8%84%9A%E6%9C%AC%E5%B0%8F%E5%AD%90%E5%A4%A9%E5%A0%82/"><i class="fa  fa-book"></i> 脚本小子天堂</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2022/09/29/HW%E8%93%9D%E9%98%9F%E6%BA%AF%E6%BA%90%E6%B5%81%E7%A8%8B%E8%AF%A6%E7%BB%86%E6%95%B4%E7%90%86%E5%88%86%E4%BA%AB/"><i class="fa  fa-book"></i> HW蓝队溯源流程详细整理分享</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2022/07/20/log4j%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/"><i class="fa  fa-book"></i> log4j原理分析</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+        
+        </div>
+    </div>
+</div>
+<footer>
+    <div id="footer"  class="ap-lrc"  >
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search/">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="darkmode-switch">
+                        <span class="fa fa-adjust"></span>
+                    </div>
+                
+                
+            </div>
+            <div class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://t.me/CandyUnion"><i class="fa fa-telegram"></i></a></li>
+                        
+                        
+                        
+                        <li><a target="_blank" rel="me" href="https://nya.one/@zr"><i class="fa fa fa-share-alt-square"></i></a></li>
+                        <li><a target="_blank" rel="nofollow" href="https://github.com/zr-blog"><i class="fa fa-github"></i></a></li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2022 Love is a Moment Story 版权所有.</li>
+                            <li>本站已运行<span id="span_dt">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by zhang rui.</li>
+                        </div>
+                        <div>
+                            <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
+                            <li>Hosted on <a href="https://zr-blog.github.io/" target="_blank">Github Pages</a></li>
+                        </div>
+                        <div>
+                            
+                            
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.4/dist/js/bootstrap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js"></script>
+<script>const notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));</script>
+
+
+    <script async src="/js/candy.min.js"></script>
+
+
+
+    <script defer src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+    
+    <script defer src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+    <meting-js
+        server="netease"
+        type="playlist"
+        id="7026505671"
+        order="random"
+        fixed="true"
+    >
+    </meting-js>
+
+
+
+    <script defer src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script>
+<script defer src="/js/kratosr.min.js"></script>
+<script defer src="/js/pjax.min.js"></script>
+
+
+    <script defer src="/js/kr-dark.min.js"></script>
+
+
+
+<!-- Extra support for third-party plguins  -->
+
+
+    </body>
+</html>
